@@ -37,6 +37,7 @@ class PatientUserForm(forms.ModelForm):
         widgets = {
         'password': forms.PasswordInput()
         }
+
 class PatientForm(forms.ModelForm):
     #this is the extrafield for linking patient and their assigend doctor
     #this will show dropdown __str__ method doctor model is shown on html so override it
@@ -61,7 +62,6 @@ class PatientAppointmentForm(forms.ModelForm):
     class Meta:
         model=models.Appointment
         fields=['description','status']
-
 
 #for contact us page
 class ContactusForm(forms.Form):
