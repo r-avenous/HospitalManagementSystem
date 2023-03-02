@@ -177,6 +177,8 @@ def admin_dashboard_view(request):
     mydict={
     'doctors':doctors,
     'patients':patients,
+    'front desk operators': frontdesk,
+    'data entry operators': dataentry,
     'doctorcount':doctorcount,
     'pendingdoctorcount':pendingdoctorcount,
     'patientcount':patientcount,
