@@ -10,6 +10,37 @@ departments=[('Cardiologist','Cardiologist'),
 ('Anesthesiologists','Anesthesiologists'),
 ('Colon and Rectal Surgeons','Colon and Rectal Surgeons')
 ]
+
+class FrontDeskOperator(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    profile_pic = models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
+    address = models.CharField(max_length=40)
+    mobile = models.CharField(max_length=20,null=True)
+
+    @property
+    def get_name(self):
+        return self.user.first_name+" "+self.user.last_name
+    @property
+    def get_id(self):
+        return self.user.id
+    def __str__(self):
+        return "{}".format(self.user.first_name)
+
+class DataEntryOperator(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    profile_pic = models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
+    address = models.CharField(max_length=40)
+    mobile = models.CharField(max_length=20,null=True)
+
+    @property
+    def get_name(self):
+        return self.user.first_name+" "+self.user.last_name
+    @property
+    def get_id(self):
+        return self.user.id
+    def __str__(self):
+        return "{}".format(self.user.first_name)
+
 class Doctor(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic= models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
@@ -75,8 +106,4 @@ class PatientDischargeDetails(models.Model):
     doctorFee=models.PositiveIntegerField(null=False)
     OtherCharge=models.PositiveIntegerField(null=False)
     total=models.PositiveIntegerField(null=False)
-
-
-#Developed By : sumit kumar
-#facebook : fb.com/sumit.luv
-#Youtube :youtube.com/lazycoders
+    

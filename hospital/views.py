@@ -15,13 +15,17 @@ def home_view(request):
         return HttpResponseRedirect('afterlogin')
     return render(request,'hospital/index.html')
 
-
 #for showing signup/login button for admin(by sumit)
 def adminclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
     return render(request,'hospital/adminclick.html')
 
+#for showing signup/login button for admin(by sumit)
+def frontdeskclick_view(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('afterlogin')
+    return render(request,'hospital/frontdeskclick.html')
 
 #for showing signup/login button for doctor(by sumit)
 def doctorclick_view(request):
@@ -29,6 +33,11 @@ def doctorclick_view(request):
         return HttpResponseRedirect('afterlogin')
     return render(request,'hospital/doctorclick.html')
 
+#for showing signup/login button for admin(by sumit)
+def dataentryclick_view(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('afterlogin')
+    return render(request,'hospital/dataentryclick.html')
 
 #for showing signup/login button for patient(by sumit)
 def patientclick_view(request):
@@ -103,10 +112,14 @@ def patient_signup_view(request):
 #-----------for checking user is doctor , patient or admin(by sumit)
 def is_admin(user):
     return user.groups.filter(name='ADMIN').exists()
+def is_frontdeskoperator(user):
+    return user.groups.filter(name='DATA').exists()
 def is_doctor(user):
     return user.groups.filter(name='DOCTOR').exists()
 def is_patient(user):
     return user.groups.filter(name='PATIENT').exists()
+def is_dataentryoperator(user):
+    return user.groups.filter(name='ADMIN').exists()
 
 
 #---------AFTER ENTERING CREDENTIALS WE CHECK WHETHER USERNAME AND PASSWORD IS OF ADMIN,DOCTOR OR PATIENT
