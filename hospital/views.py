@@ -534,7 +534,8 @@ def admin_approve_appointment_view(request):
     return render(request,'hospital/admin_approve_appointment.html',{'appointments':appointments})
 
 
-
+# ***** NEED TO MAKE CHANGES IN THIS FUNCTION ******
+# ***** EXTRA SCHEDULING FUNCTION NEEDED, APPROVE/REJECT AFTER THAT *****
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def approve_appointment_view(request,pk):
@@ -600,7 +601,7 @@ def doctor_patient_view(request):
 
 
 
-
+# ***** HERE, DOCTOR'S PRESCRIPTION FOR PATIENT MUST BE ADDED ******
 @login_required(login_url='doctorlogin')
 @user_passes_test(is_doctor)
 def doctor_view_patient_view(request):

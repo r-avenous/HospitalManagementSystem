@@ -27,8 +27,6 @@ class DoctorForm(forms.ModelForm):
         model=models.Doctor
         fields=['address','mobile','department','status','profile_pic']
 
-
-
 #for teacher related form
 class PatientUserForm(forms.ModelForm):
     class Meta:
