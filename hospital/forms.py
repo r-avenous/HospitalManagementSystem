@@ -45,7 +45,32 @@ class PatientForm(forms.ModelForm):
         model=models.Patient
         fields=['address','mobile','status','symptoms','profile_pic']
 
+#adding shashwat
+class FrontDeskUserForm(forms.ModelForm):
+    class Meta:
+        model=User
+        fields=['first_name','last_name','username','password']
+        widgets = {
+        'password': forms.PasswordInput()
+        }
+class FrontDeskForm(forms.ModelForm):
+    class Meta:
+        model=models.FrontDeskOperator
+        fields=['address','mobile','profile_pic']
 
+class DataEntryUserForm(forms.ModelForm):
+    class Meta:
+        model=User
+        fields=['first_name','last_name','username','password']
+        widgets = {
+        'password': forms.PasswordInput()
+        }
+class DataEntryForm(forms.ModelForm):
+    class Meta:
+        model=models.DataEntryOperator
+        fields=['address','mobile','profile_pic']
+
+# ending adding shashwat
 
 class AppointmentForm(forms.ModelForm):
     doctorId=forms.ModelChoiceField(queryset=models.Doctor.objects.all().filter(status=True),empty_label="Doctor Name and Department", to_field_name="user_id")

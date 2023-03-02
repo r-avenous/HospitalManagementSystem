@@ -155,12 +155,22 @@ def admin_dashboard_view(request):
     #for both table in admin dashboard
     doctors=models.Doctor.objects.all().order_by('-id')
     patients=models.Patient.objects.all().order_by('-id')
+
+    #adding shashwat
+    frontdesk=models.Doctor.objects.all().order_by('-id')
+    dataentry=models.Patient.objects.all().order_by('-id')
     #for three cards
     doctorcount=models.Doctor.objects.all().filter(status=True).count()
     pendingdoctorcount=models.Doctor.objects.all().filter(status=False).count()
 
     patientcount=models.Patient.objects.all().filter(status=True).count()
     pendingpatientcount=models.Patient.objects.all().filter(status=False).count()
+
+    frontdeskcount=models.FrontDeskOperator.objects.all().filter(status=True).count()
+    pendingfrontdeskcount=models.FrontDeskOperator.objects.all().filter(status=False).count()
+
+    dataentrycount=models.DataEntryOperator.objects.all().filter(status=True).count()
+    pendingdataentrycount=models.DataEntryOperator.objects.all().filter(status=False).count()
 
     appointmentcount=models.Appointment.objects.all().filter(status=True).count()
     pendingappointmentcount=models.Appointment.objects.all().filter(status=False).count()
@@ -171,6 +181,10 @@ def admin_dashboard_view(request):
     'pendingdoctorcount':pendingdoctorcount,
     'patientcount':patientcount,
     'pendingpatientcount':pendingpatientcount,
+    'frontdeskcount':frontdeskcount,
+    'pendingfrontdeskcount':pendingfrontdeskcount,
+    'dataentrycount':dataentrycount,
+    'pendingdataentrycount':pendingdataentrycount,
     'appointmentcount':appointmentcount,
     'pendingappointmentcount':pendingappointmentcount,
     }
