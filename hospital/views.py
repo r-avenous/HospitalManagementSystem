@@ -106,13 +106,13 @@ def patient_signup_view(request):
 def is_admin(user):
     return user.groups.filter(name='ADMIN').exists()
 def is_frontdeskoperator(user):
-    return user.groups.filter(name='FRONT DESK OPERATOR').exists()
+    return user.groups.filter(name='FRONTDESK').exists()
 def is_doctor(user):
     return user.groups.filter(name='DOCTOR').exists()
 def is_patient(user):
     return user.groups.filter(name='PATIENT').exists()
 def is_dataentryoperator(user):
-    return user.groups.filter(name='DATA ENTRY OPERATOR').exists()
+    return user.groups.filter(name='DATAENTRY').exists()
 
 
 #---------AFTER ENTERING CREDENTIALS WE CHECK WHETHER USERNAME AND PASSWORD IS OF ADMIN,DOCTOR OR PATIENT
@@ -120,17 +120,24 @@ def afterlogin_view(request):
     if is_admin(request.user):
         return redirect('admin-dashboard')
     elif is_doctor(request.user):
-        accountapproval=models.Doctor.objects.all().filter(user_id=request.user.id,status=True)
+        accountapproval=models.Doctor.objects.all().filter(user_id=request.user.id)
         if accountapproval:
             return redirect('doctor-dashboard')
         else:
             return render(request,'hospital/doctor_wait_for_approval.html')
     elif is_patient(request.user):
-        accountapproval=models.Patient.objects.all().filter(user_id=request.user.id,status=True)
+        accountapproval=models.Patient.objects.all().filter(user_id=request.user.id)
         if accountapproval:
             return redirect('patient-dashboard')
         else:
             return render(request,'hospital/patient_wait_for_approval.html')
+    elif is_frontdeskoperator(request.user):
+        accountapproval=models.FrontDeskOperator.objects.all().filter(user_id=request.user.id)
+        if accountapproval:
+            return redirect('frontdesk-dashboard')
+        else:
+            return render(request,'hospital/frontdesk_wait_for_approval.html')
+
 
 
 
@@ -150,38 +157,35 @@ def admin_dashboard_view(request):
     patients=models.Patient.objects.all().order_by('-id')
 
     #adding shashwat
-    frontdesk=models.Doctor.objects.all().order_by('-id')
-    dataentry=models.Patient.objects.all().order_by('-id')
+    frontdesk=models.FrontDeskOperator.objects.all().order_by('-id')
+    dataentry=models.DataEntryOperator.objects.all().order_by('-id')
     #for three cards
-    doctorcount=models.Doctor.objects.all().filter(status=True).count()
-    pendingdoctorcount=models.Doctor.objects.all().filter(status=False).count()
+    doctorcount=models.Doctor.objects.all().count()
+    #pendingdoctorcount=models.Doctor.objects.all().filter(status=False).count()
 
-    patientcount=models.Patient.objects.all().filter(status=True).count()
-    pendingpatientcount=models.Patient.objects.all().filter(status=False).count()
+    patientcount=models.Patient.objects.all().count()
+    admitted_patientcount= models.Patient.objects.all().filter(status=True).count
+    #pendingpatientcount=models.Patient.objects.all().filter(status=False).count()
 
-    frontdeskcount=models.FrontDeskOperator.objects.all().filter(status=True).count()
-    pendingfrontdeskcount=models.FrontDeskOperator.objects.all().filter(status=False).count()
+    frontdeskcount=models.FrontDeskOperator.objects.all().count()
+    #pendingfrontdeskcount=models.FrontDeskOperator.objects.all().filter(status=False).count()
 
-    dataentrycount=models.DataEntryOperator.objects.all().filter(status=True).count()
-    pendingdataentrycount=models.DataEntryOperator.objects.all().filter(status=False).count()
+    dataentrycount=models.DataEntryOperator.objects.all().count()
+    #pendingdataentrycount=models.DataEntryOperator.objects.all().filter(status=False).count()
 
-    appointmentcount=models.Appointment.objects.all().filter(status=True).count()
-    pendingappointmentcount=models.Appointment.objects.all().filter(status=False).count()
+    appointmentcount=models.Appointment.objects.all().count()
+    #pendingappointmentcount=models.Appointment.objects.all().filter(status=False).count()
     mydict={
     'doctors':doctors,
     'patients':patients,
-    'front desk operators': frontdesk,
-    'data entry operators': dataentry,
+    'front_desk_operators': frontdesk,
+    'data_entry_operators': dataentry,
     'doctorcount':doctorcount,
-    'pendingdoctorcount':pendingdoctorcount,
     'patientcount':patientcount,
-    'pendingpatientcount':pendingpatientcount,
+    'admitted_patientcount': admitted_patientcount,
     'frontdeskcount':frontdeskcount,
-    'pendingfrontdeskcount':pendingfrontdeskcount,
     'dataentrycount':dataentrycount,
-    'pendingdataentrycount':pendingdataentrycount,
     'appointmentcount':appointmentcount,
-    'pendingappointmentcount':pendingappointmentcount,
     }
     return render(request,'hospital/admin_dashboard.html',context=mydict)
 
@@ -301,6 +305,74 @@ def admin_view_doctor_specialisation_view(request):
     return render(request,'hospital/admin_view_doctor_specialisation.html',{'doctors':doctors})
 
 
+#-----Admin user related to Front Desk Operator
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_frontdesk_view(request):
+    return render(request,'hospital/admin_frontdesk.html')
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_view_frontdesk_view(request):
+    frontdesk=models.FrontDeskOperator.objects.all()
+    return render(request,'hospital/admin_view_frontdesk.html',{'frontdesk':frontdesk})
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def delete_frontdesk_from_hospital_view(request,pk):
+    frontdesk=models.FrontDeskOperator.objects.get(id=pk)
+    user=models.User.objects.get(id=frontdesk.user_id)
+    user.delete()
+    frontdesk.delete()
+    return redirect('admin-view-frontdesk')
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def update_frontdesk_view(request,pk):
+    frontdesk=models.FrontDeskOperator.objects.get(id=pk)
+    user=models.User.objects.get(id=frontdesk.user_id)
+
+    userForm=forms.FrontDeskUserForm(instance=user)
+    frontdeskForm=forms.FrontDeskForm(request.FILES,instance=frontdesk)
+    mydict={'userForm':userForm,'frontdeskForm':frontdeskForm}
+    if request.method=='POST':
+        userForm=forms.FrontDeskUserForm(request.POST,instance=user)
+        frontdeskForm=forms.FrontDeskForm(request.POST,request.FILES,instance=frontdesk)
+        if userForm.is_valid() and frontdeskForm.is_valid():
+            user=userForm.save()
+            user.set_password(user.password)
+            user.save()
+            frontdesk=frontdeskForm.save(commit=False)
+            frontdesk.save()
+            return redirect('admin-view-frontdesk')
+    return render(request,'hospital/admin_update_frontdesk.html',context=mydict)
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_add_frontdesk_view(request):
+    userForm=forms.FrontDeskUserForm()
+    frontdeskForm=forms.FrontDeskForm()
+    mydict={'userForm':userForm,'frontdeskForm':frontdeskForm}
+    if request.method=='POST':
+        userForm=forms.FrontDeskUserForm(request.POST)
+        frontdeskForm=forms.FrontDeskForm(request.POST, request.FILES)
+        if userForm.is_valid() and frontdeskForm.is_valid():
+            user=userForm.save()
+            user.set_password(user.password)
+            user.save()
+            frontdesk=frontdeskForm.save(commit=False)
+            frontdesk.user=user
+            frontdesk.save()
+            my_frontdesk_group = Group.objects.get_or_create(name='FRONTDESK')
+            my_frontdesk_group[0].user_set.add(user)
+
+        return HttpResponseRedirect('admin-view-frontdesk')
+    return render(request,'hospital/admin_add_frontdesk.html',context=mydict)
+
+
+
+# --- Admin user related to patient below
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
@@ -709,7 +781,32 @@ def delete_appointment_view(request,pk):
 #---------------------------------------------------------------------------------
 
 
+#---------------------------------------------------------------------------------
+#------------------- FRONT DESK OPERATOR RELATED VIEWS START ---------------------
+#---------------------------------------------------------------------------------
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
+def frontdesk_dashboard_view(request):
+    #for three cards
+    patientcount=models.Patient.objects.all().count()
+    appointmentcount=models.Appointment.objects.all().count()
+    patientdischarged=models.PatientDischargeDetails.objects.all().distinct().count()
 
+    #for  table in doctor dashboard
+    appointments=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id).order_by('-id')
+    patientid=[]
+    for a in appointments:
+        patientid.append(a.patientId)
+    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid).order_by('-id')
+    appointments=zip(appointments,patients)
+    mydict={
+    'patientcount':patientcount,
+    'appointmentcount':appointmentcount,
+    'patientdischarged':patientdischarged,
+    'appointments':appointments,
+    'doctor':models.Doctor.objects.get(user_id=request.user.id), #for profile picture of doctor in sidebar
+    }
+    return render(request,'hospital/doctor_dashboard.html',context=mydict)
 
 
 
