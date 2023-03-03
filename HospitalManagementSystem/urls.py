@@ -43,6 +43,11 @@ urlpatterns = [
     path('reject-doctor/<int:pk>', views.reject_doctor_view,name='reject-doctor'),
     path('admin-view-doctor-specialisation',views.admin_view_doctor_specialisation_view,name='admin-view-doctor-specialisation'),
 
+    path('admin-frontdesk', views.admin_frontdesk_view,name='admin-frontdesk'),
+    path('admin-view-frontdesk', views.admin_view_frontdesk_view, name='admin-view-frontdesk'),
+    path('delete-frontdesk-from-hospital/<int:pk>', views.delete_frontdesk_from_hospital_view,name='delete-frontdesk-from-hospital'),
+    path('update-frontdesk/<int:pk>', views.update_frontdesk_view,name='update-frontdesk'),
+    path('admin-add-frontdesk', views.admin_add_frontdesk_view,name='admin-add-frontdesk'),
 
     path('admin-patient', views.admin_patient_view,name='admin-patient'),
     path('admin-view-patient', views.admin_view_patient_view,name='admin-view-patient'),
@@ -81,7 +86,12 @@ urlpatterns +=[
     path('delete-appointment/<int:pk>', views.delete_appointment_view,name='delete-appointment'),
 ]
 
+#---------FOR FRONT DESK OPERATOR RELATED URLS-------------------------
 
+urlpatterns +=[
+
+    path('frontdesk-dashboard', views.frontdesk_dashboard_view,name='frontdesk-dashboard'),
+]
 
 
 #---------FOR PATIENT RELATED URLS-------------------------------------
