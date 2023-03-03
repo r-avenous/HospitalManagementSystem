@@ -84,6 +84,8 @@ urlpatterns +=[
     path('doctor-view-appointment', views.doctor_view_appointment_view,name='doctor-view-appointment'),
     path('doctor-delete-appointment',views.doctor_delete_appointment_view,name='doctor-delete-appointment'),
     path('delete-appointment/<int:pk>', views.delete_appointment_view,name='delete-appointment'),
+    path('doctor-write-prescription/<int:pk>', views.doctor_write_prescription_view,
+         name='doctor-write-prescription'),
 ]
 
 #---------FOR FRONT DESK OPERATOR RELATED URLS-------------------------
