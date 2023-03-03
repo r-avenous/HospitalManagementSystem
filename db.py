@@ -7,4 +7,4 @@ db = mysql.connector.connect(
 )
 
 cursor = db.cursor()
-cursor.execute("CREATE DATABASE mydb")
+cursor.execute("CREATE DATABASE HospitalManagement")

@@ -81,8 +81,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'HospitalManagement',
-        'USER': 'CR7',
-        'PASSWORD': 'Ronaldo@07',
+        'USER': 'root',
+        'PASSWORD': 'password123',
         'HOST': 'localhost',
         'PORT': '3306',
     }
