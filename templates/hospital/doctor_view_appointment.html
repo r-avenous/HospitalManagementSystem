@@ -38,7 +38,9 @@ facebook : fb.com/sumit.luv
           <th>Description</th>
           <th>Mobile</th>
           <th>Address</th>
+
           <th>Appointment Date</th>
+          <th>Prescribe</th>
         </tr>
       </thead>
       {% for a,p in appointments %}
@@ -49,6 +51,10 @@ facebook : fb.com/sumit.luv
         <td>{{p.mobile}}</td>
         <td>{{p.address}}</td>
         <td>{{a.appointmentDate}}</td>
+        <td><a class="btn btn-primary btn-xs" href="{% url 'doctor-write-prescription' a.id  %}"><span
+              class="glyphicon glyphicon-ok"></span></a></td>
+
+
       </tr>
       {% endfor %}
     </table>
