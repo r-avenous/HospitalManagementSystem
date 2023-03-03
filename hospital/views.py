@@ -45,9 +45,6 @@ def patientclick_view(request):
         return HttpResponseRedirect('afterlogin')
     return render(request,'hospital/patientclick.html')
 
-
-
-
 def admin_signup_view(request):
     form=forms.AdminSigupForm()
     if request.method=='POST':
