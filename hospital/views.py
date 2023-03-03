@@ -775,6 +775,34 @@ def delete_appointment_view(request,pk):
     return render(request,'hospital/doctor_delete_appointment.html',{'appointments':appointments,'doctor':doctor})
 
 
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_write_prescription_view(request, pk):
+    patient = models.Patient.objects.get(id=pk)
+    # for profile picture of doctor in sidebar
+    doctor = models.Doctor.objects.get(user_id=request.user.id)
+    appointments = models.Appointment.objects.get(id=pk)
+
+    print(patient)
+    print(doctor)
+    print(appointments)
+    message = None
+    form = forms.PrescriptionDoctorForm(instance=appointments)
+    mydict = {
+        'patient': patient,
+        'form': form,
+        'doctor': doctor,
+        'message': message
+    }
+    if request.method == 'POST':
+        form = forms.PrescriptionDoctorForm(
+            request.POST, instance=appointments)
+        if form.is_valid():
+            form.save()
+
+            return redirect('doctor-view-appointment')
+
+    return render(request, 'hospital/doctor_write_prescription.html', context=mydict)
 
 #---------------------------------------------------------------------------------
 #------------------------ DOCTOR RELATED VIEWS END ------------------------------

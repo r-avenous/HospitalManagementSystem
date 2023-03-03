@@ -101,6 +101,8 @@ class Appointment(models.Model):
     appointmentDate=models.DateField(auto_now=True)
     description=models.TextField(max_length=500)
     status=models.BooleanField(default=False)
+    prescription = models.TextField(max_length=500)
+
 
 
 
