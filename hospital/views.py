@@ -490,7 +490,7 @@ def reject_patient_view(request,pk):
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def admin_discharge_patient_view(request):
-    patients=models.Patient.objects.all().filter(status=True)
+    patients=models.Patient.objects.all().filter(status=1)
     return render(request,'hospital/admin_discharge_patient.html',{'patients':patients})
 
 
@@ -681,7 +681,7 @@ def doctor_dashboard_view(request):
     'doctor':models.Doctor.objects.get(user_id=request.user.id), #for profile picture of doctor in sidebar
     }
     return render(request,'hospital/doctor_dashboard.html',context=mydict)
-    
+
 
 
 @login_required(login_url='doctorlogin')
@@ -822,13 +822,28 @@ def frontdesk_dashboard_view(request):
 
 
 def frontdesk_view_register_patient_view(request):
-    form=forms.PatientRegisterForm()
+    userForm=forms.PatientUserForm()
+    patientForm=forms.PatientForm()
+    mydict={'userForm':userForm,'patientForm':patientForm}
     if request.method=='POST':
-        form=forms.PatientRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('frontdesk-dashboard')
-    return render(request,'hospital/frontdesk_view_register_patient.html',{'form':form})
+        userForm=forms.PatientUserForm(request.POST)
+        patientForm=forms.PatientForm(request.POST,request.FILES)
+        if userForm.is_valid() and patientForm.is_valid():
+            user=userForm.save()
+            user.set_password(user.password)
+            user.save()
+
+            patient=patientForm.save(commit=False)
+            patient.user=user
+            patient.status=True
+            patient.assignedDoctorId=request.POST.get('assignedDoctorId')
+            patient.save()
+
+            my_patient_group = Group.objects.get_or_create(name='PATIENT')
+            my_patient_group[0].user_set.add(user)
+
+        return HttpResponseRedirect('admin-view-patient')
+    return render(request,'hospital/admin_add_patient.html',context=mydict)
 
 def frontdesk_view_admit_patient_view(request):
     patients=models.Patient.objects.all().filter(status=0)
