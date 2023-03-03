@@ -85,7 +85,14 @@ class PatientAppointmentForm(forms.ModelForm):
     class Meta:
         model=models.Appointment
         fields=['description','status']
+# Adding Yatharth
 
+
+class PrescriptionDoctorForm(forms.ModelForm):
+    class Meta:
+        model = models.Appointment
+        fields = ['prescription']
+# Ending Yatharth
 #for contact us page
 class ContactusForm(forms.Form):
     Name = forms.CharField(max_length=30)
