@@ -105,21 +105,17 @@ def patient_signup_view(request):
     return render(request,'hospital/patientsignup.html',context=mydict)
 
 
-
-
-
-
 #-----------for checking user is doctor , patient or admin(by sumit)
 def is_admin(user):
     return user.groups.filter(name='ADMIN').exists()
 def is_frontdeskoperator(user):
-    return user.groups.filter(name='DATA').exists()
+    return user.groups.filter(name='FRONT DESK OPERATOR').exists()
 def is_doctor(user):
     return user.groups.filter(name='DOCTOR').exists()
 def is_patient(user):
     return user.groups.filter(name='PATIENT').exists()
 def is_dataentryoperator(user):
-    return user.groups.filter(name='ADMIN').exists()
+    return user.groups.filter(name='DATA ENTRY OPERATOR').exists()
 
 
 #---------AFTER ENTERING CREDENTIALS WE CHECK WHETHER USERNAME AND PASSWORD IS OF ADMIN,DOCTOR OR PATIENT
