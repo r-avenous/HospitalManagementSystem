@@ -4,7 +4,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>ABC Hospitals</title>
+  <title>Hospital Management System</title>
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -94,6 +94,7 @@
 
       padding-left: 240px;
     }
+
     main {
       position: relative;
       height: 100vh;
@@ -109,11 +110,13 @@
       z-index: 5;
       outline: none;
     }
+
     .menu .avatar {
       background: rgba(0, 0, 0, 0.1);
       padding: 2em 0.5em;
       text-align: center;
     }
+
     .menu .avatar img {
       width: 100px;
       border-radius: 50%;
@@ -121,15 +124,18 @@
       border: 4px solid #ffea92;
       box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
     }
+
     .menu .avatar h2 {
       font-weight: normal;
       margin-bottom: 0;
     }
+
     .menu ul {
       list-style: none;
       padding: 0.5em 0;
       margin: 0;
     }
+
     .menu ul li {
       padding: 0.5em 1em 0.5em 3em;
       font-size: 0.95em;
@@ -140,15 +146,19 @@
       transition: all 0.15s linear;
       cursor: pointer;
     }
+
     .menu ul li.icon-dashboard {
       background-image: url("http://www.entypo.com/images//gauge.svg");
     }
+
     .menu ul li.icon-customers {
       background-image: url("http://www.entypo.com/images//briefcase.svg");
     }
+
     .menu ul li.icon-users {
       background-image: url("http://www.entypo.com/images//users.svg");
     }
+
     .menu ul li.icon-calendar {
       background-image: url("http://www.entypo.com/images//calendar.svg");
     }
@@ -156,23 +166,29 @@
     .menu ul li:hover {
       background-color: rgba(0, 0, 0, 0.1);
     }
+
     .menu ul li:focus {
       outline: none;
     }
+
     @media screen and (max-width: 900px) and (min-width: 400px) {
       body {
         padding-left: 90px;
       }
+
       .menu {
         width: 90px;
       }
+
       .menu .avatar {
         padding: 0.5em;
         position: relative;
       }
+
       .menu .avatar img {
         width: 60px;
       }
+
       .menu .avatar h2 {
         opacity: 0;
         position: absolute;
@@ -185,16 +201,19 @@
         transform: translate3d(-20px, -50%, 0);
         transition: all 0.15s ease-in-out;
       }
+
       .menu .avatar:hover h2 {
         opacity: 1;
         transform: translate3d(0px, -50%, 0);
       }
+
       .menu ul li {
         height: 60px;
         background-position: center center;
         background-size: 30px auto;
         position: relative;
       }
+
       .menu ul li span {
         opacity: 0;
         position: absolute;
@@ -206,6 +225,7 @@
         transform: translate3d(-15px, -50%, 0);
         transition: all 0.15s ease-in-out;
       }
+
       .menu ul li span:before {
         content: '';
         width: 0;
@@ -218,21 +238,25 @@
         border-right: 5px solid rgba(0, 0, 0, 0.5);
         transform: translateY(-50%);
       }
+
       .menu ul li:hover span {
         opacity: 1;
         transform: translate3d(0px, -50%, 0);
       }
     }
+
     @media screen and (max-width: 400px) {
       body {
         padding-left: 0;
       }
+
       .menu {
         width: 230px;
         box-shadow: 0 0 0 100em rgba(0, 0, 0, 0);
         transform: translate3d(-230px, 0, 0);
         transition: all 0.3s ease-in-out;
       }
+
       .menu .smartphone-menu-trigger {
         width: 40px;
         height: 40px;
@@ -240,6 +264,7 @@
         left: 100%;
         background: #5bc995;
       }
+
       .menu .smartphone-menu-trigger:before,
       .menu .smartphone-menu-trigger:after {
         content: '';
@@ -252,23 +277,26 @@
         left: 50%;
         transform: translate3d(-50%, -50%, 0);
       }
+
       .menu .smartphone-menu-trigger:after {
         top: 55%;
         transform: translate3d(-50%, -50%, 0);
       }
+
       .menu ul li {
         padding: 1em 1em 1em 3em;
         font-size: 1.2em;
       }
+
       .menu:focus {
         transform: translate3d(0, 0, 0);
         box-shadow: 0 0 0 100em rgba(0, 0, 0, 0.6);
       }
+
       .menu:focus .smartphone-menu-trigger {
         pointer-events: none;
       }
     }
-
   </style>
 </head>
 
@@ -283,9 +311,12 @@
       <h2>{{request.user.first_name}}</h2>
     </header>
     <ul>
-      <li tabindex="0" class="icon-dashboard"> <a style="color:white; text-decoration:none;" href="/doctor-dashboard"><span>Dashboard</span></a> </li>
-      <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/doctor-patient"><span>Patient</span></a></li>
-      <li tabindex="0" class="icon-calendar"> <a style="color:white; text-decoration:none;" href="/doctor-appointment"><span>Appointments</span></a></li>
+      <li tabindex="0" class="icon-dashboard"> <a style="color:white; text-decoration:none;"
+          href="/doctor-dashboard"><span>Dashboard</span></a> </li>
+      <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;"
+          href="/doctor-patient"><span>Patient</span></a></li>
+      <li tabindex="0" class="icon-calendar"> <a style="color:white; text-decoration:none;"
+          href="/doctor-appointment"><span>Appointments</span></a></li>
     </ul>
   </nav>
   <main>
@@ -312,19 +343,13 @@
     <!-- content end-->
     <br><br><br><br><br><br><br>
     <footer>
-      <p>
-        <a id="ftr" href="https://facebook.com/sumit.luv/" class="fa fa-facebook"></a>
-        <a id="ftr" href="https://api.whatsapp.com/send?phone=919572181024&text=Hello%20Sumit.%0d%0aHow%20are%20you%20%3f%0d%0aI%20came%20from%20your%20website.&source=&data=#" class="fa fa-whatsapp"></a>
-        <a id="ftr" href="https://instagram.com/sumit.luv" class="fa fa-instagram"></a>
-        <a id="ftr" href="https://twitter.com/sumitkumar1503" class="fa fa-twitter"></a>
-      </p>
+
       <br>
       <div class="container">
         <div class="row">
           <div class="col-md-12 col-sm-12">
             <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
-              <p>Made in India <br>
-                Copyright &copy; 2020 LazyCoder </p>
+              <p> <br>
             </div>
           </div>
         </div>
@@ -333,10 +358,5 @@
   </main>
   <!-- partial -->
 </body>
-<!--
-developed By : sumit kumar
-facebook : fb.com/sumit.luv
-youtube : youtube.com/lazycoders
--->
 
 </html>
