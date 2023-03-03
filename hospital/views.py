@@ -117,9 +117,7 @@ def is_dataentryoperator(user):
 
 #---------AFTER ENTERING CREDENTIALS WE CHECK WHETHER USERNAME AND PASSWORD IS OF ADMIN,DOCTOR OR PATIENT
 def afterlogin_view(request):
-    print("HELLO")
     if is_admin(request.user):
-        print('ADMIN FOUND')
         return redirect('admin-dashboard')
     elif is_doctor(request.user):
         accountapproval=models.Doctor.objects.all().filter(user_id=request.user.id)
@@ -127,24 +125,24 @@ def afterlogin_view(request):
             return redirect('doctor-dashboard')
         else:
             return render(request,'hospital/doctor_wait_for_approval.html')
-    elif is_patient(request.user):
-        accountapproval=models.Patient.objects.all().filter(user_id=request.user.id)
-        if accountapproval:
-            return redirect('patient-dashboard')
-        else:
-            return render(request,'hospital/patient_wait_for_approval.html')
+    # elif is_patient(request.user):
+    #     accountapproval=models.Patient.objects.all().filter(user_id=request.user.id)
+    #     if accountapproval:
+    #         return redirect('patient-dashboard')
+    #     else:
+    #         return render(request,'hospital/patient_wait_for_approval.html')
     elif is_frontdeskoperator(request.user):
         accountapproval=models.FrontDeskOperator.objects.all().filter(user_id=request.user.id)
         if accountapproval:
             return redirect('frontdesk-dashboard')
         else:
             return render(request,'hospital/frontdesk_wait_for_approval.html')
-
-
-
-
-
-
+    elif is_dataentryoperator(request.user):
+        accountapproval=models.DataEntryOperator.objects.all().filter(user_id=request.user.id)
+        if accountapproval:
+            return redirect('dataentry-dashboard')
+        else:
+            return render(request,'hospital/dataentry_wait_for_approval.html')
 
 
 
@@ -683,7 +681,7 @@ def doctor_dashboard_view(request):
     'doctor':models.Doctor.objects.get(user_id=request.user.id), #for profile picture of doctor in sidebar
     }
     return render(request,'hospital/doctor_dashboard.html',context=mydict)
-
+    
 
 
 @login_required(login_url='doctorlogin')
@@ -817,28 +815,28 @@ def doctor_write_prescription_view(request, pk):
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_dashboard_view(request):
-    #for three cards
-    patientcount=models.Patient.objects.all().count()
-    appointmentcount=models.Appointment.objects.all().count()
-    patientdischarged=models.PatientDischargeDetails.objects.all().distinct().count()
-
-    #for  table in doctor dashboard
-    appointments=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id).order_by('-id')
-    patientid=[]
-    for a in appointments:
-        patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid).order_by('-id')
-    appointments=zip(appointments,patients)
     mydict={
-    'patientcount':patientcount,
-    'appointmentcount':appointmentcount,
-    'patientdischarged':patientdischarged,
-    'appointments':appointments,
-    'doctor':models.Doctor.objects.get(user_id=request.user.id), #for profile picture of doctor in sidebar
+    'patient':models.Patient.objects.all(), #for profile picture of doctor in sidebar
     }
-    return render(request,'hospital/doctor_dashboard.html',context=mydict)
+    return render(request,'hospital/frontdesk_dashboard.html', mydict)
 
 
+def frontdesk_view_register_patient_view(request):
+    form=forms.PatientRegisterForm()
+    if request.method=='POST':
+        form=forms.PatientRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('frontdesk-dashboard')
+    return render(request,'hospital/frontdesk_view_register_patient.html',{'form':form})
+
+def frontdesk_view_admit_patient_view(request):
+    patients=models.Patient.objects.all().filter(status=0)
+    return render(request,'hospital/frontdesk_view_admit_patient.html',{'patients':patients})
+
+def frontdesk_view_discharge_patient_view(request):
+    patients=models.Patient.objects.all().filter(status=1)
+    return render(request,'hospital/frontdesk_view_discharge_patient.html',{'patients':patients})
 
 #---------------------------------------------------------------------------------
 #------------------------ PATIENT RELATED VIEWS START ------------------------------

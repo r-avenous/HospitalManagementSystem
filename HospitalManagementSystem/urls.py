@@ -93,6 +93,9 @@ urlpatterns +=[
 urlpatterns +=[
 
     path('frontdesk-dashboard', views.frontdesk_dashboard_view,name='frontdesk-dashboard'),
+    path('frontdesk-view-register-patient', views.frontdesk_view_register_patient_view,name='doctor-view-discharge-patient'),
+    path('frontdesk-view-admit-patient',views.frontdesk_view_admit_patient_view,name='doctor-view-admit-patient'),
+    path('frontdesk-view-discharge-patient',views.frontdesk_view_discharge_patient_view,name='doctor-view-discharge-patient'),
 ]
 
 
