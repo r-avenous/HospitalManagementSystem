@@ -23,17 +23,9 @@
 </head>
 
 <div class="container">
-
-    <form  action="/search" method="get" style="margin-left:70%;" class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" name="query" id="query" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
- 
-
-  {% if patients %}
   <div class="panel panel-primary">
     <div class="panel-heading">
-      <h6 class="panel-title">Your Total Patient List</h6>
+      <h6 class="panel-title">Patient</h6>
     </div>
     <table class="table table-hover" id="dev-table">
       <thead>
@@ -43,8 +35,9 @@
           <th>Symptoms</th>
           <th>Mobile</th>
           <th>Address</th>
-          <th>Admit</th>
-
+          <th>Status</th>
+          <th>Update</th>
+          <th>Delete</th>
         </tr>
       </thead>
       {% for p in patients %}
@@ -54,18 +47,21 @@
         <td>{{p.symptoms}}</td>
         <td>{{p.mobile}}</td>
         <td>{{p.address}}</td>
-        <td><a class="btn btn-primary btn-xs" href="{% url 'admit-patient' p.id  %}"><span
-          class="glyphicon glyphicon-ok"></span></a></td>
+        {%if p.status == 0%}
+          <td> <span class="label label-success">Visiting</span></td>
+          {%elif p.status == 1%}
+          <td> <span class="label label-success">Admitted</span></td>
+          {%elif p.status == 2%}
+          <td> <span class="label label-success">Discharged</span></td>
+        {% endif %}
+        <td><a class="btn btn-primary btn-xs" href="{% url 'update-patient' p.id  %}"><span
+              class="glyphicon glyphicon-edit"></span></a></td>
+        <td><a class="btn btn-danger btn-xs" href="{% url 'delete-patient-from-hospital' p.id  %}"><span
+              class="glyphicon glyphicon-trash"></span></a></td>
       </tr>
       {% endfor %}
     </table>
   </div>
-  {%else%}
-  <br><br><br>
-  <h4 style="text-align: center;color: red;">No visiting patients found.</h4>
-  {% endif %}
-
-  
 </div>
 
 {% endblock content %}

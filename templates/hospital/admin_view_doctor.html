@@ -21,10 +21,7 @@
     }
   </style>
 </head>
-<!--
-written By : sumit kumar
-facebook : fb.com/sumit.luv
--->
+
 <div class="container">
   <div class="panel panel-primary">
     <div class="panel-heading">
@@ -47,7 +44,13 @@ facebook : fb.com/sumit.luv
       <tr>
 
         <td> {{d.get_name}}</td>
+        
+        {% if d.profile_pic %}
         <td> <img src="{% static d.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
+        {% else %}
+        <td>-</td>
+        {% endif %}
+
         <td>{{d.mobile}}</td>
         <td>{{d.address}}</td>
         <td>{{d.department}}</td>

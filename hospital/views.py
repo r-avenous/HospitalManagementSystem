@@ -164,7 +164,7 @@ def admin_dashboard_view(request):
     #pendingdoctorcount=models.Doctor.objects.all().filter(status=False).count()
 
     patientcount=models.Patient.objects.all().count()
-    admitted_patientcount= models.Patient.objects.all().filter(status=True).count
+    admitted_patientcount= models.Patient.objects.all().filter(status=1).count
     #pendingpatientcount=models.Patient.objects.all().filter(status=False).count()
 
     frontdeskcount=models.FrontDeskOperator.objects.all().count()
@@ -384,7 +384,7 @@ def admin_patient_view(request):
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def admin_view_patient_view(request):
-    patients=models.Patient.objects.all().filter(status=True)
+    patients=models.Patient.objects.all()
     return render(request,'hospital/admin_view_patient.html',{'patients':patients})
 
 
@@ -513,6 +513,11 @@ def discharge_patient_view(request,pk):
         'assignedDoctorName':assignedDoctor[0].first_name,
     }
     if request.method == 'POST':
+
+        # set patient status to 2 (discharged)
+        patient.status = 2
+        patient.save()
+
         feeDict ={
             'roomCharge':int(request.POST['roomCharge'])*int(d),
             'doctorFee':request.POST['doctorFee'],
@@ -819,6 +824,15 @@ def frontdesk_dashboard_view(request):
     return render(request,'hospital/frontdesk_dashboard.html', mydict)
 
 
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
+def frontdesk_patient_view(request):
+    patients=models.Patient.objects.all()
+    return render(request,'hospital/frontdesk_view_patient.html',{'patients':patients})
+
+
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
 def frontdesk_register_patient_view(request):
     userForm = forms.PatientUserForm()
     patientForm = forms.PatientForm()
@@ -851,16 +865,22 @@ def frontdesk_register_patient_view(request):
         return HttpResponseRedirect('frontdesk-dashboard')
     return render(request,'hospital/frontdesk_view_register_patient.html',context=mydict)
 
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
 def frontdesk_admit_patient_view(request):
     patients=models.Patient.objects.all().filter(status = 0)
     return render(request,'hospital/frontdesk_view_admit_patient.html',{'patients':patients})
 
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
 def admit_patient_view(request, pk):
     patient = models.Patient.objects.get(id = pk)
     patient.status = 1
     patient.save()
     return redirect(reverse('frontdesk-admit-patient'))
 
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
 def frontdesk_discharge_patient_view(request):
     patients = models.Patient.objects.all().filter(status = 1)
     return render(request,'hospital/frontdesk_view_discharge_patient.html',{'patients':patients})
