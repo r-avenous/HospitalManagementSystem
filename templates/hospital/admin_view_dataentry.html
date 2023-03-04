@@ -28,7 +28,7 @@ facebook : fb.com/sumit.luv
 <div class="container">
   <div class="panel panel-primary">
     <div class="panel-heading">
-      <h6 class="panel-title">Doctors</h6>
+      <h6 class="panel-title">Data Entry Operators</h6>
     </div>
     <table class="table table-hover" id="dev-table">
       <thead>
@@ -38,7 +38,6 @@ facebook : fb.com/sumit.luv
           <th>Profile Picture</th>
           <th>Mobile</th>
           <th>Address</th>
-          <th>Department</th>
           <th>Update</th>
           <th>Delete</th>
         </tr>
@@ -50,7 +49,6 @@ facebook : fb.com/sumit.luv
         <td> <img src="{% static d.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
         <td>{{d.mobile}}</td>
         <td>{{d.address}}</td>
-        <td>{{d.department}}</td>
         <td><a class="btn btn-primary btn-xs" href="{% url 'update-frontdesk' d.id  %}"><span
               class="glyphicon glyphicon-edit"></span></a></td>
         <td><a class="btn btn-danger btn-xs" href="{% url 'delete-frontdesk-from-hospital' d.id  %}"><span
