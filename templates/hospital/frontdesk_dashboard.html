@@ -1,4 +1,4 @@
-{% extends 'hospital/doctor_base.html' %}
+{% extends 'hospital/frontdesk_base.html' %}
 {% load static %}
 {% block content %}
 <br><br>
@@ -82,7 +82,7 @@
     <div class="col-md-4 col-xl-6">
       <div class="card bg-c-blue order-card">
         <div class="card-block">
-          <a href="/frontdesk-view-register-patient">
+          <a href="/frontdesk-register-patient">
             <h6 class="m-b-20">Register Patient</h6>
           </a>
           <br>
@@ -95,7 +95,7 @@
     <div class="col-md-4 col-xl-6">
         <div class="card bg-c-pink order-card">
           <div class="card-block">
-            <a href="/frontdesk-view-admit-patient">
+            <a href="/frontdesk-admit-patient">
               <h6 class="m-b-20">Admit Patient</h6>
             </a>
             <br>
@@ -108,7 +108,7 @@
     <div class="col-md-4 col-xl-6">
       <div class="card bg-c-pink order-card">
         <div class="card-block">
-          <a href="/frontdesk-view-discharge-patient">
+          <a href="/frontdesk-discharge-patient">
             <h6 class="m-b-20">Discharge Patient</h6>
           </a>
           <br>
@@ -118,10 +118,6 @@
     </div>
   </div>
 </div>
-<!--
-  developed By : sumit kumar
-  facebook : fb.com/sumit.luv
-  youtube : youtube.com/lazycoders
-  -->
+
 <br><br><br><br><br><br><br>
 {% endblock content %}

@@ -821,36 +821,42 @@ def frontdesk_dashboard_view(request):
     return render(request,'hospital/frontdesk_dashboard.html', mydict)
 
 
-def frontdesk_view_register_patient_view(request):
-    userForm=forms.PatientUserForm()
-    patientForm=forms.PatientForm()
-    mydict={'userForm':userForm,'patientForm':patientForm}
-    if request.method=='POST':
-        userForm=forms.PatientUserForm(request.POST)
-        patientForm=forms.PatientForm(request.POST,request.FILES)
+def frontdesk_register_patient_view(request):
+    userForm = forms.PatientUserForm()
+    patientForm = forms.PatientForm()
+    mydict = {'userForm':userForm,'patientForm':patientForm}
+
+    if request.method == 'POST':
+        userForm = forms.PatientUserForm(request.POST)
+        patientForm = forms.PatientForm(request.POST, request.FILES)
+        
+        print(userForm.is_valid())
+        print(patientForm.is_valid())
+
         if userForm.is_valid() and patientForm.is_valid():
-            user=userForm.save()
+            print('\n\n\n\nHELLOOOOO\n\n\n\n')
+            user = userForm.save()
             user.set_password(user.password)
             user.save()
 
-            patient=patientForm.save(commit=False)
-            patient.user=user
-            patient.status=True
-            patient.assignedDoctorId=request.POST.get('assignedDoctorId')
+            patient = patientForm.save(commit=False)
+            patient.user = user
+            patient.status = 0
+            patient.assignedDoctorId = request.POST.get('assignedDoctorId')
             patient.save()
 
             my_patient_group = Group.objects.get_or_create(name='PATIENT')
             my_patient_group[0].user_set.add(user)
 
-        return HttpResponseRedirect('admin-view-patient')
-    return render(request,'hospital/admin_add_patient.html',context=mydict)
+        return HttpResponseRedirect('frontdesk-dashboard')
+    return render(request,'hospital/frontdesk_view_register_patient.html',context=mydict)
 
-def frontdesk_view_admit_patient_view(request):
-    patients=models.Patient.objects.all().filter(status=0)
+def frontdesk_admit_patient_view(request):
+    patients=models.Patient.objects.all().filter(status = 0)
     return render(request,'hospital/frontdesk_view_admit_patient.html',{'patients':patients})
 
-def frontdesk_view_discharge_patient_view(request):
-    patients=models.Patient.objects.all().filter(status=1)
+def frontdesk_discharge_patient_view(request):
+    patients=models.Patient.objects.all().filter(status = 1)
     return render(request,'hospital/frontdesk_view_discharge_patient.html',{'patients':patients})
 
 #---------------------------------------------------------------------------------

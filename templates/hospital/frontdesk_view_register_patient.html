@@ -1,4 +1,4 @@
-{% extends 'hospital/admin_base.html' %}
+{% extends 'hospital/frontdesk_base.html' %}
 {% load widget_tweaks %}
 {% block content %}
 
@@ -48,7 +48,7 @@
 
 </head>
 <br><br><br>
-<!------ signup page for doctor by admin(sumit)  ---------->
+
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <div class="container register-form">
@@ -72,8 +72,7 @@
               {% render_field patientForm.symptoms class="form-control" placeholder="Symptoms" %}
             </div>
             <div class="form-group">
-                {% render_field doctorForm.profile_pic required="required" class="form-control" placeholder="Profile
-                Picture" %}
+                {% render_field patientForm.profile_pic required="required" class="form-control" placeholder="Profile Picture" %}
             </div>
           </div>
           <div class="col-md-6">
@@ -91,7 +90,7 @@
             </div>
           </div>
         </div>
-        <button type="submit" class="btnSubmit">Admit</button>
+        <button type="submit" class="btnSubmit">Register</button>
       </div>
     </div>
   </div>

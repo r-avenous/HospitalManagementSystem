@@ -35,7 +35,7 @@ class PatientUserForm(forms.ModelForm):
         widgets = {
         'password': forms.PasswordInput()
         }
-
+        
 class PatientForm(forms.ModelForm):
     #this is the extrafield for linking patient and their assigned doctor
     #this will show dropdown __str__ method doctor model is shown on html so override it

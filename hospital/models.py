@@ -82,7 +82,7 @@ class Patient(models.Model):
     symptoms = models.CharField(max_length=100,null=False)
     assignedDoctorId = models.PositiveIntegerField(null=True)
     admitDate=models.DateField(auto_now=True)
-    status=models.PositiveIntegerField(default=0)
+    status=models.PositiveIntegerField(default = 0)
     @property
     def get_name(self):
         return self.user.first_name+" "+self.user.last_name
