@@ -48,6 +48,14 @@ urlpatterns = [
     path('delete-frontdesk-from-hospital/<int:pk>', views.delete_frontdesk_from_hospital_view,name='delete-frontdesk-from-hospital'),
     path('update-frontdesk/<int:pk>', views.update_frontdesk_view,name='update-frontdesk'),
     path('admin-add-frontdesk', views.admin_add_frontdesk_view,name='admin-add-frontdesk'),
+    
+    #urls for admin related to dataentry
+
+    path('admin-dataentry', views.admin_dataentry_view,name='admin-dataentry'),
+    path('admin-view-dataentry', views.admin_view_dataentry_view, name='admin-view-dataentry'),
+    path('delete-dataentry-from-hospital/<int:pk>', views.delete_dataentry_from_hospital_view,name='delete-dataentry-from-hospital'),
+    path('update-dataentry/<int:pk>', views.update_dataentry_view,name='update-dataentry'),
+    path('admin-add-dataentry', views.admin_add_dataentry_view,name='admin-add-dataentry'),
 
     path('admin-patient', views.admin_patient_view,name='admin-patient'),
     path('admin-view-patient', views.admin_view_patient_view,name='admin-view-patient'),
