@@ -468,8 +468,9 @@ def delete_patient_from_hospital_view(request,pk):
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
-def update_patient_view(request,pk):
+def admin_update_patient_view(request,pk):
     patient=models.Patient.objects.get(id=pk)
+    patient_status=patient.status
     user=models.User.objects.get(id=patient.user_id)
 
     userForm=forms.PatientUserForm(instance=user)
@@ -483,13 +484,11 @@ def update_patient_view(request,pk):
             user.set_password(user.password)
             user.save()
             patient=patientForm.save(commit=False)
-            patient.status=True
+            patient.status=patient_status
             patient.assignedDoctorId=request.POST.get('assignedDoctorId')
             patient.save()
             return redirect('admin-view-patient')
     return render(request,'hospital/admin_update_patient.html',context=mydict)
-
-
 
 
 
@@ -897,6 +896,32 @@ def frontdesk_patient_view(request):
     return render(request,'hospital/frontdesk_view_patient.html',{'patients':patients})
 
 
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
+def frontdesk_update_patient_view(request,pk):
+    patient=models.Patient.objects.get(id=pk)
+    patient_status=patient.status
+    user=models.User.objects.get(id=patient.user_id)
+
+    userForm=forms.PatientUserForm(instance=user)
+    patientForm=forms.PatientForm(request.FILES,instance=patient)
+    mydict={'userForm':userForm,'patientForm':patientForm}
+    if request.method=='POST':
+        userForm=forms.PatientUserForm(request.POST,instance=user)
+        patientForm=forms.PatientForm(request.POST,request.FILES,instance=patient)
+        if userForm.is_valid() and patientForm.is_valid():
+            user=userForm.save()
+            user.set_password(user.password)
+            user.save()
+            patient=patientForm.save(commit=False)
+            patient.status=patient_status
+            patient.assignedDoctorId=request.POST.get('assignedDoctorId')
+            patient.save()
+            return redirect('frontdesk-view-patient')
+    return render(request,'hospital/frontdesk_update_patient.html',context=mydict)
+
+
+    
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_register_patient_view(request):

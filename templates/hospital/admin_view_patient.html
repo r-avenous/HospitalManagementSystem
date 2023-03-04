@@ -54,7 +54,7 @@
           {%elif p.status == 2%}
           <td> <span class="label label-success">Discharged</span></td>
         {% endif %}
-        <td><a class="btn btn-primary btn-xs" href="{% url 'update-patient' p.id  %}"><span
+        <td><a class="btn btn-primary btn-xs" href="{% url 'admin-update-patient' p.id  %}"><span
               class="glyphicon glyphicon-edit"></span></a></td>
         <td><a class="btn btn-danger btn-xs" href="{% url 'delete-patient-from-hospital' p.id  %}"><span
               class="glyphicon glyphicon-trash"></span></a></td>

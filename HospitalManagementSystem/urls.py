@@ -60,7 +60,7 @@ urlpatterns = [
     path('admin-patient', views.admin_patient_view,name='admin-patient'),
     path('admin-view-patient', views.admin_view_patient_view,name='admin-view-patient'),
     path('delete-patient-from-hospital/<int:pk>', views.delete_patient_from_hospital_view,name='delete-patient-from-hospital'),
-    path('update-patient/<int:pk>', views.update_patient_view,name='update-patient'),
+    path('admin-update-patient/<int:pk>', views.admin_update_patient_view,name='admin-update-patient'),
     path('admin-add-patient', views.admin_add_patient_view,name='admin-add-patient'),
     path('admin-approve-patient', views.admin_approve_patient_view,name='admin-approve-patient'),
     path('approve-patient/<int:pk>', views.approve_patient_view,name='approve-patient'),
@@ -102,6 +102,7 @@ urlpatterns +=[
 
     path('frontdesk-dashboard', views.frontdesk_dashboard_view,name='frontdesk-dashboard'),
     path('frontdesk-view-patient', views.frontdesk_patient_view,name='frontdesk-view-patient'),
+    path('frontdesk-update-patient/<int:pk>', views.frontdesk_update_patient_view,name='frontdesk-update-patient'),
     path('frontdesk-register-patient', views.frontdesk_register_patient_view,name='frontdesk-register-patient'),
     path('frontdesk-admit-patient',views.frontdesk_admit_patient_view,name='frontdesk-admit-patient'),
     path('admit-patient/<int:pk>', views.admit_patient_view,name='admit-patient'),
@@ -109,6 +110,8 @@ urlpatterns +=[
     path('discharge-patient/<int:pk>', views.discharge_patient_view,name='discharge-patient'),
 ]
 
+# ****************** ADD FIELD IN frontdesk-view-update-form for FDO to change status of patient
+# ****************** ALLOWS PREVIOUS USERS (DISCHARGED) TO CHANGE TO VISITING WHEN THEY VISIT HOSPITAL AGAIN
 
 #---------FOR PATIENT RELATED URLS-------------------------------------
 urlpatterns +=[
