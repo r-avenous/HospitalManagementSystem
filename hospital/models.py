@@ -28,7 +28,7 @@ class Admin(models.Model):
     
 class FrontDeskOperator(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    profile_pic = models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
+    profile_pic = models.ImageField(upload_to='profile_pic/FrontDeskOperatorProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20,null=True)
 
@@ -43,7 +43,7 @@ class FrontDeskOperator(models.Model):
 
 class DataEntryOperator(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    profile_pic = models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
+    profile_pic = models.ImageField(upload_to='profile_pic/DataEntryOperatorProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20,null=True)
 

@@ -95,7 +95,9 @@ urlpatterns +=[
     path('frontdesk-dashboard', views.frontdesk_dashboard_view,name='frontdesk-dashboard'),
     path('frontdesk-register-patient', views.frontdesk_register_patient_view,name='frontdesk-register-patient'),
     path('frontdesk-admit-patient',views.frontdesk_admit_patient_view,name='frontdesk-admit-patient'),
+    path('admit-patient/<int:pk>', views.admit_patient_view,name='admit-patient'),
     path('frontdesk-discharge-patient',views.frontdesk_discharge_patient_view,name='frontdesk-discharge-patient'),
+    path('discharge-patient/<int:pk>', views.discharge_patient_view,name='discharge-patient'),
 ]
 
 

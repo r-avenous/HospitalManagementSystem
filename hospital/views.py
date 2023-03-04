@@ -443,7 +443,7 @@ def admin_add_patient_view(request):
 
             patient=patientForm.save(commit=False)
             patient.user=user
-            patient.status=True
+            patient.status = 0
             patient.assignedDoctorId=request.POST.get('assignedDoctorId')
             patient.save()
 
@@ -460,9 +460,8 @@ def admin_add_patient_view(request):
 @user_passes_test(is_admin)
 def admin_approve_patient_view(request):
     #those whose approval are needed
-    patients=models.Patient.objects.all().filter(status=False)
+    patients=models.Patient.objects.all().filter(status = 0)
     return render(request,'hospital/admin_approve_patient.html',{'patients':patients})
-
 
 
 @login_required(login_url='adminlogin')
@@ -495,8 +494,8 @@ def admin_discharge_patient_view(request):
 
 
 
-@login_required(login_url='adminlogin')
-@user_passes_test(is_admin)
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
 def discharge_patient_view(request,pk):
     patient=models.Patient.objects.get(id=pk)
     days=(date.today()-patient.admitDate) #2 days, 0:00:00
@@ -541,7 +540,6 @@ def discharge_patient_view(request,pk):
         pDD.save()
         return render(request,'hospital/patient_final_bill.html',context=patientDict)
     return render(request,'hospital/patient_generate_bill.html',context=patientDict)
-
 
 
 #--------------for discharge patient bill (pdf) download and printing
@@ -832,7 +830,7 @@ def frontdesk_register_patient_view(request):
         
         print(userForm.is_valid())
         print(patientForm.is_valid())
-        # print(patientForm.errors)
+        print(patientForm.errors.as_data())
 
         if userForm.is_valid() and patientForm.is_valid():
             print('\n\n\n\nHELLOOOOO\n\n\n\n')
@@ -843,7 +841,7 @@ def frontdesk_register_patient_view(request):
             patient = patientForm.save(commit=False)
             patient.user = user
             patient.status = 0
-            patient.profile_pic = patientForm.profile_pic
+            # patient.profile_pic = patientForm.profile_pic
             patient.assignedDoctorId = request.POST.get('assignedDoctorId')
             patient.save()
 
@@ -857,8 +855,14 @@ def frontdesk_admit_patient_view(request):
     patients=models.Patient.objects.all().filter(status = 0)
     return render(request,'hospital/frontdesk_view_admit_patient.html',{'patients':patients})
 
+def admit_patient_view(request, pk):
+    patient = models.Patient.objects.get(id = pk)
+    patient.status = 1
+    patient.save()
+    return redirect(reverse('frontdesk-admit-patient'))
+
 def frontdesk_discharge_patient_view(request):
-    patients=models.Patient.objects.all().filter(status = 1)
+    patients = models.Patient.objects.all().filter(status = 1)
     return render(request,'hospital/frontdesk_view_discharge_patient.html',{'patients':patients})
 
 #---------------------------------------------------------------------------------
