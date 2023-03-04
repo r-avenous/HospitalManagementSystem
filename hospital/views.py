@@ -370,7 +370,73 @@ def admin_add_frontdesk_view(request):
         return HttpResponseRedirect('admin-view-frontdesk')
     return render(request,'hospital/admin_add_frontdesk.html',context=mydict)
 
+#-----Admin user related to Data Entry Operator
 
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_dataentry_view(request):
+    return render(request,'hospital/admin_dataentry.html')
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_view_dataentry_view(request):
+    dataentry=models.DataEntryOperator.objects.all()
+    return render(request,'hospital/admin_view_dataentry.html',{'dataentry':dataentry})
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def delete_dataentry_from_hospital_view(request,pk):
+    dataentry=models.DataEntryOperator.objects.get(id=pk)
+    user=models.User.objects.get(id=dataentry.user_id)
+    user.delete()
+    dataentry.delete()
+    return redirect('admin-view-dataentry')
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def update_dataentry_view(request,pk):
+    dataentry=models.DataEntryOperator.objects.get(id=pk)
+    user=models.User.objects.get(id=dataentry.user_id)
+
+    userForm=forms.DataEntryUserForm(instance=user)
+    dataentryForm=forms.DataEntryForm(request.FILES,instance=dataentry)
+    mydict={'userForm':userForm,'dataentryForm':dataentryForm}
+    if request.method=='POST':
+        userForm=forms.DataEntryUserForm(request.POST,instance=user)
+        dataentryForm=forms.DataEntryForm(request.POST,request.FILES,instance=dataentry)
+        if userForm.is_valid() and dataentryForm.is_valid():
+            user=userForm.save()
+            user.set_password(user.password)
+            user.save()
+            dataentry=dataentryForm.save(commit=False)
+            dataentry.save()
+            return redirect('admin-view-dataentry')
+    return render(request,'hospital/admin_update_dataentry.html',context=mydict)
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_add_dataentry_view(request):
+    userForm=forms.DataEntryUserForm()
+    dataentryForm=forms.DataEntryForm()
+    mydict={'userForm':userForm,'dataentryForm':dataentryForm}
+    if request.method=='POST':
+        userForm=forms.DataEntryUserForm(request.POST)
+        dataentryForm=forms.DataEntryForm(request.POST, request.FILES)
+        print(userForm.is_valid())
+        print(dataentryForm.is_valid())
+        print(dataentryForm.errors.as_data())
+        if userForm.is_valid() and dataentryForm.is_valid():
+            user=userForm.save()
+            user.set_password(user.password)
+            user.save()
+            dataentry=dataentryForm.save(commit=False)
+            dataentry.user=user
+            dataentry.save()
+            my_dataentry_group = Group.objects.get_or_create(name='DATAENTRY')
+            my_dataentry_group[0].user_set.add(user)
+
+        return HttpResponseRedirect('admin-view-dataentry')
+    return render(request,'hospital/admin_add_dataentry.html',context=mydict)
 
 # --- Admin user related to patient below
 

@@ -48,7 +48,7 @@
 
 </head>
 <br><br><br>
-<!------ signup page for frontdesk by admin(sumit)  ---------->
+<!------ signup page for dataentry by admin(sumit)  ---------->
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <div class="container register-form">
@@ -66,7 +66,7 @@
               {% render_field userForm.username class="form-control" placeholder="Username" %}
             </div>
             <div class="form-group">
-              {% render_field frontdeskForm.address class="form-control" placeholder="Address" %}
+              {% render_field dataentryForm.address class="form-control" placeholder="Address" %}
             </div>
 
           </div>
@@ -78,10 +78,10 @@
               {% render_field userForm.password class="form-control" placeholder="Password" %}
             </div>
             <div class="form-group">
-              {% render_field frontdeskForm.mobile class="form-control" placeholder="Mobile" %}
+              {% render_field dataentryForm.mobile class="form-control" placeholder="Mobile" %}
             </div>
             <div class="form-group">
-              {% render_field frontdeskForm.profile_pic required="required" class="form-control" placeholder="Profile Picture" %}
+              {% render_field dataentryForm.profile_pic required="required" class="form-control" placeholder="Profile Picture" %}
             </div>
           </div>
         </div>
