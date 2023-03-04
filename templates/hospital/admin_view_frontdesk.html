@@ -46,7 +46,7 @@ facebook : fb.com/sumit.luv
       <tr>
 
         <td> {{f.get_name}}</td>
-        <td> <img src="{% static d.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
+        <td> <img src="{% static f.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
         <td>{{f.mobile}}</td>
         <td>{{f.address}}</td>
         <td><a class="btn btn-primary btn-xs" href="{% url 'update-frontdesk' f.id  %}"><span
