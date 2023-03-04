@@ -832,6 +832,7 @@ def frontdesk_register_patient_view(request):
         
         print(userForm.is_valid())
         print(patientForm.is_valid())
+        # print(patientForm.errors)
 
         if userForm.is_valid() and patientForm.is_valid():
             print('\n\n\n\nHELLOOOOO\n\n\n\n')
@@ -842,6 +843,7 @@ def frontdesk_register_patient_view(request):
             patient = patientForm.save(commit=False)
             patient.user = user
             patient.status = 0
+            patient.profile_pic = patientForm.profile_pic
             patient.assignedDoctorId = request.POST.get('assignedDoctorId')
             patient.save()
 
