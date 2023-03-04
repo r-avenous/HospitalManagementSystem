@@ -1,9 +1,19 @@
+from django.forms import ModelChoiceField
+from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
+from datetime import datetime, timedelta
+from .models import Appointment, Doctor, Patient
 from django import forms
 from django.contrib.auth.models import User
 from . import models
-
-
-
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate
+import datetime
+from django.db.models import Q
+from django.forms import ModelChoiceField
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+import datetime
 #for admin signup
 class AdminSigupForm(forms.ModelForm):
     class Meta:
@@ -72,12 +82,22 @@ class DataEntryForm(forms.ModelForm):
 
 # ending adding shashwat
 
+
 class AppointmentForm(forms.ModelForm):
-    doctorId=forms.ModelChoiceField(queryset=models.Doctor.objects.all().filter(status=True),empty_label="Doctor Name and Department", to_field_name="user_id")
-    patientId=forms.ModelChoiceField(queryset=models.Patient.objects.all().filter(status=True),empty_label="Patient Name and Symptoms", to_field_name="user_id")
+    patientId = forms.ModelChoiceField(queryset=Patient.objects.filter(
+        status=True), empty_label="Patient Name and Symptoms", to_field_name="id", required=False)
+    appointmentTime = forms.DateTimeField(input_formats=[
+                                          '%Y-%m-%dT%H:%M'], widget=forms.DateTimeInput(format='%Y-%m-%dT%H:%M', attrs={'type': 'datetime-local'}))
+    priority = forms.ChoiceField(choices=Appointment.PRIORITY_CHOICES)
+
     class Meta:
-        model=models.Appointment
-        fields=['description','status']
+        model = Appointment
+        fields = ['description', 'status', 'priority', 'appointmentTime']
+
+
+class AdminAppointmentForm(AppointmentForm):
+    doctorId = forms.ModelChoiceField(queryset=Doctor.objects.filter(
+        status=True), empty_label="Doctor Name and Department", to_field_name="id", required=False)
 
 
 class PatientAppointmentForm(forms.ModelForm):

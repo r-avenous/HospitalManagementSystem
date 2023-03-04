@@ -1,14 +1,22 @@
-from django.shortcuts import render,redirect,reverse
-from . import forms,models
+from django.utils import timezone
+from django.http import HttpResponse
+from django.template import Context
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+import io
+from django.shortcuts import render, redirect, reverse
+from . import forms, models
 from django.db.models import Sum
 from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
-from django.contrib.auth.decorators import login_required,user_passes_test
-from datetime import datetime,timedelta,date
+from django.contrib.auth.decorators import login_required, user_passes_test
+from datetime import datetime, timedelta, date
 from django.conf import settings
 from django.db.models import Q
-
+from django.contrib import messages
+# timezone import
+from django.utils import timezone
 # Create your views here.
 def home_view(request):
     if request.user.is_authenticated:
@@ -687,6 +695,71 @@ def admin_add_appointment_view(request):
     return render(request,'hospital/admin_add_appointment.html',context=mydict)
 
 
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_add_appointment_view(request):
+    appointmentForm = forms.AdminAppointmentForm()
+    mydict = {'appointmentForm': appointmentForm, }
+
+    if request.method == 'POST':
+        if 'action' in request.POST and request.POST['action'] == 'check':
+            appointment_time_str = request.POST.get('appointmentTime')
+            appointment_time = timezone.make_aware(
+                datetime.strptime(appointment_time_str, '%Y-%m-%dT%H:%M'))
+
+            # Check which doctors are busy at the given appointmentTime
+            busy_doctors = models.Appointment.objects.filter(
+                appointmentTime=appointment_time).values_list('doctorId', flat=True).distinct()
+
+            # Get a list of free doctors
+            free_doctors = models.Doctor.objects.filter(
+                ~Q(id__in=busy_doctors))
+
+            print(
+                f"The following doctors are busy at {appointment_time}: {list(busy_doctors)}")
+            print(
+                f"The following doctors are free at {appointment_time}: {list(free_doctors.values_list('id', flat=True))}")
+
+            # Update the appointment form with free doctors queryset
+            appointmentForm.fields['doctorId'].queryset = free_doctors
+
+            context = {
+                'appointmentForm': appointmentForm,
+                'free_doctors': free_doctors,
+            }
+
+            return render(request, 'hospital/admin_add_appointment.html', context)
+
+        else:
+            appointmentForm = forms.AppointmentForm()
+            mydict = {'appointmentForm': appointmentForm, }
+            if request.method == 'POST':
+                appointmentForm = forms.AppointmentForm(request.POST)
+                if appointmentForm.is_valid():
+                    doctor_id = request.POST.get('doctorId')
+                    appointment_time = appointmentForm.cleaned_data.get(
+                        'appointmentTime')
+                    # Check if the selected doctor already has an appointment at the same time
+                    if models.Appointment.objects.filter(doctorId=doctor_id, appointmentTime=appointment_time).exists():
+                        messages.error(
+                            request, 'The selected doctor already has an appointment scheduled at the same time.')
+                        return redirect('admin-add-appointment')
+                    appointment = appointmentForm.save(commit=False)
+                    appointment.doctorId = doctor_id
+                    appointment.patientId = request.POST.get('patientId')
+                    appointment.doctorName = models.User.objects.get(
+                        id=doctor_id).first_name
+                    appointment.patientName = models.User.objects.get(
+                        id=request.POST.get('patientId')).first_name
+                    appointment.status = True
+                    appointment.save()
+                    messages.success(
+                        request, 'Appointment added successfully!')
+                    return redirect('admin-view-appointment')
+            else:
+                messages.error(
+                    request, 'Invalid form submission. Please correct the errors below.')
+    return render(request, 'hospital/admin_add_appointment.html', context=mydict)
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)

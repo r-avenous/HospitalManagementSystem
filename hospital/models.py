@@ -13,7 +13,7 @@ departments=[('Cardiologist','Cardiologist'),
 
 class Admin(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    #profile_pic = models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
+    # profile_pic = models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20,null=True)
 
@@ -96,15 +96,22 @@ class Patient(models.Model):
 
 
 class Appointment(models.Model):
-    patientId=models.PositiveIntegerField(null=True)
-    doctorId=models.PositiveIntegerField(null=True)
-    patientName=models.CharField(max_length=40,null=True)
-    doctorName=models.CharField(max_length=40,null=True)
-    appointmentDate=models.DateField(auto_now=True)
-    description=models.TextField(max_length=500)
-    status=models.BooleanField(default=False)
-    prescription = models.TextField(max_length=500)
+    Regular = 1
+    Emergency = 2
 
+    PRIORITY_CHOICES = [
+        (Regular, 'Regular'),
+        (Emergency, 'Emergency'),
+    ]
+    patientId = models.PositiveIntegerField(null=True)
+    doctorId = models.PositiveIntegerField(null=True, blank=True)
+    patientName = models.CharField(max_length=40, null=True)
+    doctorName = models.CharField(max_length=40, null=True, blank=True)
+    appointmentTime = models.DateTimeField(null=True)
+    description = models.TextField(max_length=500)
+    status = models.BooleanField(default=False)
+    prescription = models.TextField(max_length=500)
+    priority = models.IntegerField(choices=PRIORITY_CHOICES, null=True)
 
 
 
