@@ -80,9 +80,9 @@ WSGI_APPLICATION = 'HospitalManagementSystem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hospital',
-        'USER': 'divyansh',
-        'PASSWORD': 'divyansh@12',
+        'NAME': 'HospitalManagement',
+        'USER': 'root',
+        'PASSWORD': 'password123',
         'HOST': 'localhost',
         'PORT': '3306',
     }
