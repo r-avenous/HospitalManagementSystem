@@ -124,3 +124,41 @@ class PatientDischargeDetails(models.Model):
     OtherCharge=models.PositiveIntegerField(null=False)
     total=models.PositiveIntegerField(null=False)
     
+
+# Changes made by Divyansh
+class Procedure(models.Model):
+    name = models.CharField(max_length=40)
+    # id = models.PositiveIntegerField(null = False)
+    cost = models.PositiveIntegerField(null=True)
+    @property
+    def get_name(self):
+        return self.name
+    @property 
+    def get_id(self): 
+        return self.id 
+    def get_cost(self): 
+        return self.cost
+    
+
+class Room(models.Model): 
+    number = models.PositiveIntegerField(primary_key=True) 
+    room_type = models.CharField(max_length=40) 
+    available = models.BooleanField(default=True) 
+    @property 
+    def is_available(self): 
+        return self.available
+    
+
+class Undergoes(models.Model): 
+    #need help 
+    patientId=models.ForeignKey(Patient, null=False, default=0, verbose_name="id", on_delete=models.SET_DEFAULT)  
+    #need help 
+    doctorId=models.ForeignKey(Doctor, null=False, default=0, verbose_name="id", on_delete=models.SET_DEFAULT)    
+    procedureId= models.ForeignKey(Procedure, null=False, default=0, verbose_name="id", on_delete=models.SET_DEFAULT) 
+    start_time=models.DateTimeField(null=False) 
+    end_time=models.DateTimeField(null=False) 
+    @property 
+    def get_start_time(self): 
+        return self.start_time 
+    def get_end_time(self): 
+        return self.end_time   
