@@ -110,6 +110,20 @@ urlpatterns +=[
     path('discharge-patient/<int:pk>', views.discharge_patient_view,name='discharge-patient'),
 ]
 
+#---------FOR FRONT DESK OPERATOR RELATED URLS-------------------------
+
+urlpatterns +=[
+
+    path('dataentry-dashboard', views.dataentry_dashboard_view,name='dataentry-dashboard'),
+    path('dataentry-view-patient', views.dataentry_patient_view,name='dataentry-view-patient'),
+    # path('dataentry-update-patient/<int:pk>', views.dataentry_update_patient_view,name='dataentry-update-patient'),
+    # path('dataentry-register-patient', views.dataentry_register_patient_view,name='dataentry-register-patient'),
+    # path('dataentry-admit-patient',views.dataentry_admit_patient_view,name='dataentry-admit-patient'),
+    # path('admit-patient/<int:pk>', views.admit_patient_view,name='admit-patient'),
+    # path('dataentry-discharge-patient',views.dataentry_discharge_patient_view,name='dataentry-discharge-patient'),
+    # path('discharge-patient/<int:pk>', views.discharge_patient_view,name='discharge-patient'),
+]
+
 # ****************** ADD FIELD IN frontdesk-view-update-form for FDO to change status of patient
 # ****************** ALLOWS PREVIOUS USERS (DISCHARGED) TO CHANGE TO VISITING WHEN THEY VISIT HOSPITAL AGAIN
 
@@ -125,7 +139,3 @@ urlpatterns +=[
     path('patient-discharge', views.patient_discharge_view,name='patient-discharge'),
 
 ]
-
-#Developed By : sumit kumar
-#facebook : fb.com/sumit.luv
-#Youtube :youtube.com/lazycoders

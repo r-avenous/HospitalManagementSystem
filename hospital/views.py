@@ -1049,6 +1049,28 @@ def frontdesk_discharge_patient_view(request):
     patients = models.Patient.objects.all().filter(status = 1)
     return render(request,'hospital/frontdesk_view_discharge_patient.html',{'patients':patients})
 
+
+#---------------------------------------------------------------------------------
+#------------------------ DATA ENTRY OPERATOR RELATED VIEWS START ------------------------------
+#---------------------------------------------------------------------------------
+
+@login_required(login_url='dataentrylogin')
+@user_passes_test(is_dataentryoperator)
+def dataentry_dashboard_view(request):
+    mydict={
+    'patient':models.Patient.objects.all(), 
+    }
+    return render(request,'hospital/dataentry_dashboard.html', mydict)
+
+
+@login_required(login_url='dataentrylogin')
+@user_passes_test(is_dataentryoperator)
+def dataentry_patient_view(request):
+    patients=models.Patient.objects.all()
+    return render(request,'hospital/dataentry_view_patient.html',{'patients':patients})
+
+
+
 #---------------------------------------------------------------------------------
 #------------------------ PATIENT RELATED VIEWS START ------------------------------
 #---------------------------------------------------------------------------------
