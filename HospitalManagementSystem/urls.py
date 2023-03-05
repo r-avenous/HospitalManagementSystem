@@ -17,7 +17,7 @@ urlpatterns = [
     path('patientclick', views.patientclick_view),
     path('dataentryclick', views.dataentryclick_view),
 
-    # path('adminsignup', views.admin_signup_view),
+    path('adminsignup', views.admin_signup_view),
     # path('doctorsignup', views.doctor_signup_view,name='doctorsignup'),
     # path('patientsignup', views.patient_signup_view),
     
