@@ -7,6 +7,7 @@ from django import forms
 from django.contrib.auth.models import User
 from . import models
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 import datetime
 from django.db.models import Q
@@ -74,7 +75,6 @@ class DataEntryForm(forms.ModelForm):
 # ending adding shashwat
 
 
-
 class AppointmentForm(forms.ModelForm):
     patientId = forms.ModelChoiceField(queryset=Patient.objects.filter(Q(status=0) | Q(status=1)),
                                       empty_label="Patient Name and Symptoms",
@@ -124,12 +124,20 @@ class TestForm1(forms.ModelForm):
 
 class TestForm2(forms.ModelForm):
     patientId = forms.ModelChoiceField(queryset=(models.Patient.objects.all().filter(status=0)|models.Patient.objects.all().filter(status=1)),empty_label="Patient Name", to_field_name="id",required=True)
-    docterId = forms.ModelChoiceField(queryset=models.Doctor.objects.all(),empty_label="Docter Name", to_field_name="id",required=True)
-    ProcedureId = forms.ModelChoiceField(queryset=models.Procedure.objects.all(), empty_label="Procedure Name", to_field_name="id",required=True)
+    # docId_list = models.Doctor.objects.values_list('user_id', flat=True)
+    # doctername = forms.ModelChoiceField(queryset= User.objects.all().filter(id__in = docId_list),empty_label="Docter Name", to_field_name="id",required=True)
+    doctername = forms.ModelChoiceField(queryset= models.Doctor.objects.all(),empty_label="Docter Name", to_field_name="id",required=True)
+    procedurename = forms.ModelChoiceField(queryset=models.Procedure.objects.all(), empty_label="Procedure Name", to_field_name="name",required=True)
     class Meta:
         model=models.Test
-        fields = ['patientId', 'docterId', 'ProcedureId', 'description', 'image']
+        fields = ['patientId', 'doctername', 'procedurename', 'description', 'image']
 #form end
+
+#for updating tests (only for admitted and visiting patients)
+class TestUpdateForm(forms.ModelForm):
+    class Meta:
+        model=models.Test
+        fields = ['doctername', 'procedurename', 'description', 'image']
 
 
 
