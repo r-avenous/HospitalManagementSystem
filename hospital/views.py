@@ -956,8 +956,10 @@ def doctor_write_prescription_view(request, pk):
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_dashboard_view(request):
+    frontdeskoperator=models.FrontDeskOperator.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
     mydict={
-    'patient':models.Patient.objects.all(), #for profile picture of doctor in sidebar
+        # for profile picture of doctor in sidebar
+        'frontdesk':frontdeskoperator,
     }
     return render(request,'hospital/frontdesk_dashboard.html', mydict)
 
@@ -965,8 +967,15 @@ def frontdesk_dashboard_view(request):
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_patient_view(request):
-    patients=models.Patient.objects.all()
-    return render(request,'hospital/frontdesk_view_patient.html',{'patients':patients})
+    frontdeskoperator=models.FrontDeskOperator.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
+    patients = models.Patient.objects.all()
+    mydict={
+        # for profile picture of doctor in sidebar
+        'frontdesk':frontdeskoperator,
+        'patients': patients,
+    }
+    
+    return render(request,'hospital/frontdesk_view_patient.html',mydict)
 
 
 @login_required(login_url='frontdesklogin')
@@ -998,9 +1007,12 @@ def frontdesk_update_patient_view(request,pk):
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_register_patient_view(request):
+    frontdeskoperator=models.FrontDeskOperator.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
+
+
     userForm = forms.PatientUserForm()
     patientForm = forms.PatientForm()
-    mydict = {'userForm':userForm,'patientForm':patientForm}
+    mydict = {'userForm':userForm,'patientForm':patientForm,'frontdesk':frontdeskoperator}
 
     if request.method == 'POST':
         userForm = forms.PatientUserForm(request.POST)
@@ -1032,22 +1044,29 @@ def frontdesk_register_patient_view(request):
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_admit_patient_view(request):
+    # for profile picture of doctor in sidebar
+    frontdeskoperator = models.FrontDeskOperator.objects.get(user_id=request.user.id)
+
     patients=models.Patient.objects.all().filter(status = 0)
-    return render(request,'hospital/frontdesk_view_admit_patient.html',{'patients':patients})
+    return render(request,'hospital/frontdesk_view_admit_patient.html',{'patients':patients,'frontdesk':frontdeskoperator})
 
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def admit_patient_view(request, pk):
+    frontdeskoperator=models.FrontDeskOperator.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
     patient = models.Patient.objects.get(id = pk)
     patient.status = 1
     patient.save()
-    return redirect(reverse('frontdesk-admit-patient'))
+    return redirect(reverse('frontdesk-admit-patient',{'frontdesk':frontdeskoperator,}))
 
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_discharge_patient_view(request):
+    frontdeskoperator = models.FrontDeskOperator.objects.get(
+        user_id=request.user.id)  # for profile picture of doctor in sidebar
+
     patients = models.Patient.objects.all().filter(status = 1)
-    return render(request,'hospital/frontdesk_view_discharge_patient.html',{'patients':patients})
+    return render(request,'hospital/frontdesk_view_discharge_patient.html',{'patients':patients,'frontdesk':frontdeskoperator})
 
 
 #---------------------------------------------------------------------------------
@@ -1223,7 +1242,3 @@ def contactus_view(request):
 #---------------------------------------------------------------------------------
 
 
-
-#Developed By : sumit kumar
-#facebook : fb.com/sumit.luv
-#Youtube :youtube.com/lazycoders
