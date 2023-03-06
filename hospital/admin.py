@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Admin, FrontDeskOperator, DataEntryOperator, Doctor, Patient, Appointment, PatientDischargeDetails, Procedure, Room, Undergoes 
+from .models import Admin, FrontDeskOperator, DataEntryOperator, Doctor, Patient, Appointment, PatientDischargeDetails, Procedure, Room, Undergoes, Test
 # Register your models here.
 
 class FrontDeskOperatorAdmin(admin.ModelAdmin):
@@ -41,3 +41,7 @@ admin.site.register(Room,RoomAdmin)
 class UndergoesAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Undergoes,UndergoesAdmin)
+
+class TestAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(Test,TestAdmin)
