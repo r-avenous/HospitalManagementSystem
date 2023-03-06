@@ -118,6 +118,23 @@ class ContactusForm(forms.Form):
     Name = forms.CharField(max_length=30)
     Email = forms.EmailField()
     Message = forms.CharField(max_length=500,widget=forms.Textarea(attrs={'rows': 3, 'cols': 30}))
+    
+    
+#for adding tests (only for admitted and visiting patients)
+class TestForm1(forms.ModelForm):
+    patientId = forms.ModelChoiceField(queryset=(models.Patient.objects.all().filter(status=0)|models.Patient.objects.all().filter(status=1)),empty_label="Patient Name", to_field_name="id",required=True)
+    class Meta:
+        model=models.Test
+        fields = ['patientId', 'doctername', 'procedurename', 'description', 'image']
+
+class TestForm2(forms.ModelForm):
+    patientId = forms.ModelChoiceField(queryset=(models.Patient.objects.all().filter(status=0)|models.Patient.objects.all().filter(status=1)),empty_label="Patient Name", to_field_name="id",required=True)
+    docterId = forms.ModelChoiceField(queryset=models.Doctor.objects.all(),empty_label="Docter Name", to_field_name="id",required=True)
+    ProcedureId = forms.ModelChoiceField(queryset=models.Procedure.objects.all(), empty_label="Procedure Name", to_field_name="id",required=True)
+    class Meta:
+        model=models.Test
+        fields = ['patientId', 'docterId', 'ProcedureId', 'description', 'image']
+#form end
 
 
 
