@@ -1213,7 +1213,128 @@ def patient_discharge_view(request):
 
 
 
+#---------------------- DATA ENTRY OPERATOR RELATED VIEWS START ------------------
+#---------------------------------------------------------------------------------
 
+
+@login_required(login_url='dataentrylogin')
+@user_passes_test(is_dataentryoperator)
+def dataentry_dashboard_view(request):
+    mydict={
+    'dataentry':models.DataEntryOperator.objects.get(user_id=request.user.id), #for profile picture of doctor in sidebar
+    }
+    return render(request,'hospital/dataentry_dashboard.html', mydict)
+
+# @login_required(login_url='dataentrylogin')
+# @user_passes_test(is_dataentryoperator)
+# def dataentry_patient_view(request):
+#     undergoes=models.Undergoes.objects.all()
+#     return render(request,'hospital/dataentry_view_undergoes.html',{'undergoes':undergoes})
+
+@login_required(login_url='dataentrylogin')
+@user_passes_test(is_dataentryoperator)
+def dataentry_test_view(request):
+    test=models.Test.objects.all()
+    for t in test:
+        patient = models.Patient.objects.get(id=t.patientId)
+        t.patientname = patient.get_name
+    return render(request,'hospital/dataentry_view_tests.html',{'tests':test})
+
+@login_required(login_url='dataentrylogin')
+@user_passes_test(is_dataentryoperator)
+def dataentry_add_test_view(request):
+    # Testform = forms.TestForm1()
+    # mydict = {'testform': Testform, }
+
+    # if request.method == 'POST':
+    #     if 'action' in request.POST and request.POST['action'] == 'check':
+    #         Testform = forms.TestForm2()
+    #         mydict = {'testform': Testform, }
+    #         return render(request,'hospital/dataentry_add_procedure.html',context=mydict)
+
+    #         # appointment_time_str = request.POST.get('appointmentTime')
+
+    #         # context = {
+    #         #     'appointmentForm': appointmentForm,
+    #         #     'free_doctors': free_doctors,
+    #         # }
+
+    #         # return render(request, 'hospital/admin_add_appointment.html', context)
+
+    #     else:
+    #         # appointmentForm = forms.AppointmentForm()
+    #         # mydict = {'appointmentForm': appointmentForm, }
+    #         if request.method == 'POST':
+    #             TestForm = forms.TestForm1(request.POST)
+    #             # if appointmentForm.is_valid():
+    #             #     doctor_id = request.POST.get('doctorId')
+    #             #     appointment_time = appointmentForm.cleaned_data.get(
+    #             #         'appointmentTime')
+    #             #     # Check if the selected doctor already has an appointment at the same time
+    #             #     if models.Appointment.objects.filter(doctorId=doctor_id, appointmentTime=appointment_time).exists():
+    #             #         messages.error(
+    #             #             request, 'The selected doctor already has an appointment scheduled at the same time.')
+    #             #         return redirect('admin-add-appointment')
+    #             TestForm.save()
+    #             # appointment.doctorId = doctor_id
+    #             # appointment.patientId = request.POST.get('patientId')
+    #             # appointment.doctorName = models.User.objects.get(
+    #             #     id=doctor_id).first_name
+    #             # appointment.patientName = models.User.objects.get(
+    #             #     id=request.POST.get('patientId')).first_name
+    #             # appointment.status = True
+    #             # appointment.save()
+    #         #     messages.success(
+    #         #         request, 'Appointment added successfully!')
+    #         #     return redirect('admin-view-appointment')
+    #         # else:
+    #         #     messages.error(
+    #         #         request, 'Invalid form submission. Please correct the errors below.')
+    return render(request,'hospital/dataentry_add_test.html')
+    # return render(request, 'hospital/admin_add_appointment.html', context=mydict)
+    
+    procedureForm=forms.ProcedureForm()
+    if request.method=='POST':
+        procedureForm=forms.ProcedureForm(request.POST)
+        if procedureForm.is_valid():
+            procedureForm.save()
+            return HttpResponseRedirect('dataentry-view-procedure')
+        
+@login_required(login_url='dataentrylogin')
+@user_passes_test(is_dataentryoperator)
+def dataentry_add_test_hospital_view(request):
+    Testform=forms.TestForm2()
+    # doctorForm=forms.DoctorForm()
+    mydict={'testform':Testform}
+    if request.method=='POST':
+        Testform=forms.TestForm2(request.POST)
+        # doctorForm=forms.DoctorForm(request.POST, request.FILES)
+        if Testform.is_valid():
+            Testform.save()
+            return HttpResponseRedirect('dataentry-dashboard')
+        return HttpResponseRedirect('dataentry-add-test-hospital')
+    return render(request,'hospital/dataentry_add_test_hospital.html',context=mydict)
+    
+
+@login_required(login_url='dataentrylogin')
+@user_passes_test(is_dataentryoperator)
+def dataentry_add_test_others_view(request):
+    Testform=forms.TestForm1()
+    # doctorForm=forms.DoctorForm()
+    mydict={'testform':Testform}
+    if request.method=='POST':
+        Testform=forms.TestForm1(request.POST)
+        # doctorForm=forms.DoctorForm(request.POST, request.FILES)
+        if Testform.is_valid():
+            Testform.save()
+            return HttpResponseRedirect('dataentry-dashboard')
+        return HttpResponseRedirect('dataentry-add-test-others')
+    return render(request,'hospital/dataentry_add_test_others.html',context=mydict)
+
+
+
+#---------------------- DATA ENTRY OPERATOR RELATED VIEWS START ------------------
+#---------------------------------------------------------------------------------
 
 
 
