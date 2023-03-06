@@ -52,6 +52,11 @@
     }
 
     .grid-container {
+      background-image: url("{% static 'images/bg.jpg' %}");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      opacity: 80%;
       display: grid;
       grid-template-columns: auto auto auto auto;
       padding: 10px;
@@ -70,9 +75,9 @@
 <body>
 
 
-
   <div class="grid-container">
     <div class="grid-item">
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       <div class="card">
         <img src="{% static "images/admin.png" %}" alt="John" style="width:100%">
         <p class="title">ADMIN</p>
@@ -80,8 +85,8 @@
       </div>
 
     </div>
-
     <div class="grid-item">
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       <div class="card">
         <img src="{% static "images/frontdeskoperator.png" %}" alt="John" style="width:100%">
         <p class="title">FRONT DESK OPERATOR</p>
@@ -89,8 +94,8 @@
       </div>
 
     </div>
-
     <div class="grid-item">
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       <div class="card">
         <img src="{% static "images/dataentryoperator.png" %}" alt="John" style="width:100%">
         <p class="title">DATA ENTRY OPERATOR</p>
@@ -98,15 +103,14 @@
       </div>
 
     </div>
-
     <div class="grid-item">
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       <div class="card">
         <img src="{% static "images/doctor.png" %}" alt="John" style="width:100%">
         <p class="title">DOCTOR</p>
         <p><button><a href="/doctorclick">Log In</a></button></p>
       </div>
     </div>
-
     <!-- <div class="grid-item">
       <div class="card">
         <img src="{% static "images/patient.jpg" %}" alt="John" style="width:100%">
