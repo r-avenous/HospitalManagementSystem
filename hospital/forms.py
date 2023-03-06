@@ -74,6 +74,7 @@ class DataEntryForm(forms.ModelForm):
 # ending adding shashwat
 
 
+
 class AppointmentForm(forms.ModelForm):
     patientId = forms.ModelChoiceField(queryset=Patient.objects.filter(Q(status=0) | Q(status=1)),
                                       empty_label="Patient Name and Symptoms",
