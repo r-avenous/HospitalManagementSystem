@@ -84,8 +84,11 @@ class DataEntryForm(forms.ModelForm):
 
 
 class AppointmentForm(forms.ModelForm):
-    patientId = forms.ModelChoiceField(queryset=Patient.objects.filter(
-        status=True), empty_label="Patient Name and Symptoms", to_field_name="id", required=False)
+    patientId = forms.ModelChoiceField(queryset=Patient.objects.filter(Q(status=0) | Q(status=1)),
+                                      empty_label="Patient Name and Symptoms",
+                                        to_field_name="user_id",
+                                      required=False)
+
     appointmentTime = forms.DateTimeField(input_formats=[
                                           '%Y-%m-%dT%H:%M'], widget=forms.DateTimeInput(format='%Y-%m-%dT%H:%M', attrs={'type': 'datetime-local'}))
     priority = forms.ChoiceField(choices=Appointment.PRIORITY_CHOICES)
@@ -97,7 +100,7 @@ class AppointmentForm(forms.ModelForm):
 
 class AdminAppointmentForm(AppointmentForm):
     doctorId = forms.ModelChoiceField(queryset=Doctor.objects.filter(
-        status=True), empty_label="Doctor Name and Department", to_field_name="id", required=False)
+        status=True), empty_label="Doctor Name and Department", to_field_name="user_id", required=False)
 
 
 class PatientAppointmentForm(forms.ModelForm):
