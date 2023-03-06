@@ -467,8 +467,6 @@ def admin_view_patient_view(request):
 @user_passes_test(is_admin)
 def delete_patient_from_hospital_view(request,pk):
     patient=models.Patient.objects.get(id=pk)
-    user=models.User.objects.get(id=patient.user_id)
-    user.delete()
     patient.delete()
     return redirect('admin-view-patient')
 
@@ -479,7 +477,7 @@ def delete_patient_from_hospital_view(request,pk):
 def admin_update_patient_view(request,pk):
     patient=models.Patient.objects.get(id=pk)
     patient_status=patient.status
-    user=models.User.objects.get(id=patient.user_id)
+    #user=models.User.objects.get(id=patient.user_id)
 
     #userForm=forms.PatientUserForm(instance=user)
     patientForm=forms.PatientForm(instance=patient)
@@ -542,8 +540,6 @@ def approve_patient_view(request,pk):
 @user_passes_test(is_admin)
 def reject_patient_view(request,pk):
     patient=models.Patient.objects.get(id=pk)
-    user=models.User.objects.get(id=patient.user_id)
-    user.delete()
     patient.delete()
     return redirect('admin-approve-patient')
 
@@ -814,7 +810,7 @@ def doctor_dashboard_view(request):
     patientid=[]
     for a in appointments:
         patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid).order_by('-id')
+    patients=models.Patient.objects.all().filter(status=True,id=patientid).order_by('-id')
     appointments=zip(appointments,patients)
     mydict={
     'patientcount':patientcount,
@@ -883,7 +879,7 @@ def doctor_view_appointment_view(request):
     patientid=[]
     for a in appointments:
         patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid)
+    patients=models.Patient.objects.all().filter(status=True,IndentationError=patientid)
     appointments=zip(appointments,patients)
     return render(request,'hospital/doctor_view_appointment.html',{'appointments':appointments,'doctor':doctor})
 
@@ -897,7 +893,7 @@ def doctor_delete_appointment_view(request):
     patientid=[]
     for a in appointments:
         patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid)
+    patients=models.Patient.objects.all().filter(status=True,id=patientid)
     appointments=zip(appointments,patients)
     return render(request,'hospital/doctor_delete_appointment.html',{'appointments':appointments,'doctor':doctor})
 
@@ -985,7 +981,7 @@ def frontdesk_patient_view(request):
 def frontdesk_update_patient_view(request,pk):
     patient=models.Patient.objects.get(id=pk)
     patient_status=patient.status
-    user=models.User.objects.get(id=patient.user_id)
+    #user=models.User.objects.get(id=patient.user_id)
 
     #userForm=forms.PatientUserForm(instance=user)
     patientForm=forms.PatientForm(instance=patient)
@@ -1089,7 +1085,7 @@ def dataentry_patient_view(request):
 @login_required(login_url='patientlogin')
 @user_passes_test(is_patient)
 def patient_dashboard_view(request):
-    patient=models.Patient.objects.get(user_id=request.user.id)
+    patient=models.Patient.objects.get(id=request.id)
     doctor=models.Doctor.objects.get(user_id=patient.assignedDoctorId)
     mydict={
     'patient':patient,
@@ -1107,7 +1103,7 @@ def patient_dashboard_view(request):
 @login_required(login_url='patientlogin')
 @user_passes_test(is_patient)
 def patient_appointment_view(request):
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+    patient=models.Patient.objects.get(id=request.id) #for profile picture of patient in sidebar
     return render(request,'hospital/patient_appointment.html',{'patient':patient})
 
 
@@ -1116,7 +1112,7 @@ def patient_appointment_view(request):
 @user_passes_test(is_patient)
 def patient_book_appointment_view(request):
     appointmentForm=forms.PatientAppointmentForm()
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+    patient=models.Patient.objects.get(id=request.id) #for profile picture of patient in sidebar
     message=None
     mydict={'appointmentForm':appointmentForm,'patient':patient,'message':message}
     if request.method=='POST':
@@ -1141,13 +1137,13 @@ def patient_book_appointment_view(request):
 
 def patient_view_doctor_view(request):
     doctors=models.Doctor.objects.all().filter(status=True)
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+    patient=models.Patient.objects.get(id=request.id) #for profile picture of patient in sidebar
     return render(request,'hospital/patient_view_doctor.html',{'patient':patient,'doctors':doctors})
 
 
 
 def search_doctor_view(request):
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+    patient=models.Patient.objects.get(id=request.id) #for profile picture of patient in sidebar
     
     # whatever user write in search box we get in query
     query = request.GET['query']
@@ -1160,7 +1156,7 @@ def search_doctor_view(request):
 @login_required(login_url='patientlogin')
 @user_passes_test(is_patient)
 def patient_view_appointment_view(request):
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+    patient=models.Patient.objects.get(id=request.id) #for profile picture of patient in sidebar
     appointments=models.Appointment.objects.all().filter(patientId=request.user.id)
     return render(request,'hospital/patient_view_appointment.html',{'appointments':appointments,'patient':patient})
 
@@ -1169,7 +1165,7 @@ def patient_view_appointment_view(request):
 @login_required(login_url='patientlogin')
 @user_passes_test(is_patient)
 def patient_discharge_view(request):
-    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+    patient=models.Patient.objects.get(id=request.id) #for profile picture of patient in sidebar
     dischargeDetails=models.PatientDischargeDetails.objects.all().filter(patientId=patient.id).order_by('-id')[:1]
     patientDict=None
     if dischargeDetails:
