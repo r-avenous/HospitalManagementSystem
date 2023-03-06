@@ -77,7 +77,7 @@ class DataEntryForm(forms.ModelForm):
 class AppointmentForm(forms.ModelForm):
     patientId = forms.ModelChoiceField(queryset=Patient.objects.filter(Q(status=0) | Q(status=1)),
                                       empty_label="Patient Name and Symptoms",
-                                        to_field_name="user_id",
+                                        to_field_name="id",
                                       required=False)
 
     appointmentTime = forms.DateTimeField(input_formats=[
