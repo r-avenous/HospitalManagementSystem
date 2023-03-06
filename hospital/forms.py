@@ -84,8 +84,11 @@ class DataEntryForm(forms.ModelForm):
 
 
 class AppointmentForm(forms.ModelForm):
-    patientId = forms.ModelChoiceField(queryset=Patient.objects.filter(
-        status=True), empty_label="Patient Name and Symptoms", to_field_name="id", required=False)
+    patientId = forms.ModelChoiceField(queryset=Patient.objects.filter(Q(status=0) | Q(status=1)),
+                                      empty_label="Patient Name and Symptoms",
+                                        to_field_name="user_id",
+                                      required=False)
+
     appointmentTime = forms.DateTimeField(input_formats=[
                                           '%Y-%m-%dT%H:%M'], widget=forms.DateTimeInput(format='%Y-%m-%dT%H:%M', attrs={'type': 'datetime-local'}))
     priority = forms.ChoiceField(choices=Appointment.PRIORITY_CHOICES)
@@ -97,7 +100,7 @@ class AppointmentForm(forms.ModelForm):
 
 class AdminAppointmentForm(AppointmentForm):
     doctorId = forms.ModelChoiceField(queryset=Doctor.objects.filter(
-        status=True), empty_label="Doctor Name and Department", to_field_name="id", required=False)
+        status=True), empty_label="Doctor Name and Department", to_field_name="user_id", required=False)
 
 
 class PatientAppointmentForm(forms.ModelForm):
@@ -118,6 +121,23 @@ class ContactusForm(forms.Form):
     Name = forms.CharField(max_length=30)
     Email = forms.EmailField()
     Message = forms.CharField(max_length=500,widget=forms.Textarea(attrs={'rows': 3, 'cols': 30}))
+    
+    
+#for adding tests (only for admitted and visiting patients)
+class TestForm1(forms.ModelForm):
+    patientId = forms.ModelChoiceField(queryset=(models.Patient.objects.all().filter(status=0)|models.Patient.objects.all().filter(status=1)),empty_label="Patient Name", to_field_name="id",required=True)
+    class Meta:
+        model=models.Test
+        fields = ['patientId', 'doctername', 'procedurename', 'description', 'image']
+
+class TestForm2(forms.ModelForm):
+    patientId = forms.ModelChoiceField(queryset=(models.Patient.objects.all().filter(status=0)|models.Patient.objects.all().filter(status=1)),empty_label="Patient Name", to_field_name="id",required=True)
+    docterId = forms.ModelChoiceField(queryset=models.Doctor.objects.all(),empty_label="Docter Name", to_field_name="id",required=True)
+    ProcedureId = forms.ModelChoiceField(queryset=models.Procedure.objects.all(), empty_label="Procedure Name", to_field_name="id",required=True)
+    class Meta:
+        model=models.Test
+        fields = ['patientId', 'docterId', 'ProcedureId', 'description', 'image']
+#form end
 
 
 
