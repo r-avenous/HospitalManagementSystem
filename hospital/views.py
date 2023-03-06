@@ -481,16 +481,13 @@ def admin_update_patient_view(request,pk):
     patient_status=patient.status
     user=models.User.objects.get(id=patient.user_id)
 
-    userForm=forms.PatientUserForm(instance=user)
+    #userForm=forms.PatientUserForm(instance=user)
     patientForm=forms.PatientForm(request.FILES,instance=patient)
-    mydict={'userForm':userForm,'patientForm':patientForm}
+    mydict={'patientForm':patientForm}
     if request.method=='POST':
-        userForm=forms.PatientUserForm(request.POST,instance=user)
+        #userForm=forms.PatientUserForm(request.POST,instance=user)
         patientForm=forms.PatientForm(request.POST,request.FILES,instance=patient)
-        if userForm.is_valid() and patientForm.is_valid():
-            user=userForm.save()
-            user.set_password(user.password)
-            user.save()
+        if patientForm.is_valid():
             patient=patientForm.save(commit=False)
             patient.status=patient_status
             patient.assignedDoctorId=request.POST.get('assignedDoctorId')
@@ -503,25 +500,19 @@ def admin_update_patient_view(request,pk):
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def admin_add_patient_view(request):
-    userForm=forms.PatientUserForm()
+    #userForm=forms.PatientUserForm()
     patientForm=forms.PatientForm()
-    mydict={'userForm':userForm,'patientForm':patientForm}
+    mydict={'patientForm':patientForm}
     if request.method=='POST':
-        userForm=forms.PatientUserForm(request.POST)
+        #userForm=forms.PatientUserForm(request.POST)
         patientForm=forms.PatientForm(request.POST,request.FILES)
-        if userForm.is_valid() and patientForm.is_valid():
-            user=userForm.save()
-            user.set_password(user.password)
-            user.save()
-
+        if patientForm.is_valid():
             patient=patientForm.save(commit=False)
-            patient.user=user
             patient.status = 0
             patient.assignedDoctorId=request.POST.get('assignedDoctorId')
             patient.save()
 
             my_patient_group = Group.objects.get_or_create(name='PATIENT')
-            my_patient_group[0].user_set.add(user)
 
         return HttpResponseRedirect('admin-view-patient')
     return render(request,'hospital/admin_add_patient.html',context=mydict)
@@ -988,16 +979,13 @@ def frontdesk_update_patient_view(request,pk):
     patient_status=patient.status
     user=models.User.objects.get(id=patient.user_id)
 
-    userForm=forms.PatientUserForm(instance=user)
+    #userForm=forms.PatientUserForm(instance=user)
     patientForm=forms.PatientForm(request.FILES,instance=patient)
-    mydict={'userForm':userForm,'patientForm':patientForm}
+    mydict={'patientForm':patientForm}
     if request.method=='POST':
-        userForm=forms.PatientUserForm(request.POST,instance=user)
+        #userForm=forms.PatientUserForm(request.POST,instance=user)
         patientForm=forms.PatientForm(request.POST,request.FILES,instance=patient)
-        if userForm.is_valid() and patientForm.is_valid():
-            user=userForm.save()
-            user.set_password(user.password)
-            user.save()
+        if patientForm.is_valid():
             patient=patientForm.save(commit=False)
             patient.status=patient_status
             patient.assignedDoctorId=request.POST.get('assignedDoctorId')
@@ -1013,33 +1001,27 @@ def frontdesk_register_patient_view(request):
     frontdeskoperator=models.FrontDeskOperator.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
 
 
-    userForm = forms.PatientUserForm()
+    #userForm = forms.PatientUserForm()
     patientForm = forms.PatientForm()
-    mydict = {'userForm':userForm,'patientForm':patientForm,'frontdesk':frontdeskoperator}
+    mydict = {'patientForm':patientForm,'frontdesk':frontdeskoperator}
 
     if request.method == 'POST':
-        userForm = forms.PatientUserForm(request.POST)
         patientForm = forms.PatientForm(request.POST, request.FILES)
         
-        print(userForm.is_valid())
+        #print(userForm.is_valid())
         print(patientForm.is_valid())
         print(patientForm.errors.as_data())
 
-        if userForm.is_valid() and patientForm.is_valid():
+        if patientForm.is_valid():
             print('\n\n\n\nHELLOOOOO\n\n\n\n')
-            user = userForm.save()
-            user.set_password(user.password)
-            user.save()
 
             patient = patientForm.save(commit=False)
-            patient.user = user
             patient.status = 0
             # patient.profile_pic = patientForm.profile_pic
             patient.assignedDoctorId = request.POST.get('assignedDoctorId')
             patient.save()
 
             my_patient_group = Group.objects.get_or_create(name='PATIENT')
-            my_patient_group[0].user_set.add(user)
 
         return HttpResponseRedirect('frontdesk-dashboard')
     return render(request,'hospital/frontdesk_view_register_patient.html',context=mydict)

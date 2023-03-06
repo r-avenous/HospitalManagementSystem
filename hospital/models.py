@@ -75,7 +75,8 @@ class Doctor(models.Model):
 
 
 class Patient(models.Model):
-    user=models.OneToOneField(User,on_delete=models.CASCADE)
+    first_name=models.CharField(max_length=40, blank=False, default=None)
+    last_name=models.CharField(max_length=40, blank=False, default=None)
     profile_pic= models.ImageField(upload_to='profile_pic/PatientProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20,null=False)
@@ -87,12 +88,12 @@ class Patient(models.Model):
     room=models.PositiveIntegerField(null=True)
     @property
     def get_name(self):
-        return self.user.first_name+" "+self.user.last_name
+        return self.first_name+" "+self.last_name
     @property
     def get_id(self):
         return self.user.id
     def __str__(self):
-        return self.user.first_name+" ("+self.symptoms+")"
+        return self.first_name+" ("+self.symptoms+")"
 
 
 class Appointment(models.Model):

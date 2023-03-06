@@ -36,15 +36,6 @@ class DoctorForm(forms.ModelForm):
     class Meta:
         model=models.Doctor
         fields=['address','mobile','department','status','profile_pic']
-
-#for teacher related form
-class PatientUserForm(forms.ModelForm):
-    class Meta:
-        model=User
-        fields=['first_name','last_name','username','password']
-        widgets = {
-        'password': forms.PasswordInput()
-        }
         
 class PatientForm(forms.ModelForm):
     #this is the extrafield for linking patient and their assigned doctor
@@ -53,7 +44,7 @@ class PatientForm(forms.ModelForm):
     assignedDoctorId=forms.ModelChoiceField(queryset=models.Doctor.objects.all().filter(status=True),empty_label="Name and Department", to_field_name="user_id")
     class Meta:
         model=models.Patient
-        fields=['address', 'mobile', 'symptoms', 'profile_pic']
+        fields=['first_name', 'last_name', 'address', 'mobile', 'symptoms', 'profile_pic']
 
 #adding shashwat
 class FrontDeskUserForm(forms.ModelForm):
