@@ -6,39 +6,54 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
     .card {
-      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-      max-width: 300px;
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+      max-width: 250px;
       margin: auto;
       text-align: center;
       font-family: arial;
+      border-radius: 20px;
+      opacity: 80%;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+      max-width: 250px;
+      margin: auto;
+      text-align: center;
+      font-family: arial;
+      border-radius: 20px;
+      opacity: 100%;
+      background-color: antiquewhite;
+      transform: translate3d(0, -10px, 10px);
     }
 
     .title {
-      color: grey;
+      color: black;
       font-size: 18px;
     }
 
     button {
-      border: none;
+      border: chocolate;
       outline: 0;
       display: inline-block;
       padding: 8px;
       color: white;
-      background-color: #000;
+      background-color: gray;
       text-align: center;
       cursor: pointer;
-      width: 100%;
+      width: 70%;
+      border-radius: 10px;
       font-size: 18px;
     }
 
     button:hover,
     a:hover {
-      opacity: 0.7;
+      opacity: 0.8;
     }
 
     .grid-container {
       display: grid;
-      grid-template-columns: auto auto auto;
+      grid-template-columns: auto auto auto auto;
       padding: 10px;
     }
 
@@ -61,7 +76,7 @@
       <div class="card">
         <img src="{% static "images/admin.png" %}" alt="John" style="width:100%">
         <p class="title">ADMIN</p>
-        <p><button><a href="/adminclick">View</a></button></p>
+        <p><button><a href="/adminclick">Log In</a></button></p>
       </div>
 
     </div>
@@ -70,7 +85,7 @@
       <div class="card">
         <img src="{% static "images/frontdeskoperator.png" %}" alt="John" style="width:100%">
         <p class="title">FRONT DESK OPERATOR</p>
-        <p><button><a href="/frontdeskclick">View</a></button></p>
+        <p><button><a href="/frontdeskclick">Log In</a></button></p>
       </div>
 
     </div>
@@ -79,7 +94,7 @@
       <div class="card">
         <img src="{% static "images/dataentryoperator.png" %}" alt="John" style="width:100%">
         <p class="title">DATA ENTRY OPERATOR</p>
-        <p><button><a href="/dataentryclick">View</a></button></p>
+        <p><button><a href="/dataentryclick">Log In</a></button></p>
       </div>
 
     </div>
@@ -88,7 +103,7 @@
       <div class="card">
         <img src="{% static "images/doctor.png" %}" alt="John" style="width:100%">
         <p class="title">DOCTOR</p>
-        <p><button><a href="/doctorclick">View</a></button></p>
+        <p><button><a href="/doctorclick">Log In</a></button></p>
       </div>
     </div>
 
