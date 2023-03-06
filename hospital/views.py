@@ -232,7 +232,7 @@ def update_doctor_view(request,pk):
     user=models.User.objects.get(id=doctor.user_id)
 
     userForm=forms.DoctorUserForm(instance=user)
-    doctorForm=forms.DoctorForm(request.FILES,instance=doctor)
+    doctorForm=forms.DoctorForm(instance=doctor)
     mydict={'userForm':userForm,'doctorForm':doctorForm}
     if request.method=='POST':
         userForm=forms.DoctorUserForm(request.POST,instance=user)
@@ -342,7 +342,7 @@ def update_frontdesk_view(request,pk):
     user=models.User.objects.get(id=frontdesk.user_id)
 
     userForm=forms.FrontDeskUserForm(instance=user)
-    frontdeskForm=forms.FrontDeskForm(request.FILES,instance=frontdesk)
+    frontdeskForm=forms.FrontDeskForm(instance=frontdesk)
     mydict={'userForm':userForm,'frontdeskForm':frontdeskForm}
     if request.method=='POST':
         userForm=forms.FrontDeskUserForm(request.POST,instance=user)
@@ -407,7 +407,7 @@ def update_dataentry_view(request,pk):
     user=models.User.objects.get(id=dataentry.user_id)
 
     userForm=forms.DataEntryUserForm(instance=user)
-    dataentryForm=forms.DataEntryForm(request.FILES,instance=dataentry)
+    dataentryForm=forms.DataEntryForm(instance=dataentry)
     mydict={'userForm':userForm,'dataentryForm':dataentryForm}
     if request.method=='POST':
         userForm=forms.DataEntryUserForm(request.POST,instance=user)
@@ -482,7 +482,7 @@ def admin_update_patient_view(request,pk):
     user=models.User.objects.get(id=patient.user_id)
 
     #userForm=forms.PatientUserForm(instance=user)
-    patientForm=forms.PatientForm(request.FILES,instance=patient)
+    patientForm=forms.PatientForm(instance=patient)
     mydict={'patientForm':patientForm}
     if request.method=='POST':
         #userForm=forms.PatientUserForm(request.POST,instance=user)
@@ -988,7 +988,7 @@ def frontdesk_update_patient_view(request,pk):
     user=models.User.objects.get(id=patient.user_id)
 
     #userForm=forms.PatientUserForm(instance=user)
-    patientForm=forms.PatientForm(request.FILES,instance=patient)
+    patientForm=forms.PatientForm(instance=patient)
     mydict={'patientForm':patientForm}
     if request.method=='POST':
         #userForm=forms.PatientUserForm(request.POST,instance=user)
@@ -1229,69 +1229,16 @@ def dataentry_dashboard_view(request):
 def dataentry_test_view(request):
     test=models.Test.objects.all()
     for t in test:
-        patient = models.Patient.objects.get(id=t.patientId)
+        patient = models.Patient.objects.get(id=t.patientId_id)
         t.patientname = patient.get_name
     return render(request,'hospital/dataentry_view_tests.html',{'tests':test})
 
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_add_test_view(request):
-    # Testform = forms.TestForm1()
-    # mydict = {'testform': Testform, }
-
-    # if request.method == 'POST':
-    #     if 'action' in request.POST and request.POST['action'] == 'check':
-    #         Testform = forms.TestForm2()
-    #         mydict = {'testform': Testform, }
-    #         return render(request,'hospital/dataentry_add_procedure.html',context=mydict)
-
-    #         # appointment_time_str = request.POST.get('appointmentTime')
-
-    #         # context = {
-    #         #     'appointmentForm': appointmentForm,
-    #         #     'free_doctors': free_doctors,
-    #         # }
-
-    #         # return render(request, 'hospital/admin_add_appointment.html', context)
-
-    #     else:
-    #         # appointmentForm = forms.AppointmentForm()
-    #         # mydict = {'appointmentForm': appointmentForm, }
-    #         if request.method == 'POST':
-    #             TestForm = forms.TestForm1(request.POST)
-    #             # if appointmentForm.is_valid():
-    #             #     doctor_id = request.POST.get('doctorId')
-    #             #     appointment_time = appointmentForm.cleaned_data.get(
-    #             #         'appointmentTime')
-    #             #     # Check if the selected doctor already has an appointment at the same time
-    #             #     if models.Appointment.objects.filter(doctorId=doctor_id, appointmentTime=appointment_time).exists():
-    #             #         messages.error(
-    #             #             request, 'The selected doctor already has an appointment scheduled at the same time.')
-    #             #         return redirect('admin-add-appointment')
-    #             TestForm.save()
-    #             # appointment.doctorId = doctor_id
-    #             # appointment.patientId = request.POST.get('patientId')
-    #             # appointment.doctorName = models.User.objects.get(
-    #             #     id=doctor_id).first_name
-    #             # appointment.patientName = models.User.objects.get(
-    #             #     id=request.POST.get('patientId')).first_name
-    #             # appointment.status = True
-    #             # appointment.save()
-    #         #     messages.success(
-    #         #         request, 'Appointment added successfully!')
-    #         #     return redirect('admin-view-appointment')
-    #         # else:
-    #         #     messages.error(
-    #         #         request, 'Invalid form submission. Please correct the errors below.')
     return render(request,'hospital/dataentry_add_test.html')
     # return render(request, 'hospital/admin_add_appointment.html', context=mydict)
     
-    procedureForm=forms.ProcedureForm()
-    if request.method=='POST':
-        procedureForm=forms.ProcedureForm(request.POST)
-        if procedureForm.is_valid():
-            procedureForm.save()
-            return HttpResponseRedirect('dataentry-view-procedure')
         
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
@@ -1304,7 +1251,7 @@ def dataentry_add_test_hospital_view(request):
         # doctorForm=forms.DoctorForm(request.POST, request.FILES)
         if Testform.is_valid():
             Testform.save()
-            return HttpResponseRedirect('dataentry-dashboard')
+            return HttpResponseRedirect('dataentry-view-test')
         return HttpResponseRedirect('dataentry-add-test-hospital')
     return render(request,'hospital/dataentry_add_test_hospital.html',context=mydict)
     
@@ -1316,17 +1263,41 @@ def dataentry_add_test_others_view(request):
     # doctorForm=forms.DoctorForm()
     mydict={'testform':Testform}
     if request.method=='POST':
-        Testform=forms.TestForm1(request.POST)
+        Testform=forms.TestForm1(request.POST, request.FILES)
         # doctorForm=forms.DoctorForm(request.POST, request.FILES)
         if Testform.is_valid():
             Testform.save()
-            return HttpResponseRedirect('dataentry-dashboard')
+            return HttpResponseRedirect('dataentry-view-test')
         return HttpResponseRedirect('dataentry-add-test-others')
     return render(request,'hospital/dataentry_add_test_others.html',context=mydict)
 
 
+@login_required(login_url='dataentrylogin')
+@user_passes_test(is_dataentryoperator)
+def dataentry_update_test_view(request,pk):
+    test=models.Test.objects.get(id=pk)
+    form=forms.TestUpdateForm(instance=test)
+    if request.method=='POST':
+        form=forms.TestUpdateForm(request.POST, request.FILES, instance=test)
+        if form.is_valid():
+            form.save()
+            return redirect('dataentry-view-test')
+    return render(request,'hospital/dataentry_update_test.html',{'form':form})
 
-#---------------------- DATA ENTRY OPERATOR RELATED VIEWS START ------------------
+
+
+
+@login_required(login_url='dataentrylogin')
+@user_passes_test(is_dataentryoperator)
+def dataentry_delete_test_view(request,pk):
+    test=models.Test.objects.get(id=pk)
+    test.delete()
+    return redirect('dataentry-view-test')
+
+
+
+
+#---------------------- DATA ENTRY OPERATOR RELATED VIEWS END --------------------
 #---------------------------------------------------------------------------------
 
 
