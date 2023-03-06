@@ -91,7 +91,7 @@ class Patient(models.Model):
         return self.first_name+" "+self.last_name
     @property
     def get_id(self):
-        return self.user.id
+        return self.id
     def __str__(self):
         return self.first_name+" ("+self.symptoms+")"
 

@@ -810,7 +810,7 @@ def doctor_dashboard_view(request):
     patientid=[]
     for a in appointments:
         patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,id=patientid).order_by('-id')
+    patients=models.Patient.objects.all().filter(status=0,id__in=patientid)|models.Patient.objects.all().filter(status=1,id__in=patientid).order_by('-id')
     appointments=zip(appointments,patients)
     mydict={
     'patientcount':patientcount,
@@ -838,7 +838,7 @@ def doctor_patient_view(request):
 @login_required(login_url='doctorlogin')
 @user_passes_test(is_doctor)
 def doctor_view_patient_view(request):
-    patients=models.Patient.objects.all().filter(status=True,assignedDoctorId=request.user.id)
+    patients=models.Patient.objects.all().filter(Q(status=0) | Q(status=1),assignedDoctorId=request.user.id)
     doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
     return render(request,'hospital/doctor_view_patient.html',{'patients':patients,'doctor':doctor})
 
@@ -893,7 +893,7 @@ def doctor_delete_appointment_view(request):
     patientid=[]
     for a in appointments:
         patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,id=patientid)
+    patients=models.Patient.objects.all().filter(status=True,id__in=patientid)
     appointments=zip(appointments,patients)
     return render(request,'hospital/doctor_delete_appointment.html',{'appointments':appointments,'doctor':doctor})
 
@@ -909,7 +909,7 @@ def delete_appointment_view(request,pk):
     patientid=[]
     for a in appointments:
         patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid)
+    patients=models.Patient.objects.all().filter(Q(status=0) | Q(status=1),user_id__in=patientid)
     appointments=zip(appointments,patients)
     return render(request,'hospital/doctor_delete_appointment.html',{'appointments':appointments,'doctor':doctor})
 
