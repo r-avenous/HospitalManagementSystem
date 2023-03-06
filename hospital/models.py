@@ -171,3 +171,12 @@ class Undergoes(models.Model):
         return self.start_time 
     def get_end_time(self): 
         return self.end_time   
+    def __str__(self):
+        return self.id     
+    
+class Test(models.Model):
+    patientId=models.ForeignKey(Patient, null=False, default=0, verbose_name="id", on_delete=models.SET_DEFAULT)
+    doctername = models.CharField(max_length=40)
+    procedurename = models.CharField(max_length=40)
+    description = models.TextField(max_length = 500, null=True)
+    image = models.ImageField(upload_to='testimages/',null=True,blank=True)
