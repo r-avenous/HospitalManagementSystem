@@ -96,6 +96,26 @@ urlpatterns +=[
          name='doctor-write-prescription'),
 ]
 
+#---------FOR DATA ENTRY OPERATOR RELATED URLS-------------------------------------
+urlpatterns +=[
+    path('dataentry-dashboard', views.dataentry_dashboard_view,name='dataentry-dashboard'),
+    path('dataentry-view-test', views.dataentry_test_view,name='dataentry-view-test'),
+    path('dataentry-add-test', views.dataentry_add_test_view,name='dataentry-add-test'),
+    path('dataentry-add-test-hospital', views.dataentry_add_test_hospital_view,name='dataentry-add-test-hospital'),
+    path('dataentry-add-test-others', views.dataentry_add_test_others_view,name='dataentry-add-test-others'),
+#     path('search', views.search_view,name='search'),
+
+#     path('doctor-patient', views.doctor_patient_view,name='doctor-patient'),
+#     path('doctor-view-patient', views.doctor_view_patient_view,name='doctor-view-patient'),
+#     path('doctor-view-discharge-patient',views.doctor_view_discharge_patient_view,name='doctor-view-discharge-patient'),
+#     path('doctor-appointment', views.doctor_appointment_view,name='doctor-appointment'),
+#     path('doctor-view-appointment', views.doctor_view_appointment_view,name='doctor-view-appointment'),
+#     path('doctor-delete-appointment',views.doctor_delete_appointment_view,name='doctor-delete-appointment'),
+#     path('delete-appointment/<int:pk>', views.delete_appointment_view,name='delete-appointment'),
+#     path('doctor-write-prescription/<int:pk>', views.doctor_write_prescription_view,
+#          name='doctor-write-prescription'),
+]
+
 #---------FOR FRONT DESK OPERATOR RELATED URLS-------------------------
 
 urlpatterns +=[
@@ -110,19 +130,6 @@ urlpatterns +=[
     path('discharge-patient/<int:pk>', views.discharge_patient_view,name='discharge-patient'),
 ]
 
-#---------FOR FRONT DESK OPERATOR RELATED URLS-------------------------
-
-urlpatterns +=[
-
-    path('dataentry-dashboard', views.dataentry_dashboard_view,name='dataentry-dashboard'),
-    path('dataentry-view-patient', views.dataentry_patient_view,name='dataentry-view-patient'),
-    # path('dataentry-update-patient/<int:pk>', views.dataentry_update_patient_view,name='dataentry-update-patient'),
-    # path('dataentry-register-patient', views.dataentry_register_patient_view,name='dataentry-register-patient'),
-    # path('dataentry-admit-patient',views.dataentry_admit_patient_view,name='dataentry-admit-patient'),
-    # path('admit-patient/<int:pk>', views.admit_patient_view,name='admit-patient'),
-    # path('dataentry-discharge-patient',views.dataentry_discharge_patient_view,name='dataentry-discharge-patient'),
-    # path('discharge-patient/<int:pk>', views.discharge_patient_view,name='discharge-patient'),
-]
 
 # ****************** ADD FIELD IN frontdesk-view-update-form for FDO to change status of patient
 # ****************** ALLOWS PREVIOUS USERS (DISCHARGED) TO CHANGE TO VISITING WHEN THEY VISIT HOSPITAL AGAIN
