@@ -7,6 +7,7 @@ from django import forms
 from django.contrib.auth.models import User
 from . import models
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 import datetime
 from django.db.models import Q
@@ -36,15 +37,6 @@ class DoctorForm(forms.ModelForm):
     class Meta:
         model=models.Doctor
         fields=['address','mobile','department','status','profile_pic']
-
-#for teacher related form
-class PatientUserForm(forms.ModelForm):
-    class Meta:
-        model=User
-        fields=['first_name','last_name','username','password']
-        widgets = {
-        'password': forms.PasswordInput()
-        }
         
 class PatientForm(forms.ModelForm):
     #this is the extrafield for linking patient and their assigned doctor
@@ -53,7 +45,7 @@ class PatientForm(forms.ModelForm):
     assignedDoctorId=forms.ModelChoiceField(queryset=models.Doctor.objects.all().filter(status=True),empty_label="Name and Department", to_field_name="user_id")
     class Meta:
         model=models.Patient
-        fields=['address', 'mobile', 'symptoms', 'profile_pic']
+        fields=['first_name', 'last_name', 'address', 'mobile', 'symptoms', 'profile_pic']
 
 #adding shashwat
 class FrontDeskUserForm(forms.ModelForm):
@@ -86,7 +78,7 @@ class DataEntryForm(forms.ModelForm):
 class AppointmentForm(forms.ModelForm):
     patientId = forms.ModelChoiceField(queryset=Patient.objects.filter(Q(status=0) | Q(status=1)),
                                       empty_label="Patient Name and Symptoms",
-                                        to_field_name="user_id",
+                                        to_field_name="id",
                                       required=False)
 
     appointmentTime = forms.DateTimeField(input_formats=[
@@ -132,12 +124,20 @@ class TestForm1(forms.ModelForm):
 
 class TestForm2(forms.ModelForm):
     patientId = forms.ModelChoiceField(queryset=(models.Patient.objects.all().filter(status=0)|models.Patient.objects.all().filter(status=1)),empty_label="Patient Name", to_field_name="id",required=True)
-    docterId = forms.ModelChoiceField(queryset=models.Doctor.objects.all(),empty_label="Docter Name", to_field_name="id",required=True)
-    ProcedureId = forms.ModelChoiceField(queryset=models.Procedure.objects.all(), empty_label="Procedure Name", to_field_name="id",required=True)
+    # docId_list = models.Doctor.objects.values_list('user_id', flat=True)
+    # doctername = forms.ModelChoiceField(queryset= User.objects.all().filter(id__in = docId_list),empty_label="Docter Name", to_field_name="id",required=True)
+    doctername = forms.ModelChoiceField(queryset= models.Doctor.objects.all(),empty_label="Docter Name", to_field_name="id",required=True)
+    procedurename = forms.ModelChoiceField(queryset=models.Procedure.objects.all(), empty_label="Procedure Name", to_field_name="name",required=True)
     class Meta:
         model=models.Test
-        fields = ['patientId', 'docterId', 'ProcedureId', 'description', 'image']
+        fields = ['patientId', 'doctername', 'procedurename', 'description', 'image']
 #form end
+
+#for updating tests (only for admitted and visiting patients)
+class TestUpdateForm(forms.ModelForm):
+    class Meta:
+        model=models.Test
+        fields = ['doctername', 'procedurename', 'description', 'image']
 
 
 
