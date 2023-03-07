@@ -1058,6 +1058,175 @@ def frontdesk_discharge_patient_view(request):
     patients = models.Patient.objects.all().filter(status = 1)
     return render(request,'hospital/frontdesk_view_discharge_patient.html',{'patients':patients,'frontdesk':frontdeskoperator})
 
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
+def frontdesk_add_appointment(request):
+    appointmentForm = forms.AdminAppointmentForm()
+    mydict = {'appointmentForm': appointmentForm, }
+
+    if request.method == 'POST':
+        if 'action' in request.POST and request.POST['action'] == 'check':
+            appointment_time_str = request.POST.get('appointmentTime')
+            appointment_time = timezone.make_aware(
+                datetime.strptime(appointment_time_str, '%Y-%m-%dT%H:%M'))
+
+            # Check which doctors are busy at the given appointmentTime
+            busy_doctors = models.Appointment.objects.filter(appointmentTime=appointment_time).values_list('doctorId', flat=True).distinct()
+            # Get a list of free doctors
+            free_doctors = models.Doctor.objects.filter(
+                status=True).exclude(user_id__in=busy_doctors)
+
+            print(
+                f"The following doctors are busy at {appointment_time}: {list(busy_doctors)}")
+            print(
+                f"The following doctors are free at {appointment_time}: {list(free_doctors)}")
+            
+            # Update the appointment form with free doctors queryset
+            appointmentForm.fields['doctorId'].queryset = free_doctors
+
+            context = {
+                'appointmentForm': appointmentForm,
+                'free_doctors': free_doctors,
+            }
+
+            return render(request, 'hospital/frontdesk_add_appointment.html', context)
+
+        else:
+            appointmentForm = forms.AppointmentForm()
+            mydict = {'appointmentForm': appointmentForm, }
+            if request.method == 'POST':
+                appointmentForm = forms.AppointmentForm(request.POST)
+                if appointmentForm.is_valid():
+                    doctor_id = request.POST.get('doctorId')
+                    appointment_time = appointmentForm.cleaned_data.get(
+                        'appointmentTime')
+                    if request.POST.get('priority') == '2':
+                        models.Appointment.objects.filter(
+                            doctorId=doctor_id, appointmentTime=appointment_time).delete()
+                        print('High')
+                    
+                    # Check if the selected doctor already has an appointment at the same time
+                    elif request.POST.get('priority') == '1':
+                        print(doctor_id)
+                        if models.Appointment.objects.filter(doctorId=doctor_id, appointmentTime=appointment_time).exists():
+                            messages.error(
+                                request, 'The selected doctor already has an appointment scheduled at the same time.')
+                            return redirect('frontdesk-add-appointment')
+                    appointment = appointmentForm.save(commit=False)
+                    appointment.doctorId = doctor_id
+                    appointment.patientId = request.POST.get('patientId')
+                    appointment.doctorName = models.User.objects.get(id=doctor_id).first_name
+                 
+                    appointment.patientName=models.Patient.objects.get(id=request.POST.get('patientId')).first_name
+                    # print(appointment.patientName, appointment.doctorName)
+
+                    appointment.status = True
+                    appointment.save()
+                    messages.success(
+                        request, 'Appointment added successfully!')
+                    return redirect('frontdesk-view-appointment')
+            else:
+                messages.error(
+                    request, 'Invalid form submission. Please correct the errors below.')
+    return render(request, 'hospital/frontdesk_add_appointment.html', context=mydict)
+
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
+def frontdesk_update_appointment_view(request,pk):
+    appointment=models.Appointment.objects.get(id=pk)
+    # patient_status=patient.status
+    #user=models.User.objects.get(id=patient.user_id)
+
+    #userForm=forms.PatientUserForm(instance=user)
+    appointmentForm = forms.AdminAppointmentForm(instance=appointment)
+    appointment_time_prev = appointment.appointmentTime
+    doctor_id_prev = appointment.doctorId
+    mydict = {'appointmentForm': appointmentForm,}
+
+    if request.method == 'POST':
+        if 'action' in request.POST and request.POST['action'] == 'check':
+            appointment_time_str = request.POST.get('appointmentTime')
+            appointment_time = timezone.make_aware(
+                datetime.strptime(appointment_time_str, '%Y-%m-%dT%H:%M'))
+
+            # Check which doctors are busy at the given appointmentTime
+            self_doctor_Id = appointment.doctorId
+            busy_doctors = models.Appointment.objects.filter(appointmentTime=appointment_time).exclude(doctorId = self_doctor_Id).values_list('doctorId', flat=True).distinct()
+            #busy_doctors.remove(self_doctor_Id)
+            # Get a list of free doctors
+            free_doctors = models.Doctor.objects.filter(
+                status=True).exclude(user_id__in=busy_doctors)
+
+            print(
+                f"The following doctors are busy at {appointment_time}: {list(busy_doctors)}")
+            print(
+                f"The following doctors are free at {appointment_time}: {list(free_doctors)}")
+            
+            # Update the appointment form with free doctors queryset
+            appointmentForm.fields['doctorId'].queryset = free_doctors
+            #appointment.appointmentTime = appointment_time_str
+            context = {
+                'appointmentForm': appointmentForm,
+                'free_doctors': free_doctors,
+            }
+
+            return render(request, 'hospital/frontdesk_update_appointment.html', context)
+
+        else:
+            appointmentForm = forms.AppointmentForm(request.POST, instance=appointment)
+            mydict = {'appointmentForm': appointmentForm, }
+            if request.method == 'POST':
+                appointmentForm = forms.AppointmentForm(request.POST, instance=appointment)
+                if appointmentForm.is_valid():
+                    doctor_id = request.POST.get('doctorId')
+                    appointment_time = appointmentForm.cleaned_data.get(
+                        'appointmentTime')
+                    if request.POST.get('priority') == '2':
+                        models.Appointment.objects.filter(
+                            doctorId=doctor_id, appointmentTime=appointment_time).delete()
+                        print('High')
+                    
+                    # Check if the selected doctor already has an appointment at the same time
+                    elif request.POST.get('priority') == '1':
+                        print(doctor_id)
+                        if appointment_time_prev == appointment_time and doctor_id == doctor_id_prev:
+                            print("no chnage")
+                        else:
+                            if models.Appointment.objects.filter(doctorId=doctor_id, appointmentTime=appointment_time).exists():
+                                messages.error(
+                                    request, 'The selected doctor already has an appointment scheduled at the same time.')
+                                return redirect('frontdesk-update-appointment', pk=pk)
+                    appointment = appointmentForm.save(commit=False)
+                    appointment.doctorId = doctor_id
+                    #appointment.patientId = request.POST.get('patientId')
+                    appointment.doctorName = models.User.objects.get(
+                        id=doctor_id).first_name
+                 
+                    #appointment.patientName=models.Patient.objects.get(id=request.POST.get('patientId')).first_name
+                    # print(appointment.patientName, appointment.doctorName)
+
+                    appointment.status = True
+                    appointment.save()
+                    messages.success(
+                        request, 'Appointment added successfully!')
+                    return redirect('frontdesk-view-appointment')
+            else:
+                messages.error(
+                    request, 'Invalid form submission. Please correct the errors below.')
+    return render(request,'hospital/frontdesk_update_appointment.html',context=mydict)
+
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
+def frontdesk_delete_appointment(request,pk):
+    appointment=models.Appointment.objects.get(id=pk)
+    appointment.delete()
+    return redirect('frontdesk-view-appointment')
+
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
+def frontdesk_appointment_view(request):
+    appointments=models.Appointment.objects.all().filter(status=True)
+    return render(request,'hospital/frontdesk_view_appointment.html',{'appointments':appointments})
 
 #---------------------------------------------------------------------------------
 #------------------------ DATA ENTRY OPERATOR RELATED VIEWS START ------------------------------

@@ -128,6 +128,13 @@ urlpatterns +=[
     path('admit-patient/<int:pk>', views.admit_patient_view,name='admit-patient'),
     path('frontdesk-discharge-patient',views.frontdesk_discharge_patient_view,name='frontdesk-discharge-patient'),
     path('discharge-patient/<int:pk>', views.discharge_patient_view,name='discharge-patient'),
+    #path('frontdesk-appointment', views.frontdesk_appointment_view,name='admin-appointment'),
+    path('frontdesk-view-appointment', views.frontdesk_appointment_view,name='frontdesk-view-appointment'),
+    path('frontdesk-add-appointment', views.frontdesk_add_appointment,name='frontdesk-add-appointment'),
+    path('frontdesk-update-appointment/<int:pk>', views.frontdesk_update_appointment_view,name='frontdesk-update-appointment'),
+    path('frontdesk-delete-appointment/<int:pk>', views.frontdesk_delete_appointment,name='frontdesk-delete-appointment'),
+    
+    #path('admin-approve-appointment', views.admin_approve_appointment_view,name='admin-approve-appointment'),
 ]
 
 
