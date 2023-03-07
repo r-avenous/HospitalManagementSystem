@@ -682,7 +682,6 @@ def admin_view_appointment_view(request):
 #     return render(request,'hospital/admin_add_appointment.html',context=mydict)
 
 
-
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def admin_add_appointment_view(request):
@@ -698,16 +697,17 @@ def admin_add_appointment_view(request):
             # Check which doctors are busy at the given appointmentTime
             busy_doctors = models.Appointment.objects.filter(
                 appointmentTime=appointment_time).values_list('doctorId', flat=True).distinct()
+         
 
             # Get a list of free doctors
             free_doctors = models.Doctor.objects.filter(
-                ~Q(id__in=busy_doctors))
+                status=True).exclude(user_id__in=busy_doctors)
 
             print(
                 f"The following doctors are busy at {appointment_time}: {list(busy_doctors)}")
             print(
-                f"The following doctors are free at {appointment_time}: {list(free_doctors.values_list('id', flat=True))}")
-
+                f"The following doctors are free at {appointment_time}: {list(free_doctors)}")
+            
             # Update the appointment form with free doctors queryset
             appointmentForm.fields['doctorId'].queryset = free_doctors
 
@@ -734,6 +734,7 @@ def admin_add_appointment_view(request):
                     
                     # Check if the selected doctor already has an appointment at the same time
                     elif request.POST.get('priority') == '1':
+                        print(doctor_id)
                         if models.Appointment.objects.filter(doctorId=doctor_id, appointmentTime=appointment_time).exists():
                             messages.error(
                                 request, 'The selected doctor already has an appointment scheduled at the same time.')
