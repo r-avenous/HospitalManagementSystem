@@ -5,6 +5,19 @@
 <head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
+    .bgimg {
+      position: relative;
+    }
+    .bgimg::before{
+      content: " ";
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      background: url("{% static 'images/bg2.jpg' %}");
+      opacity: 0.5;
+      z-index: -1;
+      background-size: cover;
+      }
     .card {
       box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
       max-width: 250px;
@@ -12,7 +25,7 @@
       text-align: center;
       font-family: arial;
       border-radius: 20px;
-      opacity: 80%;
+      opacity: .9;
     }
 
     .card:hover {
@@ -52,11 +65,11 @@
     }
 
     .grid-container {
-      background-image: url("{% static 'images/bg.jpg' %}");
+      /* background-image: url("{% static 'images/bg.jpg' %}"); */
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
-      opacity: 80%;
+      /* opacity: 80%; */
       display: grid;
       grid-template-columns: auto auto auto auto;
       padding: 10px;
@@ -73,7 +86,7 @@
 </head>
 
 <body>
-
+  <div class="bgimg">
 
   <div class="grid-container">
     <div class="grid-item">
@@ -104,7 +117,7 @@
 
     </div>
     <div class="grid-item">
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       <div class="card">
         <img src="{% static "images/doctor.png" %}" alt="John" style="width:100%">
         <p class="title">DOCTOR</p>
@@ -120,7 +133,7 @@
     </div> -->
 
   </div>
- 
+</div>
 </body>
 
 </html>

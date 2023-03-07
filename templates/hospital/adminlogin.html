@@ -50,19 +50,18 @@
   </style>
 </head>
 
-<body>
+<body background="image/bg.jpg">
   {% include "hospital/navbar.html" %}
   <br>
   <br>
   <br><br>
 
-  <!--- login page for admin by admin(sumit)  ---------->
   <form method="post">
     {% csrf_token %}
     <div class="container register-form">
       <div class="form">
         <div class="note">
-          <p>Admin Login Page</p>
+          <p>Admin Login</p>
         </div>
 
         <div class="form-content">
@@ -71,14 +70,12 @@
 
               <div class="form-group">
                 {% render_field form.username class="form-control" placeholder="Username" %}
+                <br>
+                {% render_field form.password class="form-control" placeholder="Password" %}
               </div>
 
             </div>
             <div class="col-md-6">
-
-              <div class="form-group">
-                {% render_field form.password class="form-control" placeholder="Password" %}
-              </div>
 
             </div>
           </div>
