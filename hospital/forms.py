@@ -139,6 +139,17 @@ class TestUpdateForm(forms.ModelForm):
         model=models.Test
         fields = ['doctername', 'procedurename', 'description', 'image']
 
+class UndergoesForm(forms.ModelForm):
+    patientId=forms.ModelChoiceField(queryset=models.Patient.objects.all().filter(Q(status=0) | Q(status=1)),empty_label="Patient Name and Symptoms", to_field_name="id")
+    doctorId=forms.ModelChoiceField(queryset=models.Doctor.objects.all().filter(),empty_label="Doctor Name and Department", to_field_name="user_id")
+    procedureId=forms.ModelChoiceField(queryset=models.Procedure.objects.all().filter(),empty_label="Procedure Name", to_field_name="id")
+    start_time = forms.DateTimeField(input_formats=[
+                                          '%Y-%m-%dT%H:%M'], widget=forms.DateTimeInput(format='%Y-%m-%dT%H:%M', attrs={'type': 'datetime-local'}))
+    end_time = forms.DateTimeField(input_formats=[
+                                          '%Y-%m-%dT%H:%M'], widget=forms.DateTimeInput(format='%Y-%m-%dT%H:%M', attrs={'type': 'datetime-local'}))
+    class Meta:
+        model=models.Undergoes
+        fields = ['patientId', 'doctorId', 'procedureId', 'start_time', 'end_time']
 
 
 #Developed By : sumit kumar

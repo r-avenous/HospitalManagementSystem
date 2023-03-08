@@ -103,6 +103,8 @@ urlpatterns +=[
     path('dataentry-add-test', views.dataentry_add_test_view,name='dataentry-add-test'),
     path('dataentry-add-test-hospital', views.dataentry_add_test_hospital_view,name='dataentry-add-test-hospital'),
     path('dataentry-add-test-others', views.dataentry_add_test_others_view,name='dataentry-add-test-others'),
+    path('dataentry-update-test/<int:pk>', views.dataentry_update_test_view,name='dataentry-update-test'),
+    path('dataentry-delete-test/<int:pk>', views.dataentry_delete_test_view,name='dataentry-delete-test'),
 #     path('search', views.search_view,name='search'),
 
 #     path('doctor-patient', views.doctor_patient_view,name='doctor-patient'),
