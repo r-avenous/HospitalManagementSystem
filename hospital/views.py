@@ -882,11 +882,10 @@ def doctor_view_appointment_view(request):
     patientid=[]
     for a in appointments:
         patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,IndentationError=patientid)
+    patients=models.Patient.objects.all().filter(status=True,id__in=patientid)
     appointments=zip(appointments,patients)
     return render(request,'hospital/doctor_view_appointment.html',{'appointments':appointments,'doctor':doctor})
-
-
+    
 
 @login_required(login_url='doctorlogin')
 @user_passes_test(is_doctor)
@@ -1044,12 +1043,85 @@ def frontdesk_admit_patient_view(request):
 
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
-def admit_patient_view(request, pk):
-    frontdeskoperator=models.FrontDeskOperator.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
+def admit_patient_option_view(request, pk):
+    # patient = models.Patient.objects.get(id = pk)
+    return render(request,'hospital/frontdesk_admit_patient_option.html',{'patientId':pk})
+
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
+def admit_patient_private_view(request, pk):
     patient = models.Patient.objects.get(id = pk)
-    patient.status = 1
-    patient.save()
-    return redirect(reverse('frontdesk-admit-patient',{'frontdesk':frontdeskoperator,}))
+    # print("\npriavte link clicked\n")
+    rooms = models.Room.objects.filter(room_type="private", occupied_capacity=0)
+    if rooms.exists():
+        # room = models.Room.objects.get(room_type="private", occupied_capacity=0)
+        room = rooms[0]
+        room.occupied_capacity = 1
+        room.save()
+        patient.room_id = room.id
+        patient.status = 1
+        patient.save()
+        return redirect('frontdesk-admit-patient')
+    else:
+        messages.error(request, 'All Private wards are full')
+        return redirect('admit-patient-option', pk=pk)
+    
+@login_required(login_url='frontdesklogin')
+@user_passes_test(is_frontdeskoperator)
+def admit_patient_general_view(request, pk):
+    patient = models.Patient.objects.get(id = pk)
+    # print("\ngeneral link clicked\n")
+    rooms = models.Room.objects.filter(room_type="general")
+    if rooms.exists():
+        for room in rooms:
+            if room.occupied_capacity < room.max_capacity:
+                room.occupied_capacity += 1
+                room.save()
+                patient.room_id = room.id
+                patient.status = 1
+                patient.save()
+                return redirect('frontdesk-admit-patient')
+    messages.error(request, 'All General wards are full!!')
+    # print("All General wards are full!!")
+    return redirect('admit-patient-option', pk)
+
+# @login_required(login_url='frontdesklogin')
+# @user_passes_test(is_frontdeskoperator)
+# def admit_patient_view(request, pk):
+#     patient = models.Patient.objects.get(id = pk)
+#     # link_id = request.POST.get('id')
+#     if 'private_link' in request.GET:
+#         print("\npriavte link clicked\n")
+#         rooms = models.Room.objects.filter(room_type="private", occupied_capacity=0)
+#         if rooms.exists():
+#             # room = models.Room.objects.get(room_type="private", occupied_capacity=0)
+#             room = rooms[0]
+#             room.occupied_capacity = 1
+#             room.save()
+#             patient.room_id = room.id
+#             patient.status = 1
+#             patient.save()
+#             return redirect('frontdesk-admit-patient')
+#         else:
+#             messages.error(request, 'All Private wards are full!!')
+#             return redirect('admit-patient-option', pk)
+#     elif 'general_link' in request.GET:
+#         print("\ngeneral link clicked\n")
+#         rooms = models.Room.objects.filter(room_type="general")
+#         if rooms.exists():
+#             for room in rooms:
+#                 if room.occupied_capacity < room.max_capacity:
+#                     room.occupied_capacity += 1
+#                     room.save()
+#                     patient.room_id = room.id
+#                     patient.status = 1
+#                     patient.save()
+#                     return redirect('frontdesk-admit-patient')
+                
+#         messages.error(request, 'All General wards are full!!')
+#         return redirect('admit-patient-option', pk)
+#     print("\nkat gayan\n")
+#     return redirect('frontdesk-admit-patient')
 
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
@@ -1429,6 +1501,9 @@ def frontdesk_update_appointment_view(request, pk):
 #                     request, 'Invalid form submission. Please correct the errors below.')
 #     return render(request,'hospital/frontdesk_update_appointment.html',context=mydict)
 
+
+
+
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_delete_appointment(request,pk):
@@ -1445,6 +1520,146 @@ def frontdesk_appointment_view(request):
 # @login_required(login_url='frontdesklogin')
 # @user_passes_test(is_frontdeskoperator)
 # def frontdesk_add_undergoes(request):
+ #    aundergoesorm = forms.AUndergoesorm()
+ #    mydict = {'aundergoesorm': aundergoesorm, }
+
+ #    if request.method == 'POST':
+ #        if 'action' in request.POST and request.POST['action'] == 'check':
+ #            astarttime_str = request.POST.get('astart_tme')
+ #            astart_ime = timezone.make_aware(
+# atetime.strptime(astarttime_str, '%Y-%m-%dT%H:%M'))
+
+#             end_time_str = request.POST.get('end_time')
+#             end_time = timezone.make_aware(datetime.strptime(end_time_str, '%Y-%m-%dT%H:%M')) #            busy_doctors = []
+ #            p#riority = request.POST.get('priority')
+
+#              for d in models.Doctor.objects.all():
+#                 if models.Undergoes.objects.filter(doctorId=doctor_id).exists():
+#                 doctor_id = d.get_id
+#                 # checks if the doctor has a regular appointment that overlaps with the new appointment
+#                 for a in models.Undergoes.objects.filter(doctorId=doctor_id):
+#                     if ((appointment_time < a.appointmentTime + timezone.timedelta(minutes=30)) and (appointment_time >= a.appointmentTime)) or ((appointment_time + timezone.timedelta(minutes=30) > a.appointmentTime) and (appointment_time + timezone.timedelta(minutes=30) <= a.appointmentTime + timezone.timedelta(minutes=30))):
+#                         busy_doctors.append(doctor_id)
+#                         break #            if priority == '1':
+                
+ #            else:
+ #                for d in models.Doctor.objects.all():
+ #                    # flag = 0
+ #                    doctor_id = d.get_id
+ #                    # checks if the doctor has a regular appointment that overlaps with the new appointment
+ #                    start_time = appointment_time
+ #                    day_start_time = start_time.replace(hour=00, minute=00)
+ #                    end_time = start_time.replace(hour=23, minute = 59)
+ #                    # if the doctor has an emergency appointment on the same day, don't allow another one
+ #                    appointments_to_check = models.Appointment.objects.filter(doctorId=doctor_id, appointmentTime__gte=day_start_time, appointmentTime__lt=end_time)
+ #                    for a in appointments_to_check:
+ #                            if a.priority == 2:
+ #                                busy_doctors.append(doctor_id)
+ #                                # flag = 1
+ #                                break
+ #                    # if flag == 1:
+ #                    #     continue
+            
+ #            # Check which doctors are busy at the given appointmentTime
+ #            # busy_doctors = models.Appointment.objects.filter(appointmentTime=appointment_time).values_list('doctorId', flat=True).distinct()
+ #            # for a in models.Appointment.objects.all():
+ #            #     if ((appointment_time < a.appointmentTime + timezone.timedelta(minutes=30)) and (appointment_time >= a.appointmentTime)) or ((appointment_time + timezone.timedelta(minutes=30) <= a.appointmentTime + timezone.timedelta(minutes=30)) and (appointment_time + timezone.timedelta(minutes=30) > a.appointmentTime)):
+ #            #         busy_doctors.append(a.doctorId)
+ #            # Get a list of free doctors
+ #            free_doctors = models.Doctor.objects.filter(
+ #                status=True).exclude(user_id__in=busy_doctors)
+
+ #            print(
+ #                f"The following doctors are busy at {appointment_time}: {list(busy_doctors)}")
+ #            print(
+ #                f"The following doctors are free at {appointment_time}: {list(free_doctors)}")
+            
+ #            # Update the appointment form with free doctors queryset
+ #            appointmentForm.fields['doctorId'].queryset = free_doctors
+
+ #            context = {
+ #                'appointmentForm': appointmentForm,
+ #                'free_doctors': free_doctors,
+ #            }
+
+ #            return render(request, 'hospital/frontdesk_add_appointment.html', context)
+
+ #        else:
+ #            appointmentForm = forms.AppointmentForm()
+ #            mydict = {'appointmentForm': appointmentForm, }
+ #            if request.method == 'POST':
+ #                appointmentForm = forms.AppointmentForm(request.POST)
+ #                if appointmentForm.is_valid():
+ #                    doctor_id = request.POST.get('doctorId')
+ #                    appointment_time = appointmentForm.cleaned_data.get(
+ #                        'appointmentTime')
+ #                    # appointment_time = timezone.make_aware(datetime.strptime(appointment_time_str, '%Y-%m-%dT%H:%M'))
+ #                    if request.POST.get('priority') == '2':
+ #                        start_time = appointment_time
+ #                        day_start_time = start_time.replace(hour=00, minute=00)
+ #                        end_time = start_time.replace(hour=23, minute = 59)
+ #                        # if the doctor has an emergency appointment on the same day, don't allow another one
+ #                        appointments_to_check = models.Appointment.objects.filter(doctorId=doctor_id, appointmentTime__gte=day_start_time, appointmentTime__lt=end_time)
+ #                        for a in appointments_to_check:
+ #                            if a.priority == 2:
+ #                                messages.error(
+ #                                    request, 'The selected doctor already has an Emergency appointment scheduled on the same day.')
+ #                                return redirect('frontdesk-add-appointment')
+ #                        appointments_to_delete = models.Appointment.objects.filter(doctorId=doctor_id, appointmentTime__gte=(start_time - timezone.timedelta(minutes=30)), appointmentTime__lt=end_time)
+ #                        for a in appointments_to_delete:
+ #                            patientId = a.patientId
+ #                            patient = models.Patient.objects.get(id=patientId)
+ #                            subject = 'Appointment Cancellation'
+ #                            message = f'Your appointment with Dr. {a.doctorId.user.first_name} {a.doctorId.user.last_name} on {a.appointmentTime} has been cancelled due to an Emergency appointment.'
+ #                            email_from = settings.EMAIL_HOST_USER
+ #                            recipient_list = [patient.user.email, ]
+ #                            send_mail(subject, message, email_from, recipient_list, fail_silently=False)
+ #                        appointments_to_delete.delete()
+ #                        # models.Appointment.objects.filter(
+ #                        #     doctorId=doctor_id, appointmentTime=appointment_time).delete()
+ #                        # print('High')
+                    
+ #                    # Check if the selected doctor already has an appointment at the same time
+ #                    elif request.POST.get('priority') == '1':
+ #                        print(doctor_id)
+ #                        # for a in models.Appointment.objects.all():
+ #                        #     if (appointment_time < a.appointmentTime + timezone.timedelta(minutes=30)) and (appointment_time >= a.appointmentTime):
+ #                        #         busy_doctors.append(a.doctorId)
+ #                        if models.Appointment.objects.filter(doctorId=doctor_id).exists():
+ #                            # checks if the doctor has an Emergency appointment on the same day (prior to the appointment time)
+ #                            start_time = appointment_time
+ #                            day_start_time = start_time.replace(hour=00, minute=00)
+ #                            if models.Appointment.objects.filter(priority=2, doctorId=doctor_id, appointmentTime__gte=day_start_time, appointmentTime__lt=start_time).exists():
+ #                                messages.error(
+ #                                    request, 'The selected doctor already has an Emergency appointment scheduled on the same day.')
+ #                                return redirect('frontdesk-add-appointment')
+ #                            # checks if the doctor has a regular appointment that overlaps with the new appointment
+ #                            for a in models.Appointment.objects.filter(doctorId=doctor_id):
+ #                                if ((appointment_time < a.appointmentTime + timezone.timedelta(minutes=30)) and (appointment_time >= a.appointmentTime)) or ((appointment_time + timezone.timedelta(minutes=30) > a.appointmentTime) and (appointment_time + timezone.timedelta(minutes=30) <= a.appointmentTime + timezone.timedelta(minutes=30))):
+ #                                    messages.error(
+ #                                        request, 'The selected doctor already has an appointment scheduled at the same time.')
+ #                                    return redirect('frontdesk-add-appointment')
+ #                    appointment = appointmentForm.save(commit=False)
+ #                    appointment.doctorId = doctor_id
+ #                    appointment.patientId = request.POST.get('patientId')
+ #                    appointment.doctorName = models.User.objects.get(id=doctor_id).first_name
+                 
+ #                    appointment.patientName=models.Patient.objects.get(id=request.POST.get('patientId')).first_name
+ #                    # print(appointment.patientName, appointment.doctorName)
+
+ #                    appointment.status = True
+ #                    appointment.save()
+ #                    messages.success(
+ #                        request, 'Appointment added successfully!')
+ #                    return redirect('frontdesk-view-appointment')
+ #            else:
+ #                messages.error(
+ #                    request, 'Invalid form submission. Please correct the errors below.')
+ #    return render(request, 'hospital/frontdesk_add_appointment.html', context=mydict)
+
+# @login_required(login_url='frontdesklogin')
+# @user_passes_test(is_frontdeskoperator)
+# def frontdesk_add_udergoes(request):
 #     undergoesForm = forms.undergoesForm()
 #     mydict = {'undergoesForm': undergoesForm, }
 
@@ -1519,6 +1734,7 @@ def frontdesk_appointment_view(request):
 #                 messages.error(
 #                     request, 'Invalid form submission. Please correct the errors below.')
 #     return render(request, 'hospital/frontdesk_add_appointment.html', context=mydict)
+
 
 
 #---------------------------------------------------------------------------------

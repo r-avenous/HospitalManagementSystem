@@ -155,7 +155,10 @@ class Procedure(models.Model):
 class Room(models.Model): 
     number = models.PositiveIntegerField(primary_key=True) 
     room_type = models.CharField(max_length=40) 
-    available = models.BooleanField(default=True) 
+    cost = models.PositiveIntegerField(null=False)
+    max_capacity = models.PositiveIntegerField(null=False, default=1)
+    occupied_capacity = models.PositiveIntegerField(null=False, default=0)
+    # available = models.BooleanField(default=True) 
     @property 
     def is_available(self): 
         return self.available
