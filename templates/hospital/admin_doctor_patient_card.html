@@ -5,19 +5,77 @@
 <head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
+    html {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    .bg {
+      animation: slide 3s ease-in-out infinite alternate;
+      background-image: linear-gradient(-60deg, #cb2d3e 50%, #904e95 50%);
+      bottom: 0;
+      left: -50%;
+      opacity: .5;
+      position: fixed;
+      right: -50%;
+      top: 0;
+      z-index: -1;
+    }
+
+    .bg2 {
+      animation-direction: alternate-reverse;
+      animation-duration: 4s;
+    }
+
+    .bg3 {
+      animation-duration: 5s;
+    }
+
+    .content {
+      background-color: rgba(255, 255, 255, .8);
+      border-radius: .25em;
+      box-shadow: 0 0 .25em rgba(0, 0, 0, .25);
+      box-sizing: border-box;
+      padding: 10vmin;
+      position: fixed;
+      text-align: center;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    h1 {
+      font-family: monospace;
+    }
+
+    @keyframes slide {
+      0% {
+        transform: translateX(-25%);
+      }
+
+      100% {
+        transform: translateX(25%);
+      }
+    }
+
     .bgimg {
       position: relative;
     }
-    .bgimg::before{
+
+    .bgimg::before {
       content: " ";
       position: absolute;
       height: 100%;
       width: 100%;
-      background: url("{% static 'images/bg2.jpg' %}");
+      /* background: url("{% static 'images/bg2.jpg' %}"); */
       opacity: 0.5;
       z-index: -1;
       background-size: cover;
-      }
+    }
+
     .card {
       box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
       max-width: 250px;
@@ -82,49 +140,148 @@
     a {
       color: white;
     }
+
+    /* Add this CSS to your existing styles */
+
+    .grid-item {
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
   </style>
 </head>
 
 <body>
+  {% include "hospital/navbar.html" %}
+  <style>
+    .cool-button {
+      background-color: #904e95;
+      border: none;
+      border-radius: 20px;
+      color: white;
+      font-size: 24px;
+      padding: 12px 24px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 20px;
+      transition-duration: 0.4s;
+      cursor: pointer;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .cool-button:hover {
+      background-color: #cb2d3e;
+    }
+
+    .card {
+      position: relative;
+    }
+
+    .fly-away {
+      animation: fly-away-animation 0.5s ease-out;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes fly-away-animation {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(0);
+      }
+    }
+  </style>
+  <div class="bg"></div>
+  <div class="bg bg2"></div>
+  <div class="bg bg3"></div>
+
   <div class="bgimg">
+    <script>
+      // Wait for the page to load
+      window.addEventListener("load", function () {
+        // Get all the cards
+        var cards = document.querySelectorAll(".card");
+        // Loop through each card and remove the fly-away class
+        cards.forEach(function (card) {
+          card.classList.remove("fly-away");
+        });
+      });
+    </script>
+    <script>
+      function flyAway(url) {
+        // Get all the card elements
+        var cards = document.querySelectorAll(".card");
 
-  <div class="grid-container">
-    <div class="grid-item">
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-      <div class="card">
-        <img src="{% static "images/admin.png" %}" alt="John" style="width:100%">
-        <p class="title">ADMIN</p>
-        <p><button><a href="/adminclick">Log In</a></button></p>
-      </div>
+        // Add the fly-away class to each card
+        cards.forEach(function (card) {
+          card.classList.add("fly-away");
+        });
 
-    </div>
-    <div class="grid-item">
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-      <div class="card">
-        <img src="{% static "images/frontdeskoperator.png" %}" alt="John" style="width:100%">
-        <p class="title">FRONT DESK OPERATOR</p>
-        <p><button><a href="/frontdeskclick">Log In</a></button></p>
-      </div>
+        // Wait for the animation to complete
+        setTimeout(function () {
+          // Redirect to the specified URL
+          window.location.href = url;
+        }, 1000);
+      }
+    </script>
 
-    </div>
-    <div class="grid-item">
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-      <div class="card">
-        <img src="{% static "images/dataentryoperator.png" %}" alt="John" style="width:100%">
-        <p class="title">DATA ENTRY OPERATOR</p>
-        <p><button><a href="/dataentryclick">Log In</a></button></p>
-      </div>
 
-    </div>
-    <div class="grid-item">
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-      <div class="card">
-        <img src="{% static "images/doctor.png" %}" alt="John" style="width:100%">
-        <p class="title">DOCTOR</p>
-        <p><button><a href="/doctorclick">Log In</a></button></p>
+    <div class="grid-container">
+      <div class="grid-item">
+        <br><br><br><br><br><br><br><br><br><br>
+        <div class="card">
+          <img src="{% static "images/admin.png" %}" alt="John" style="width:100%">
+          <p class="title">ADMIN</p>
+          <button style="margin-left: 35px; margin-bottom: 15px;" class="cool-button"
+            onclick="flyAway('/adminclick')">Log In</button>
+        </div>
+
       </div>
-    </div>
-    <!-- <div class="grid-item">
+      <div class="grid-item">
+        <br><br><br><br><br><br><br><br><br><br>
+        <div class="card">
+          <img src="{% static "images/frontdeskoperator.png" %}" alt="John" style="width:100%">
+          <p class="title">FRONT DESK OPERATOR</p>
+          <button class="cool-button" style="margin-left: 35px;margin-bottom: 15px;"
+            onclick="flyAway('/frontdeskclick')">Log In</button>
+        </div>
+
+      </div>
+      <div class="grid-item">
+        <br><br><br><br><br><br><br><br><br><br>
+        <div class="card">
+          <img src="{% static "images/dataentryoperator.png" %}" alt="John" style="width:100%">
+          <p class="title">DATA ENTRY OPERATOR</p>
+          <button class="cool-button" style="margin-left: 35px;margin-bottom: 15px;"
+            onclick="flyAway('/dataentryclick')">Log In</button>
+        </div>
+
+      </div>
+      <div class="grid-item">
+        <br><br><br><br><br><br><br><br><br><br>
+        <div class="card">
+          <img src="{% static "images/doctor.png" %}" alt="John" style="width:100%">
+          <p class="title">DOCTOR</p>
+          <button class="cool-button" style="margin-left: 35px;margin-bottom: 15px;"
+            onclick="flyAway('/doctorclick')">Log In</button>
+        </div>
+      </div>
+      <!-- <div class="grid-item">
       <div class="card">
         <img src="{% static "images/patient.jpg" %}" alt="John" style="width:100%">
         <p class="title">PATIENT</p>
@@ -132,8 +289,8 @@
       </div>
     </div> -->
 
+    </div>
   </div>
-</div>
 </body>
 
 </html>

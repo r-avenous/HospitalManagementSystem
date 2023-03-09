@@ -23,6 +23,12 @@ def home_view(request):
         return HttpResponseRedirect('afterlogin')
     return render(request,'hospital/index.html')
 
+
+def display_card_view(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('afterlogin')
+    return render(request, 'hospital/admin_doctor_patient_card.html')
+
 #for showing signup/login button for admin(by sumit)
 def adminclick_view(request):
     if request.user.is_authenticated:
@@ -806,6 +812,9 @@ def doctor_dashboard_view(request):
     appointmentcount=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id).count()
     patientdischarged=models.PatientDischargeDetails.objects.all().distinct().filter(assignedDoctorName=request.user.first_name).count()
 
+
+    doctor = models.Doctor.objects.get(
+    user_id=request.user.id)
     #for  table in doctor dashboard
     appointments=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id).order_by('-id')
     patientid=[]
@@ -818,7 +827,7 @@ def doctor_dashboard_view(request):
     'appointmentcount':appointmentcount,
     'patientdischarged':patientdischarged,
     'appointments':appointments,
-    'doctor':models.Doctor.objects.get(user_id=request.user.id), #for profile picture of doctor in sidebar
+    'doctor':doctor, #for profile picture of doctor in sidebar
     }
     return render(request,'hospital/doctor_dashboard.html',context=mydict)
 
@@ -875,16 +884,16 @@ def doctor_appointment_view(request):
 @login_required(login_url='doctorlogin')
 @user_passes_test(is_doctor)
 def doctor_view_appointment_view(request):
-    doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
-    appointments=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id)
-    patientid=[]
+    # for profile picture of doctor in sidebar
+    doctor = models.Doctor.objects.get(user_id=request.user.id)
+    appointments = models.Appointment.objects.all().filter(
+        status=True, doctorId=request.user.id)
+    patientid = []
     for a in appointments:
         patientid.append(a.patientId)
-    patients=models.Patient.objects.all().filter(status=True,IndentationError=patientid)
-    appointments=zip(appointments,patients)
-    return render(request,'hospital/doctor_view_appointment.html',{'appointments':appointments,'doctor':doctor})
-
-
+    patients = models.Patient.objects.all().filter(status=True, id__in=patientid)
+    appointments = zip(appointments, patients)
+    return render(request, 'hospital/doctor_view_appointment.html', {'appointments': appointments, 'doctor': doctor})
 
 @login_required(login_url='doctorlogin')
 @user_passes_test(is_doctor)
@@ -1061,8 +1070,11 @@ def frontdesk_discharge_patient_view(request):
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_add_appointment(request):
+    frontdeskoperator = models.FrontDeskOperator.objects.get(
+        user_id=request.user.id)
+
     appointmentForm = forms.AdminAppointmentForm()
-    mydict = {'appointmentForm': appointmentForm, }
+    mydict = {'appointmentForm': appointmentForm,'frontdesk':frontdeskoperator} 
 
     if request.method == 'POST':
         if 'action' in request.POST and request.POST['action'] == 'check':
@@ -1087,6 +1099,7 @@ def frontdesk_add_appointment(request):
             context = {
                 'appointmentForm': appointmentForm,
                 'free_doctors': free_doctors,
+                'frontdesk': frontdeskoperator
             }
 
             return render(request, 'hospital/frontdesk_add_appointment.html', context)
@@ -1134,6 +1147,8 @@ def frontdesk_add_appointment(request):
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_update_appointment_view(request,pk):
     appointment=models.Appointment.objects.get(id=pk)
+    frontdeskoperator = models.FrontDeskOperator.objects.get(
+        user_id=request.user.id)
     # patient_status=patient.status
     #user=models.User.objects.get(id=patient.user_id)
 
@@ -1141,7 +1156,7 @@ def frontdesk_update_appointment_view(request,pk):
     appointmentForm = forms.AdminAppointmentForm(instance=appointment)
     appointment_time_prev = appointment.appointmentTime
     doctor_id_prev = appointment.doctorId
-    mydict = {'appointmentForm': appointmentForm,}
+    mydict = {'appointmentForm': appointmentForm,'frontdesk':frontdeskoperator}
 
     if request.method == 'POST':
         if 'action' in request.POST and request.POST['action'] == 'check':
@@ -1168,6 +1183,7 @@ def frontdesk_update_appointment_view(request,pk):
             context = {
                 'appointmentForm': appointmentForm,
                 'free_doctors': free_doctors,
+                'frontdesk': frontdeskoperator
             }
 
             return render(request, 'hospital/frontdesk_update_appointment.html', context)
@@ -1225,8 +1241,10 @@ def frontdesk_delete_appointment(request,pk):
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_appointment_view(request):
+    frontdeskoperator = models.FrontDeskOperator.objects.get(
+        user_id=request.user.id)
     appointments=models.Appointment.objects.all().filter(status=True)
-    return render(request,'hospital/frontdesk_view_appointment.html',{'appointments':appointments})
+    return render(request,'hospital/frontdesk_view_appointment.html',{'appointments':appointments,'frontdesk':frontdeskoperator})
 
 #---------------------------------------------------------------------------------
 #------------------------ DATA ENTRY OPERATOR RELATED VIEWS START ------------------------------
@@ -1235,8 +1253,11 @@ def frontdesk_appointment_view(request):
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_dashboard_view(request):
+    dataentryoperator = models.DataEntryOperator.objects.get(
+        user_id=request.user.id)
     mydict={
     'patient':models.Patient.objects.all(), 
+    'dataentry':dataentryoperator,
     }
     return render(request,'hospital/dataentry_dashboard.html', mydict)
 
@@ -1244,8 +1265,10 @@ def dataentry_dashboard_view(request):
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_patient_view(request):
+    dataentryoperator = models.DataEntryOperator.objects.get(
+        user_id=request.user.id)
     patients=models.Patient.objects.all()
-    return render(request,'hospital/dataentry_view_patient.html',{'patients':patients})
+    return render(request,'hospital/dataentry_view_patient.html',{'patients':patients,'dataentry':dataentryoperator})
 
 
 
@@ -1379,6 +1402,7 @@ def patient_discharge_view(request):
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_dashboard_view(request):
+
     mydict={
     'dataentry':models.DataEntryOperator.objects.get(user_id=request.user.id), #for profile picture of doctor in sidebar
     }
@@ -1393,11 +1417,13 @@ def dataentry_dashboard_view(request):
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_test_view(request):
+    dataentryoperator = models.DataEntryOperator.objects.get(
+        user_id=request.user.id)
     test=models.Test.objects.all()
     for t in test:
         patient = models.Patient.objects.get(id=t.patientId_id)
         t.patientname = patient.get_name
-    return render(request,'hospital/dataentry_view_tests.html',{'tests':test})
+    return render(request,'hospital/dataentry_view_tests.html',{'tests':test,'dataentry':dataentryoperator})
 
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
@@ -1409,9 +1435,11 @@ def dataentry_add_test_view(request):
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_add_test_hospital_view(request):
+    dataentryoperator = models.DataEntryOperator.objects.get(
+        user_id=request.user.id)
     Testform=forms.TestForm2()
     # doctorForm=forms.DoctorForm()
-    mydict={'testform':Testform}
+    mydict={'testform':Testform,'dataentry':dataentryoperator}
     if request.method=='POST':
         Testform=forms.TestForm2(request.POST)
         # doctorForm=forms.DoctorForm(request.POST, request.FILES)
@@ -1425,9 +1453,11 @@ def dataentry_add_test_hospital_view(request):
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_add_test_others_view(request):
+    dataentryoperator = models.DataEntryOperator.objects.get(
+        user_id=request.user.id)
     Testform=forms.TestForm1()
     # doctorForm=forms.DoctorForm()
-    mydict={'testform':Testform}
+    mydict={'testform':Testform,'dataentry':dataentryoperator}
     if request.method=='POST':
         Testform=forms.TestForm1(request.POST, request.FILES)
         # doctorForm=forms.DoctorForm(request.POST, request.FILES)
@@ -1441,6 +1471,8 @@ def dataentry_add_test_others_view(request):
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_update_test_view(request,pk):
+    dataentryoperator = models.DataEntryOperator.objects.get(
+        user_id=request.user.id)
     test=models.Test.objects.get(id=pk)
     form=forms.TestUpdateForm(instance=test)
     if request.method=='POST':
@@ -1448,7 +1480,7 @@ def dataentry_update_test_view(request,pk):
         if form.is_valid():
             form.save()
             return redirect('dataentry-view-test')
-    return render(request,'hospital/dataentry_update_test.html',{'form':form})
+    return render(request,'hospital/dataentry_update_test.html',{'form':form,'dataentry':dataentryoperator})
 
 
 

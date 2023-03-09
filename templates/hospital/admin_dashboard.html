@@ -1,55 +1,128 @@
 {% extends 'hospital/admin_base.html' %}
 {% load static %}
 {% block content %}
-{%include 'hospital/admin_dashboard_cards.html'%}
-<br><br><br><br>
-<div class="container">
-  <div class="row">
-    <div class="panel panel-primary col-md-5" style="margin-left:2%;">
-      <div class="panel-heading" style="text-align:center;">
-        <h6 class="panel-title">Recent Doctors</h6>
-      </div>
-      <table class="table table-hover" id="dev-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Department</th>
-            <th>Mobile</th>
-            <!-- <th>Status</th> -->
+<!-- import bootstrap -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <style>
+    .card-deck {
+      padding-top: 20px;
+  margin-top: 20px;
+  margin-left: 30px;
+  padding-right: 30px;
+}
+.card {
+  max-width: 300px;
+  opacity: 80%;
+}
+table {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    opacity: 60%;
+  }
+  </style>
 
-          </tr>
-        </thead>
-        {% for d in doctors %}
-        <tr>
-          <td> {{d.get_name}}</td>
-          <td>{{d.department}}</td>
-          <td>{{d.mobile}}</td>
-          <!-- {%if d.status%}
-          <td> <span class="label label-primary">Permanent</span></td>
-          {% else %}
-          <td> <span class="label label-success">On Hold</span></td>
-          {% endif %} -->
+<div class="card-deck">
 
-        </tr>
-        {% endfor %}
-      </table>
+
+  <div class="card">
+    
+          <img class="card-img-top" src="{% static "images/doctor.png" %}" alt="John" style="width:100%">
+    <div class="card-body">
+      <h5 class="card-title">Total Doctors {{doctorcount}}</h5>
+      <!-- <p class="card-text">{{doctorcount}}</p> -->
     </div>
+  </div>
+  <div class="card">
+          <img class="card-img-top" src="{% static "images/admin.png" %}" alt="John" style="width:100%">
+    <div class="card-body">
+      <h5 class="card-title">Total Patients {{patientcount}}</h5>
+      <!-- <p class="card-text">{{patientcount}}</p> -->
+            <p class="card-text"><small class="text-muted">Admitted Patients : {{admitted_patientcount}}</small></p>
 
-    <div class="panel panel-primary col-md-5" style="margin-left:5%;">
-      <div class="panel-heading" style="text-align:center;">
-        <h6 class="panel-title">Recent Patients</h6>
+    </div>
+  </div>
+  <div class="card">
+          <img class="card-img-top"src="{% static "images/frontdeskoperator.png" %}" alt="John" style="width:100%">
+    <div class="card-body">
+      <h5 class="card-title">Total Front Desk Operators {{frontdeskcount}}</h5>
+      <!-- <p class="card-text">{{frontdeskcount}}</p> -->
+    </div>
+    
+  </div>
+    <div class="card">
+          <img class="card-img-top"src="{% static "images/dataentryoperator.png" %}" alt="John" style="width:100%">
+      <div class="card-body">
+        <h5 class="card-title">Total Data Entry Operators {{dataentrycount}}</h5>
+        <!-- <p class="card-text">{{dataentrycount}}</p> -->
       </div>
-      <table class="table table-hover" id="dev-table">
-        <thead>
+    
+    </div>
+     <div class="card">
+          <img src="{% static "images/doctor.png" %}" alt="John" style="width:100%">
+      <div class="card-body">
+        <h5 class="card-title">Total Appointments {{appointmentcount}}</h5>
+        <!-- <p class="card-text">{{appointmentcount}}</p> -->
+      </div>
+    
+    </div>
+</div>
+<br><br><br><br>
+<div class="row">
+  <div class="col">
+<table class="table table-hover" style="width: 90%;margin-left: 50px;">
+  <thead>
+    <tr>
+      <th colspan="3" class="text-center">Recent Doctors</th>
+    </tr>
+    <tr>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Department</th>
+        <th scope="col">Mobile</th>
+        <!-- <th>Status</th> -->
+      
+      </tr>
+    </tr>
+  </thead>
+  <tbody>
+          {% for d in doctors %}
           <tr>
-            <th>Name</th>
-            <th>Symptoms</th>
-            <th>Mobile</th>
-            <th>Address</th>
-            <th>Status</th>
-
+            <td> {{d.get_name}}</td>
+            <td>{{d.department}}</td>
+            <td>{{d.mobile}}</td>
+            <!-- {%if d.status%}
+                    <td> <span class="label label-primary">Permanent</span></td>
+                    {% else %}
+                    <td> <span class="label label-success">On Hold</span></td>
+                    {% endif %} -->
+          
           </tr>
-        </thead>
+          {% endfor %}
+  </tbody>
+</table>
+  </div>
+
+  <div class="col">
+
+    <table class="table table-hover" style="width: 90%;margin-left: 40px;padding-right: 50px;">
+       
+      <thead>
+           
+<tr>
+  <th colspan="4" class="text-center">Recent patients</th>
+</tr>
+        <tr>
+          <th>Name</th>
+          <th>Symptoms</th>
+          <th>Mobile</th>
+          <th>Address</th>
+          <th>Status</th>
+        
+        </tr>
+      </thead>
+      <tbody>
+        
+       
         {% for p in patients %}
         <tr>
           <td> {{p.get_name}}</td>
@@ -63,12 +136,13 @@
           {%elif p.status == 2%}
           <td> <span class="label label-success">Discharged</span></td>
           {% endif %}
-
+        
         </tr>
         {% endfor %}
-      </table>
-    </div>
+      </tbody>
+    </table>
   </div>
+  
 </div>
 
 

@@ -1,86 +1,17 @@
+
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <title>Hospital Management System</title>
-
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <title>Data entry Operator Base</title>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&amp;display=swap'>
+  <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css'>
 
 
 
-  <style media="screen">
-    a:link {
-      text-decoration: none;
-    }
-
-    a {
-      color: white;
-    }
-
-    a:hover {
-      color: white;
-    }
-
-
-
-
-    /*---------------------------------------
-       Social section
-    -----------------------------------------*/
-    footer {
-      padding: 0px 0px 0px 0px;
-      background-color: black;
-      margin: 0px;
-    }
-
-
-    #ftr {
-
-      padding: 20px;
-    }
-
-    .fa {
-
-      font-size: 23px;
-      width: 60px;
-      text-align: center;
-      text-decoration: none;
-      margin: 5px 2px;
-      border-radius: 50%;
-    }
-
-    .fa:hover {
-      opacity: 0.5;
-      text-decoration: none;
-    }
-
-    .fa-facebook {
-      background: #3B5998;
-      color: white;
-      margin-top: 30px;
-    }
-
-    .fa-whatsapp {
-      background: #25d366;
-      color: white;
-    }
-
-    .fa-twitter {
-      background: #55ACEE;
-      color: white;
-    }
-
-    .fa-instagram {
-      background: #125688;
-      color: white;
-    }
-
+  <style>
     p {
       text-align: center;
 
@@ -297,65 +228,369 @@
         pointer-events: none;
       }
     }
+
+    .bg {
+      animation: slide 3s ease-in-out infinite alternate;
+      background-image: linear-gradient(-60deg, #cb2d3e 50%, #904e95 50%);
+      bottom: 0;
+      left: -50%;
+      opacity: .5;
+      position: fixed;
+      right: -50%;
+      top: 0;
+      z-index: -1;
+    }
+
+    .bg2 {
+      animation-direction: alternate-reverse;
+      animation-duration: 4s;
+    }
+
+    .bg3 {
+      animation-duration: 5s;
+    }
+
+    .content {
+      background-color: rgba(255, 255, 255, .8);
+      border-radius: .25em;
+      box-shadow: 0 0 .25em rgba(0, 0, 0, .25);
+      box-sizing: border-box;
+      padding: 10vmin;
+      position: fixed;
+      text-align: center;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.5s ease;
+    }
+
+    .content.slide-out {
+      transform: translateX(-100%);
+      transition: all 0.7s ease;
+      position: fixed;
+      left: -100%;
+      top: 50%;
+    }
+
+
+    h1 {
+      font-family: monospace;
+    }
+
+    @keyframes slide {
+      0% {
+        transform: translateX(-25%);
+      }
+
+      100% {
+        transform: translateX(25%);
+      }
+    }
+
+    :root {
+      --body-color: #ebf0ff;
+      --sidebar-color: #fff;
+      --primary-color: #4070f4;
+      --primary-color-light: #f6f5ff;
+      --toggle-color: #ddd;
+      --text-color: #707070;
+      --tran-02: all 0.2s ease;
+      --tran-03: all 0.3s ease;
+      --tran-04: all 0.4s ease;
+      --tran-05: all 0.5s ease;
+    }
+
+    body.dark {
+      --body-color: #18191a;
+      --sidebar-color: #242526;
+      --primary-color: #3a3b3c;
+      --primary-color-light: #3a3b3c;
+      --toggle-color: #6f6f6f;
+      --text-color: #ccc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      min-height: 100%;
+      background-color: var(--body-color);
+      transition: var(--tran-05);
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 70px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+
+      box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+      transition: var(--tran-05);
+    }
+
+    nav .logo {
+      display: flex;
+      align-items: center;
+      margin: 0 24px;
+    }
+
+    nav .sidebar {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      height: 100%;
+      width: 260px;
+      padding: 20px 0;
+      background: var(--sidebar-color);
+      box-shadow: 0 5px 1px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s ease;
+    }
+
+    .logo .menu-icon {
+      color: var(--text-color);
+      font-size: 24px;
+      margin-right: 14px;
+      cursor: pointer;
+    }
+
+    .logo .logo-name {
+      color: var(--text-color);
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    nav.open .sidebar {
+      left: 0;
+    }
+
+    nav.open~.overlay {
+      opacity: 1;
+      left: 260px;
+      pointer-events: auto;
+    }
+
+    .sidebar .sidebar-content {
+      display: flex;
+      height: 100%;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px 16px;
+    }
+
+    .sidebar-content .list {
+      list-style: none;
+    }
+
+    .sidebar-content .list .nav-link {
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+      padding: 14px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: var(--tran-02);
+    }
+
+    .sidebar-content .list .nav-link:hover {
+      background-color: var(--primary-color);
+    }
+
+    .sidebar-content .list .nav-link:hover .icon {
+      color: #fff;
+    }
+
+    .sidebar-content .list .nav-link:hover .link {
+      color: #fff;
+    }
+
+    .sidebar-content .list .nav-link .icon {
+      margin-right: 14px;
+      font-size: 20px;
+      color: var(--text-color);
+    }
+
+    .sidebar-content .list .nav-link .link {
+      font-size: 16px;
+      color: var(--text-color);
+      font-weight: 400;
+    }
+
+    .sidebar-content .mode {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      border-radius: 6px;
+      background-color: var(--primary-color-light);
+      position: relative;
+      transition: var(--tran-05);
+      list-style: none;
+    }
+
+    .sidebar-content .mode .text {
+      color: var(--text-color);
+      transition: var(--tran-03);
+    }
+
+    .sidebar-content .mode .sun-moon {
+      height: 50px;
+      width: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    .sidebar-content .mode .sun-moon i {
+      position: absolute;
+      color: var(--text-color);
+      transition: var(--tran-03);
+    }
+
+    .sidebar-content .mode .sun-moon i.sun {
+      opacity: 0;
+    }
+
+    .sidebar-content .mode .toggle-switch {
+      position: absolute;
+      right: 0;
+      height: 100%;
+      min-width: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .sidebar-content .mode .toggle-switch .switch {
+      position: relative;
+      height: 22px;
+      width: 40px;
+      border-radius: 25px;
+      background-color: var(--toggle-color);
+      transition: var(--tran-05);
+    }
+
+    .sidebar-content .mode .switch::before {
+      content: "";
+      position: absolute;
+      height: 15px;
+      width: 15px;
+      border-radius: 50%;
+      top: 50%;
+      left: 5px;
+      transform: translateY(-50%);
+      background-color: var(--sidebar-color);
+      transition: var(--tran-04);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      height: 1000vh;
+      width: 200%;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s ease;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark .mode .sun-moon i.sun {
+      opacity: 1;
+    }
+
+    body.dark .mode .sun-moon i.moon {
+      opacity: 0;
+    }
+
+    body.dark .switch::before {
+      left: 20px !important;
+    }
   </style>
 </head>
 
 <body>
-  <!-- partial:index.partial.html -->
-  <nav class="menu" tabindex="0">
-    <div class="smartphone-menu-trigger"></div>
-    <header class="avatar">
-      <img src="{% static dataentry.profile_pic.url %}" alt="Profile Pic" />
-      <br><br>
-      <!-- <h6>FDO</h6> -->
-      <h2>{{request.user.first_name}}</h2>
-    </header>
-    <ul>
-      <li tabindex="0" class="icon-dashboard"> <a style="color:white; text-decoration:none;"
-          href="/dataentry-dashboard"><span>Dashboard</span></a> </li>
-      <!-- <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;"
-          href="/doctor-patient"><span>Patient</span></a></li>
-      <li tabindex="0" class="icon-calendar"> <a style="color:white; text-decoration:none;"
-          href="/doctor-appointment"><span>Appointments</span></a></li> -->
-    </ul>
-  </nav>
-  <main>
-    <!-- nav start -->
-    <div class="bs-example">
-      <nav class="navbar navbar-expand-md  navbar-dark fixed-top" style="background:#337AB7;">
-        <a href="/dataentry-dashboard" class="navbar-brand">HOSPITAL MANAGEMENT</a>
-        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-          <div class="navbar-nav" style=" margin-left: 90%;">
+  <div class="bg"></div>
+  <div class="bg bg2"></div>
+  <div class="bg bg3"></div>
+  <script>
+    const body = document.querySelector("body"),
+      navBar = document.querySelector("nav"),
 
-            <a href="/logout" class="nav-item nav-link">Logout</a>
-          </div>
-        </div>
-      </nav>
-    </div>
-    <!-- nav end -->
-    <br><br>
-    <!-- content start-->
-    {% block content %}
-    {% endblock content %}
-    <!-- content end-->
-    <br><br><br><br><br><br><br>
-    <footer>
+      overlay = document.querySelector(".overlay"),
+      modeSwitch = body.querySelector(".toggle-switch"),
+      modeText = body.querySelector(".mode-text");
 
-      <br>
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12 col-sm-12">
-            <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
-              <p> <br>
-            </div>
-          </div>
-        </div>
+
+
+    overlay.addEventListener("click", () => {
+      navBar.classList.remove("open");
+    });
+
+    modeSwitch.addEventListener("click", () => {
+      body.classList.toggle("dark");
+
+      if (body.classList.contains("dark")) {
+        modeText.innerText = "Light mode";
+      } else {
+        modeText.innerText = "Dark mode";
+      }
+    });
+  </script>
+
+  <nav class="open" style="opacity: 90%;">
+
+    <div class="sidebar">
+      <div class="logo">
+        <a href="/dataentry-dashboard">
+          <img src="{% static dataentry.profile_pic.url %}" alt="Logo" class="logo-image" width="150px"
+            style="margin-left: 20px;">
+          <br>
+          <br>
+
+          <span class="logo-name" style="margin-left: 5px;">{{request.user.first_name}}- Admin</span>
+
+        </a>
       </div>
-    </footer>
-  </main>
+
+      <div class="sidebar-content">
+        <ul class="lists">
+          <li class="list">
+            <a href="/dataentry-dashboard" class="nav-link">
+              <i class="bx bx-home-alt icon"></i>
+              <span class="link">Dashboard</span>
+            </a>
+          </li>
+        
+
+          <li class="list">
+            <a href="/logout" class="nav-link">
+              <i class="bx bx-log-out icon"></i>
+              <span class="link">Logout</span>
+            </a>
+          </li>
+        </ul>
+
+
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- content start-->
+  {% block content %}
+
+  {% endblock content %}
+  <!-- content end-->
+  <!-- partial -->
+
 </body>
 
 </html>

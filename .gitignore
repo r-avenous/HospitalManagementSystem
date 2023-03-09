@@ -1,5 +1,1 @@
 .vscode
-./HospitalManagementSystem/settings.py
-./HospitalManagementSystem/__pycache__
-./hospital/__pycache__
-./hospital/migrations/

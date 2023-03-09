@@ -7,36 +7,51 @@
     a:link {
       text-decoration: none;
     }
-
+  
     .note {
       text-align: center;
       height: 80px;
-      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
-      color: #fff;
+      background: #F5EFF6;
+      color: #000000;
       font-weight: bold;
       line-height: 80px;
+      max-width: 700px;
+      opacity: 85%;
+  
+  
     }
-
+  
     .form-content {
       padding: 5%;
       border: 1px solid #ced4da;
       margin-bottom: 2%;
+      background-color: #F5EFF6;
+      max-width: 700px;
+      opacity: 85%;
     }
-
+  
     .form-control {
       border-radius: 1.5rem;
     }
-
+  
     .btnSubmit {
+      background-color: #e50914;
       border: none;
-      border-radius: 1.5rem;
-      padding: 1%;
-      width: 20%;
-      cursor: pointer;
-      background: #0062cc;
+      border-radius: 5px;
       color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 10px 30px;
+      transition: background-color 0.3s ease;
+      margin-bottom: 20px;
+      width: 100%;
+      box-sizing: border-box;
     }
-
+  
+    .btnSubmit:hover {
+      background-color: #b2070c;
+    }
+  
     .menu {
       top: 50px;
     }
@@ -51,7 +66,7 @@
 <!------ signup page for doctor by admin(sumit)  ---------->
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
-  <div class="container register-form">
+  <div class="container register-form" style=" padding-left: 200px;">
     <div class="form">
       <div class="note">
         <p>Admit Patient To Hospital</p>
