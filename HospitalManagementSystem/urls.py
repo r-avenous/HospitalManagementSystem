@@ -139,6 +139,10 @@ urlpatterns +=[
     path('frontdesk-update-appointment/<int:pk>', views.frontdesk_update_appointment_view,name='frontdesk-update-appointment'),
     path('frontdesk-delete-appointment/<int:pk>', views.frontdesk_delete_appointment,name='frontdesk-delete-appointment'),
     
+    path('frontdesk-view-undergoes', views.frontdesk_undergoes_view,name='frontdesk-view-undergoes'),
+    path('frontdesk-add-undergoes', views.frontdesk_add_undergoes,name='frontdesk-add-undergoes'),
+    path('frontdesk-update-undergoes/<int:pk>', views.frontdesk_update_undergoes_view,name='frontdesk-update-undergoes'),
+    path('frontdesk-delete-undergoes/<int:pk>', views.frontdesk_delete_undergoes,name='frontdesk-delete-undergoes'),
     #path('admin-approve-appointment', views.admin_approve_appointment_view,name='admin-approve-appointment'),
 ]
 

@@ -1,0 +1,147 @@
+{% extends 'hospital/frontdesk_base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<head>
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    .note {
+      text-align: center;
+      height: 80px;
+      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+      color: #fff;
+      font-weight: bold;
+      line-height: 80px;
+    }
+
+    .form-content {
+      padding: 5%;
+      border: 1px solid #ced4da;
+      margin-bottom: 2%;
+    }
+
+    .form-control {
+      border-radius: 1.5rem;
+    }
+
+    .btnSubmit {
+      border: none;
+      border-radius: 1.5rem;
+      padding: 1%;
+      width: 20%;
+      cursor: pointer;
+      background: #0062cc;
+      color: #fff;
+    }
+
+    .menu {
+      top: 50px;
+    }
+  </style>
+
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+</head>
+
+<br><br>
+
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<script>
+  console.log('Your log message here');
+
+  $(document).ready(function () {
+    // Check if description exists in local storage
+    var description = localStorage.getItem('id_description');
+    if (description) {
+      // If it exists, set the value of the description field to the stored value
+      $('textarea[name="description"]').val(description);
+    }
+
+    // Store the description value in local storage when the field changes
+    $('textarea[name="description"]').on('change', function () {
+      var descriptionValue = $(this).val();
+      localStorage.setItem('id_description', descriptionValue);
+    });
+
+    // Check if start_time exists in local storage
+    var start_time = localStorage.getItem('id_start_time');
+    if (start_time) {
+      // If it exists, set the value of the appointmentTime field to the stored value
+      $('input[name="start_time"]').val(start_time);
+    }
+
+    // Store the start_time value in local storage when the field changes
+    $('input[name="start_time"]').on('change', function () {
+      var start_timeValue = $(this).val();
+      localStorage.setItem('id_start_time', start_timeValue);
+    });
+
+  // Check if end_time exists in local storage
+  var end_time = localStorage.getItem('id_end_time');
+    if (end_time) {
+      // If it exists, set the value of the appointmentTime field to the stored value
+      $('input[name="end_time"]').val(end_time);
+    }
+
+    // Store the end_ime value in local storage when the field changes
+    $('input[name="end_time"]').on('change', function () {
+      var end_timeValue = $(this).val();
+      localStorage.setItem('id_end_time', end_timeValue);
+    });
+  });
+</script>
+
+
+<form method="post">
+  {% csrf_token %}
+  <div class="container register-form">
+    <div class="form">
+      <div class="note">
+        <p>Book Test/Treatment Details</p>
+      </div>
+      <div class="form-content">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              {% render_field undergoesForm.doctorId class="form-control" placeholder="doctor" %}
+            </div>
+            <div class="form-group">
+              {% render_field undergoesForm.patientId class="form-control" placeholder="patient" %}
+            </div>
+            <div class="form-group">
+                {% render_field undergoesForm.procedureId class="form-control" placeholder="procedure" %}
+              </div>
+            <div class="form-group">
+              {% render_field undergoesForm.start_time class="form-control" placeholder="start_time" %}
+            </div>
+            <div class="form-group">
+              {% render_field undergoesForm.end_time class="form-control" placeholder="end_time" %}
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btnSubmit" name="action" value="check">Check</button>
+        <!-- {% for doctor in free_doctors %}
+        <li>{{ doctor}}</li>
+        {% endfor %} -->
+        <button type="submit" class="btnSubmit" name="action" value="submit">Book</button>
+
+      </div>
+    </div>
+  </div>
+</form>
+
+{% endblock content %}
