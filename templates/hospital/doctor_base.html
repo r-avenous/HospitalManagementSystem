@@ -86,6 +86,10 @@
 
     }
 
+
+
+
+
     body {
 
       padding-left: 240px;
@@ -294,65 +298,597 @@
       }
     }
   </style>
+  <style>
+    p {
+      text-align: center;
+  
+    }
+  
+  
+  
+  
+  
+    body {
+  
+      padding-left: 240px;
+    }
+  
+    main {
+      position: relative;
+      height: 100vh;
+    }
+  
+    .menu {
+      background: #5bc995;
+      height: 100vh;
+      width: 240px;
+      position: fixed;
+      top: 0px;
+      left: 0;
+      z-index: 5;
+      outline: none;
+    }
+  
+    .menu .avatar {
+      background: rgba(0, 0, 0, 0.1);
+      padding: 2em 0.5em;
+      text-align: center;
+    }
+  
+    .menu .avatar img {
+      width: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid #ffea92;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
+    }
+  
+    .menu .avatar h2 {
+      font-weight: normal;
+      margin-bottom: 0;
+    }
+  
+    .menu ul {
+      list-style: none;
+      padding: 0.5em 0;
+      margin: 0;
+    }
+  
+    .menu ul li {
+      padding: 0.5em 1em 0.5em 3em;
+      font-size: 0.95em;
+      font-weight: regular;
+      background-repeat: no-repeat;
+      background-position: left 15px center;
+      background-size: auto 20px;
+      transition: all 0.15s linear;
+      cursor: pointer;
+    }
+  
+    .menu ul li.icon-dashboard {
+      background-image: url("http://www.entypo.com/images//gauge.svg");
+    }
+  
+    .menu ul li.icon-customers {
+      background-image: url("http://www.entypo.com/images//briefcase.svg");
+    }
+  
+    .menu ul li.icon-users {
+      background-image: url("http://www.entypo.com/images//users.svg");
+    }
+  
+    .menu ul li.icon-calendar {
+      background-image: url("http://www.entypo.com/images//calendar.svg");
+    }
+  
+    .menu ul li:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  
+    .menu ul li:focus {
+      outline: none;
+    }
+  
+    @media screen and (max-width: 900px) and (min-width: 400px) {
+      body {
+        padding-left: 90px;
+      }
+  
+      .menu {
+        width: 90px;
+      }
+  
+      .menu .avatar {
+        padding: 0.5em;
+        position: relative;
+      }
+  
+      .menu .avatar img {
+        width: 60px;
+      }
+  
+      .menu .avatar h2 {
+        opacity: 0;
+        position: absolute;
+        top: 50%;
+        left: 100px;
+        margin: 0;
+        min-width: 200px;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.4);
+        transform: translate3d(-20px, -50%, 0);
+        transition: all 0.15s ease-in-out;
+      }
+  
+      .menu .avatar:hover h2 {
+        opacity: 1;
+        transform: translate3d(0px, -50%, 0);
+      }
+  
+      .menu ul li {
+        height: 60px;
+        background-position: center center;
+        background-size: 30px auto;
+        position: relative;
+      }
+  
+      .menu ul li span {
+        opacity: 0;
+        position: absolute;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 0.2em 0.5em;
+        border-radius: 4px;
+        top: 50%;
+        left: 80px;
+        transform: translate3d(-15px, -50%, 0);
+        transition: all 0.15s ease-in-out;
+      }
+  
+      .menu ul li span:before {
+        content: '';
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 50%;
+        left: -5px;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-right: 5px solid rgba(0, 0, 0, 0.5);
+        transform: translateY(-50%);
+      }
+  
+      .menu ul li:hover span {
+        opacity: 1;
+        transform: translate3d(0px, -50%, 0);
+      }
+    }
+  
+    @media screen and (max-width: 400px) {
+      body {
+        padding-left: 0;
+      }
+  
+      .menu {
+        width: 230px;
+        box-shadow: 0 0 0 100em rgba(0, 0, 0, 0);
+        transform: translate3d(-230px, 0, 0);
+        transition: all 0.3s ease-in-out;
+      }
+  
+      .menu .smartphone-menu-trigger {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        left: 100%;
+        background: #5bc995;
+      }
+  
+      .menu .smartphone-menu-trigger:before,
+      .menu .smartphone-menu-trigger:after {
+        content: '';
+        width: 50%;
+        height: 2px;
+        background: #fff;
+        border-radius: 10px;
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate3d(-50%, -50%, 0);
+      }
+  
+      .menu .smartphone-menu-trigger:after {
+        top: 55%;
+        transform: translate3d(-50%, -50%, 0);
+      }
+  
+      .menu ul li {
+        padding: 1em 1em 1em 3em;
+        font-size: 1.2em;
+      }
+  
+      .menu:focus {
+        transform: translate3d(0, 0, 0);
+        box-shadow: 0 0 0 100em rgba(0, 0, 0, 0.6);
+      }
+  
+      .menu:focus .smartphone-menu-trigger {
+        pointer-events: none;
+      }
+    }
+  
+    .bg {
+      animation: slide 3s ease-in-out infinite alternate;
+      background-image: linear-gradient(-60deg, #cb2d3e 50%, #904e95 50%);
+      bottom: 0;
+      left: -50%;
+      opacity: .5;
+      position: fixed;
+      right: -50%;
+      top: 0;
+      z-index: -1;
+    }
+  
+    .bg2 {
+      animation-direction: alternate-reverse;
+      animation-duration: 4s;
+    }
+  
+    .bg3 {
+      animation-duration: 5s;
+    }
+  
+    .content {
+      background-color: rgba(255, 255, 255, .8);
+      border-radius: .25em;
+      box-shadow: 0 0 .25em rgba(0, 0, 0, .25);
+      box-sizing: border-box;
+      padding: 10vmin;
+      position: fixed;
+      text-align: center;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.5s ease;
+    }
+  
+    .content.slide-out {
+      transform: translateX(-100%);
+      transition: all 0.7s ease;
+      position: fixed;
+      left: -100%;
+      top: 50%;
+    }
+  
+  
+    h1 {
+      font-family: monospace;
+    }
+  
+    @keyframes slide {
+      0% {
+        transform: translateX(-25%);
+      }
+  
+      100% {
+        transform: translateX(25%);
+      }
+    }
+  
+    :root {
+      --body-color: #ebf0ff;
+      --sidebar-color: #fff;
+      --primary-color: #4070f4;
+      --primary-color-light: #f6f5ff;
+      --toggle-color: #ddd;
+      --text-color: #707070;
+      --tran-02: all 0.2s ease;
+      --tran-03: all 0.3s ease;
+      --tran-04: all 0.4s ease;
+      --tran-05: all 0.5s ease;
+    }
+  
+    body.dark {
+      --body-color: #18191a;
+      --sidebar-color: #242526;
+      --primary-color: #3a3b3c;
+      --primary-color-light: #3a3b3c;
+      --toggle-color: #6f6f6f;
+      --text-color: #ccc;
+    }
+  
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+  
+    body {
+      min-height: 100%;
+      background-color: var(--body-color);
+      transition: var(--tran-05);
+    }
+  
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 70px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+  
+      box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+      transition: var(--tran-05);
+    }
+  
+    nav .logo {
+      display: flex;
+      align-items: center;
+      margin: 0 24px;
+    }
+  
+    nav .sidebar {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      height: 100%;
+      width: 260px;
+      padding: 20px 0;
+      background: var(--sidebar-color);
+      box-shadow: 0 5px 1px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s ease;
+    }
+  
+    .logo .menu-icon {
+      color: var(--text-color);
+      font-size: 24px;
+      margin-right: 14px;
+      cursor: pointer;
+    }
+  
+    .logo .logo-name {
+      color: var(--text-color);
+      font-size: 22px;
+      font-weight: 500;
+    }
+  
+    nav.open .sidebar {
+      left: 0;
+    }
+  
+    nav.open~.overlay {
+      opacity: 1;
+      left: 260px;
+      pointer-events: auto;
+    }
+  
+    .sidebar .sidebar-content {
+      display: flex;
+      height: 100%;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px 16px;
+    }
+  
+    .sidebar-content .list {
+      list-style: none;
+    }
+  
+    .sidebar-content .list .nav-link {
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+      padding: 14px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: var(--tran-02);
+    }
+  
+    .sidebar-content .list .nav-link:hover {
+      background-color: var(--primary-color);
+    }
+  
+    .sidebar-content .list .nav-link:hover .icon {
+      color: #fff;
+    }
+  
+    .sidebar-content .list .nav-link:hover .link {
+      color: #fff;
+    }
+  
+    .sidebar-content .list .nav-link .icon {
+      margin-right: 14px;
+      font-size: 20px;
+      color: var(--text-color);
+    }
+  
+    .sidebar-content .list .nav-link .link {
+      font-size: 16px;
+      color: var(--text-color);
+      font-weight: 400;
+    }
+  
+    .sidebar-content .mode {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      border-radius: 6px;
+      background-color: var(--primary-color-light);
+      position: relative;
+      transition: var(--tran-05);
+      list-style: none;
+    }
+  
+    .sidebar-content .mode .text {
+      color: var(--text-color);
+      transition: var(--tran-03);
+    }
+  
+    .sidebar-content .mode .sun-moon {
+      height: 50px;
+      width: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+  
+    .sidebar-content .mode .sun-moon i {
+      position: absolute;
+      color: var(--text-color);
+      transition: var(--tran-03);
+    }
+  
+    .sidebar-content .mode .sun-moon i.sun {
+      opacity: 0;
+    }
+  
+    .sidebar-content .mode .toggle-switch {
+      position: absolute;
+      right: 0;
+      height: 100%;
+      min-width: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  
+    .sidebar-content .mode .toggle-switch .switch {
+      position: relative;
+      height: 22px;
+      width: 40px;
+      border-radius: 25px;
+      background-color: var(--toggle-color);
+      transition: var(--tran-05);
+    }
+  
+    .sidebar-content .mode .switch::before {
+      content: "";
+      position: absolute;
+      height: 15px;
+      width: 15px;
+      border-radius: 50%;
+      top: 50%;
+      left: 5px;
+      transform: translateY(-50%);
+      background-color: var(--sidebar-color);
+      transition: var(--tran-04);
+    }
+  
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      height: 1000vh;
+      width: 200%;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s ease;
+      background: rgba(0, 0, 0, 0.3);
+    }
+  
+    body.dark .mode .sun-moon i.sun {
+      opacity: 1;
+    }
+  
+    body.dark .mode .sun-moon i.moon {
+      opacity: 0;
+    }
+  
+    body.dark .switch::before {
+      left: 20px !important;
+    }
+  </style>
 </head>
-
 <body>
-  <!-- partial:index.partial.html -->
-  <nav class="menu" tabindex="0">
-    <div class="smartphone-menu-trigger"></div>
-    <header class="avatar">
-      <img src="{% static doctor.profile_pic.url %}" alt="Profile Pic" />
-      <br><br>
-      <h6>Doctor</h6>
-      <h2>{{request.user.first_name}}</h2>
-    </header>
-    <ul>
-      <li tabindex="0" class="icon-dashboard"> <a style="color:white; text-decoration:none;"
-          href="/doctor-dashboard"><span>Dashboard</span></a> </li>
-      <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;"
-          href="/doctor-patient"><span>Patient</span></a></li>
-      <li tabindex="0" class="icon-calendar"> <a style="color:white; text-decoration:none;"
-          href="/doctor-appointment"><span>Appointments</span></a></li>
-    </ul>
-  </nav>
-  <main>
-    <!-- nav start -->
-    <div class="bs-example">
-      <nav class="navbar navbar-expand-md  navbar-dark fixed-top" style="background:#337AB7;">
-        <a href="/doctor-dashboard" class="navbar-brand">HOSPITAL MANAGEMENT</a>
-        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-          <div class="navbar-nav" style=" margin-left: 90%;">
+  <div class="bg"></div>
+  <div class="bg bg2"></div>
+  <div class="bg bg3"></div>
+  <script>
+    const body = document.querySelector("body"),
+      navBar = document.querySelector("nav"),
 
-            <a href="/logout" class="nav-item nav-link">Logout</a>
-          </div>
-        </div>
-      </nav>
-    </div>
-    <!-- nav end -->
-    <br><br>
-    <!-- content start-->
-    {% block content %}
-    {% endblock content %}
-    <!-- content end-->
-    <br><br><br><br><br><br><br>
-    <footer>
+      overlay = document.querySelector(".overlay"),
+      modeSwitch = body.querySelector(".toggle-switch"),
+      modeText = body.querySelector(".mode-text");
 
-      <br>
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12 col-sm-12">
-            <div style="color:#ffffff;" class="wow fadeInUp footer-copyright">
-              <p> <br>
-            </div>
-          </div>
-        </div>
+
+
+    overlay.addEventListener("click", () => {
+      navBar.classList.remove("open");
+    });
+
+    modeSwitch.addEventListener("click", () => {
+      body.classList.toggle("dark");
+
+      if (body.classList.contains("dark")) {
+        modeText.innerText = "Light mode";
+      } else {
+        modeText.innerText = "Dark mode";
+      }
+    });
+  </script>
+
+  <nav class="open" style="opacity: 90%;">
+
+    <div class="sidebar">
+      <div class="logo">
+        <a href="/doctor-dashboard">
+          <img src="{% static doctor.profile_pic.url %}" alt="Logo" class="logo-image" width="150px"
+            style="margin-left: 20px;">
+          <br>
+          <br>
+
+          <span class="logo-name" style="margin-left: 5px;">{{request.user.first_name}}- Doctor</span>
+
+        </a>
       </div>
-    </footer>
-  </main>
+
+      <div class="sidebar-content">
+        <ul class="lists">
+          <li class="list">
+            <a href="/doctor-dashboard" class="nav-link">
+              <i class="bx bx-home-alt icon"></i>
+              <span class="link">Dashboard</span>
+            </a>
+          </li>
+          <li class="list">
+            <a href="/doctor-patient" class="nav-link">
+              <i class="bx bx-bell icon"></i>
+              <span class="link">Patient</span>
+            </a>
+          </li>
+          <li class="list">
+            <a href="/doctor-appointment" class="nav-link">
+              <i class="bx bx-message-rounded icon"></i>
+              <span class="link">Appointments</span>
+            </a>
+          </li>
+         
+
+          <li class="list">
+            <a href="/logout" class="nav-link">
+              <i class="bx bx-log-out icon"></i>
+              <span class="link">Logout</span>
+            </a>
+          </li>
+        </ul>
+
+
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- content start-->
+  {% block content %}
+
+  {% endblock content %}
+  <!-- content end-->
   <!-- partial -->
+
 </body>
 
 </html>

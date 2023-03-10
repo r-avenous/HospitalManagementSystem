@@ -1,5 +1,6 @@
 from django.forms import ModelChoiceField
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from datetime import datetime, timedelta
 from .models import Appointment, Doctor, Patient
@@ -34,6 +35,7 @@ class DoctorUserForm(forms.ModelForm):
         'password': forms.PasswordInput()
         }
 class DoctorForm(forms.ModelForm):
+    #mobile = forms.IntegerField(validators=[MinValueValidator(1000000000),MaxValueValidator(9999999999)])
     class Meta:
         model=models.Doctor
         fields=['address','mobile','department','status','profile_pic']
@@ -43,6 +45,7 @@ class PatientForm(forms.ModelForm):
     #this will show dropdown __str__ method doctor model is shown on html so override it
     #to_field_name this will fetch corresponding value  user_id present in Doctor model and return it
     assignedDoctorId=forms.ModelChoiceField(queryset=models.Doctor.objects.all().filter(status=True),empty_label="Name and Department", to_field_name="user_id")
+    #mobile = forms.IntegerField(validators=[MinValueValidator(1_000_000_000),MaxValueValidator(9_999_999_999)],)
     class Meta:
         model=models.Patient
         fields=['first_name', 'last_name', 'address', 'mobile', 'symptoms', 'profile_pic']
@@ -56,6 +59,7 @@ class FrontDeskUserForm(forms.ModelForm):
         'password': forms.PasswordInput()
         }
 class FrontDeskForm(forms.ModelForm):
+    #mobile = forms.IntegerField(validators=[MinValueValidator(1_000_000_000),MaxValueValidator(9_999_999_999)],)
     class Meta:
         model=models.FrontDeskOperator
         fields=['address','mobile','profile_pic']
@@ -68,6 +72,7 @@ class DataEntryUserForm(forms.ModelForm):
         'password': forms.PasswordInput()
         }
 class DataEntryForm(forms.ModelForm):
+    #mobile = forms.IntegerField(validators=[MinValueValidator(1_000_000_000),MaxValueValidator(9_999_999_999)],)
     class Meta:
         model=models.DataEntryOperator
         fields=['address','mobile','profile_pic']

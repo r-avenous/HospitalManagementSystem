@@ -15,7 +15,7 @@ class Admin(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     # profile_pic = models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
-    mobile = models.CharField(max_length=20,null=True)
+    mobile = models.IntegerField(null=True)
 
     @property
     def get_name(self):
@@ -30,7 +30,7 @@ class FrontDeskOperator(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic = models.ImageField(upload_to='profile_pic/FrontDeskOperatorProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
-    mobile = models.CharField(max_length=20,null=True)
+    mobile = models.IntegerField(null=True)
 
     @property
     def get_name(self):
@@ -45,7 +45,7 @@ class DataEntryOperator(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic = models.ImageField(upload_to='profile_pic/DataEntryOperatorProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
-    mobile = models.CharField(max_length=20,null=True)
+    mobile = models.IntegerField(null=True)
 
     @property
     def get_name(self):
@@ -60,7 +60,7 @@ class Doctor(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic= models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
-    mobile = models.CharField(max_length=20,null=True)
+    mobile = models.IntegerField(null=True)
     department= models.CharField(max_length=50,choices=departments,default='Cardiologist')
     status=models.BooleanField(default=False)
     @property
@@ -79,7 +79,8 @@ class Patient(models.Model):
     last_name=models.CharField(max_length=40, blank=False, default=None)
     profile_pic= models.ImageField(upload_to='profile_pic/PatientProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
-    mobile = models.CharField(max_length=20,null=False)
+    mobile = models.IntegerField(null=False)
+    email = models.EmailField(max_length = 254, blank=False)
     symptoms = models.CharField(max_length=100,null=False)
     assignedDoctorId = models.PositiveIntegerField(null=True)
     admitDate=models.DateField(auto_now=True, null=True)
@@ -121,7 +122,7 @@ class PatientDischargeDetails(models.Model):
     patientName=models.CharField(max_length=40)
     assignedDoctorName=models.CharField(max_length=40)
     address = models.CharField(max_length=40)
-    mobile = models.CharField(max_length=20,null=True)
+    mobile = models.IntegerField(null=True)
     symptoms = models.CharField(max_length=100,null=True)
 
     admitDate=models.DateField(null=False)

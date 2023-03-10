@@ -1,18 +1,15 @@
-{% extends 'hospital/homebase.html' %}
+
+{% extends 'hospital/index.html' %}
 {% block content %}
 
 <br>
 <br>
 
-<div class="jumbotron" style="margin-bottom:0px;">
+<div class="content">
   <h1 class="display-4" style="text-align:center;">Hello, Front Desk Operator</h1>
-  <p class="lead">Welcome to Hospital Management System.</p>
-  <hr class="my-4">
-  <p>You can access various features after Login.</p>
-  <p class="lead">
-    <!-- <a class="btn btn-primary btn-lg" href="/frontdesksignup" role="button">SignUp</a> -->
-    <a class="btn btn-primary btn-lg" href="/frontdesklogin" role="button">Login</a>
-  </p>
+
+  <button class="cool-button" style="margin-left: 5px;margin-bottom: 15px;"
+    onclick="window.location.href='/frontdesklogin'">Login</button>
 </div>
 
 {% endblock content %}

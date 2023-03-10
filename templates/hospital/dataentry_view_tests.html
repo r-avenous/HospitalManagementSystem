@@ -43,7 +43,7 @@
       <tr>
           <td> {{p.procedurename}}</td>
           <td>{{p.patientname}}</td>
-          <td>{{p.doctername}}</td>
+          <td>{{p.doctorname}}</td>
           {% comment %} <td>{{p.description}}</td> {% endcomment %}
         {% comment %} <td> <img src="{% static p.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td> {% endcomment %}
         {% comment %} {%if p.status == 0%}
@@ -53,9 +53,9 @@
           {%elif p.status == 2%}
           <td> <span class="label label-success">Discharged</span></td>
         {% endif %} {% endcomment %}
-        <td><a class="btn btn-primary btn-xs" href="{% url 'dataentry-update-test' p.id  %}"><span
+        <td><a class="btn btn-primary btn-xs" href="{% url 'frontdesk-update-patient' p.id  %}"><span
               class="glyphicon glyphicon-edit"></span></a></td>
-        <td><a class="btn btn-danger btn-xs" href="{% url 'dataentry-delete-test' p.id  %}"><span
+        <td><a class="btn btn-danger btn-xs" href="{% url 'delete-patient-from-hospital' p.id  %}"><span
               class="glyphicon glyphicon-trash"></span></a></td>
       </tr>
       {% endfor %}

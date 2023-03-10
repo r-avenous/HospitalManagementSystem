@@ -20,6 +20,30 @@
       font-family: monospace;
 
     }
+
+    .navbar-nav {
+      margin-left: 300px;
+
+    }
+
+    .navbar {
+      background-color: transparent !important;
+    }
+
+    .navbar {
+      border-bottom: 1px solid #fff;
+    }
+
+    .nav-link {
+      padding: 0 25px;
+    }
+
+    .nav-link:hover {
+      background-color: blue;
+      color: white;
+      /* padding: 8px 12px; */
+      border-radius: 5px;
+    }
   </style>
 </head>
 
@@ -28,7 +52,7 @@
 
 
   <div class="bs-example">
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-image: linear-gradient(to top, #00d9ff, #623892);">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
       <a href="/" class="navbar-brand">Hospital Management</a>
       <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
@@ -37,19 +61,15 @@
       <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
         <div class="navbar-nav">
 
-          <a href="/adminclick" class="nav-item nav-link">Admin</a>
-          <a href="/frontdeskclick" class="nav-item nav-link">FDO</a>
-          <a href="/dataentryclick" class="nav-item nav-link">DEO</a>
-          <a href="/doctorclick" class="nav-item nav-link">Doctor</a>
+          <a href="/adminclick" class="nav-item nav-link mr-5">Admin</a>
+          <a href="/frontdeskclick" class="nav-item nav-link mr-5">FDO</a>
+          <a href="/dataentryclick" class="nav-item nav-link mr-5">DEO</a>
+          <a href="/doctorclick" class="nav-item nav-link mr-5 ">Doctor</a>
           <!-- <a href="/patientclick" class="nav-item nav-link">Patient</a> -->
 
 
         </div>
 
-        <div class="navbar-nav">
-          <a href="/aboutus" class="nav-item nav-link">About Us</a>
-          <a href="/contactus" class="nav-item nav-link">Contact Us</a>
-        </div>
 
       </div>
     </nav>

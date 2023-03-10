@@ -25,6 +25,11 @@ def home_view(request):
         return HttpResponseRedirect('afterlogin')
     return render(request,'hospital/index.html')
 
+def display_card_view(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('afterlogin')
+    return render(request, 'hospital/admin_doctor_patient_card.html')
+
 #for showing signup/login button for admin(by sumit)
 def adminclick_view(request):
     if request.user.is_authenticated:
@@ -69,49 +74,6 @@ def admin_signup_view(request):
     return render(request,'hospital/adminsignup.html',{'form':form})
 
 
-
-
-def doctor_signup_view(request):
-    userForm=forms.DoctorUserForm()
-    doctorForm=forms.DoctorForm()
-    mydict={'userForm':userForm,'doctorForm':doctorForm}
-    if request.method=='POST':
-        userForm=forms.DoctorUserForm(request.POST)
-        doctorForm=forms.DoctorForm(request.POST,request.FILES)
-        if userForm.is_valid() and doctorForm.is_valid():
-            user=userForm.save()
-            user.set_password(user.password)
-            user.save()
-            doctor=doctorForm.save(commit=False)
-            doctor.user=user
-            doctor=doctor.save()
-            my_doctor_group = Group.objects.get_or_create(name='DOCTOR')
-            my_doctor_group[0].user_set.add(user)
-        return HttpResponseRedirect('doctorlogin')
-    return render(request,'hospital/doctorsignup.html',context=mydict)
-
-
-def patient_signup_view(request):
-    userForm=forms.PatientUserForm()
-    patientForm=forms.PatientForm()
-    mydict={'userForm':userForm,'patientForm':patientForm}
-    if request.method=='POST':
-        userForm=forms.PatientUserForm(request.POST)
-        patientForm=forms.PatientForm(request.POST,request.FILES)
-        if userForm.is_valid() and patientForm.is_valid():
-            user=userForm.save()
-            user.set_password(user.password)
-            user.save()
-            patient=patientForm.save(commit=False)
-            patient.user=user
-            patient.assignedDoctorId=request.POST.get('assignedDoctorId')
-            patient=patient.save()
-            my_patient_group = Group.objects.get_or_create(name='PATIENT')
-            my_patient_group[0].user_set.add(user)
-        return HttpResponseRedirect('patientlogin')
-    return render(request,'hospital/patientsignup.html',context=mydict)
-
-
 #-----------for checking user is doctor , patient or admin(by sumit)
 def is_admin(user):
     return user.groups.filter(name='ADMIN').exists()
@@ -135,12 +97,6 @@ def afterlogin_view(request):
             return redirect('doctor-dashboard')
         else:
             return render(request,'hospital/doctor_wait_for_approval.html')
-    # elif is_patient(request.user):
-    #     accountapproval=models.Patient.objects.all().filter(user_id=request.user.id)
-    #     if accountapproval:
-    #         return redirect('patient-dashboard')
-    #     else:
-    #         return render(request,'hospital/patient_wait_for_approval.html')
     elif is_frontdeskoperator(request.user):
         accountapproval=models.FrontDeskOperator.objects.all().filter(user_id=request.user.id)
         if accountapproval:
@@ -165,8 +121,6 @@ def admin_dashboard_view(request):
     #for both table in admin dashboard
     doctors=models.Doctor.objects.all().order_by('-id')
     patients=models.Patient.objects.all().order_by('-id')
-
-    #adding shashwat
     frontdesk=models.FrontDeskOperator.objects.all().order_by('-id')
     dataentry=models.DataEntryOperator.objects.all().order_by('-id')
     #for three cards
@@ -245,6 +199,7 @@ def update_doctor_view(request,pk):
             user.save()
             doctor=doctorForm.save(commit=False)
             doctor.status=True
+            doctor.mobile= request.POST['mobile']
             doctor.save()
             return redirect('admin-view-doctor')
     return render(request,'hospital/admin_update_doctor.html',context=mydict)
@@ -269,6 +224,7 @@ def admin_add_doctor_view(request):
             doctor=doctorForm.save(commit=False)
             doctor.user=user
             doctor.status=True
+            doctor.mobile= request.POST['mobile']
             doctor.save()
 
             my_doctor_group = Group.objects.get_or_create(name='DOCTOR')
@@ -280,39 +236,39 @@ def admin_add_doctor_view(request):
 
 
 
-@login_required(login_url='adminlogin')
-@user_passes_test(is_admin)
-def admin_approve_doctor_view(request):
-    #those whose approval are needed
-    doctors=models.Doctor.objects.all().filter(status=False)
-    return render(request,'hospital/admin_approve_doctor.html',{'doctors':doctors})
+# @login_required(login_url='adminlogin')
+# @user_passes_test(is_admin)
+# def admin_approve_doctor_view(request):
+#     #those whose approval are needed
+#     doctors=models.Doctor.objects.all().filter(status=False)
+#     return render(request,'hospital/admin_approve_doctor.html',{'doctors':doctors})
 
 
-@login_required(login_url='adminlogin')
-@user_passes_test(is_admin)
-def approve_doctor_view(request,pk):
-    doctor=models.Doctor.objects.get(id=pk)
-    doctor.status=True
-    doctor.save()
-    return redirect(reverse('admin-approve-doctor'))
+# @login_required(login_url='adminlogin')
+# @user_passes_test(is_admin)
+# def approve_doctor_view(request,pk):
+#     doctor=models.Doctor.objects.get(id=pk)
+#     doctor.status=True
+#     doctor.save()
+#     return redirect(reverse('admin-approve-doctor'))
 
 
-@login_required(login_url='adminlogin')
-@user_passes_test(is_admin)
-def reject_doctor_view(request,pk):
-    doctor=models.Doctor.objects.get(id=pk)
-    user=models.User.objects.get(id=doctor.user_id)
-    user.delete()
-    doctor.delete()
-    return redirect('admin-approve-doctor')
+# @login_required(login_url='adminlogin')
+# @user_passes_test(is_admin)
+# def reject_doctor_view(request,pk):
+#     doctor=models.Doctor.objects.get(id=pk)
+#     user=models.User.objects.get(id=doctor.user_id)
+#     user.delete()
+#     doctor.delete()
+#     return redirect('admin-approve-doctor')
 
 
 
-@login_required(login_url='adminlogin')
-@user_passes_test(is_admin)
-def admin_view_doctor_specialisation_view(request):
-    doctors=models.Doctor.objects.all().filter(status=True)
-    return render(request,'hospital/admin_view_doctor_specialisation.html',{'doctors':doctors})
+# @login_required(login_url='adminlogin')
+# @user_passes_test(is_admin)
+# def admin_view_doctor_specialisation_view(request):
+#     doctors=models.Doctor.objects.all().filter(status=True)
+#     return render(request,'hospital/admin_view_doctor_specialisation.html',{'doctors':doctors})
 
 
 #-----Admin user related to Front Desk Operator
@@ -520,30 +476,30 @@ def admin_add_patient_view(request):
 
 
 #------------------FOR APPROVING PATIENT BY ADMIN----------------------
-@login_required(login_url='adminlogin')
-@user_passes_test(is_admin)
-def admin_approve_patient_view(request):
-    #those whose approval are needed
-    patients=models.Patient.objects.all().filter(status = 0)
-    return render(request,'hospital/admin_approve_patient.html',{'patients':patients})
+# @login_required(login_url='adminlogin')
+# @user_passes_test(is_admin)
+# def admin_approve_patient_view(request):
+#     #those whose approval are needed
+#     patients=models.Patient.objects.all().filter(status = 0)
+#     return render(request,'hospital/admin_approve_patient.html',{'patients':patients})
 
 
-@login_required(login_url='adminlogin')
-@user_passes_test(is_admin)
-def approve_patient_view(request,pk):
-    patient=models.Patient.objects.get(id=pk)
-    patient.status=True
-    patient.save()
-    return redirect(reverse('admin-approve-patient'))
+# @login_required(login_url='adminlogin')
+# @user_passes_test(is_admin)
+# def approve_patient_view(request,pk):
+#     patient=models.Patient.objects.get(id=pk)
+#     patient.status=True
+#     patient.save()
+#     return redirect(reverse('admin-approve-patient'))
 
 
 
-@login_required(login_url='adminlogin')
-@user_passes_test(is_admin)
-def reject_patient_view(request,pk):
-    patient=models.Patient.objects.get(id=pk)
-    patient.delete()
-    return redirect('admin-approve-patient')
+# @login_required(login_url='adminlogin')
+# @user_passes_test(is_admin)
+# def reject_patient_view(request,pk):
+#     patient=models.Patient.objects.get(id=pk)
+#     patient.delete()
+#     return redirect('admin-approve-patient')
 
 
 
@@ -702,8 +658,7 @@ def admin_add_appointment_view(request):
          
 
             # Get a list of free doctors
-            free_doctors = models.Doctor.objects.filter(
-                status=True).exclude(user_id__in=busy_doctors)
+            free_doctors = models.Doctor.objects.filter(status=True).exclude(user_id__in=busy_doctors)
 
             print(
                 f"The following doctors are busy at {appointment_time}: {list(busy_doctors)}")
@@ -804,7 +759,7 @@ def reject_appointment_view(request,pk):
 @user_passes_test(is_doctor)
 def doctor_dashboard_view(request):
     #for three cards
-    patientcount=models.Patient.objects.all().filter(status=True,assignedDoctorId=request.user.id).count()
+    patientcount=models.Patient.objects.all().filter(Q(status=0) | Q(status=1),assignedDoctorId=request.user.id).count()
     appointmentcount=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id).count()
     patientdischarged=models.PatientDischargeDetails.objects.all().distinct().filter(assignedDoctorName=request.user.first_name).count()
 
@@ -1232,12 +1187,9 @@ def frontdesk_add_appointment(request):
                             subject = 'Appointment Cancellation'
                             message = f'Your appointment with Dr. {a.doctorId.user.first_name} {a.doctorId.user.last_name} on {a.appointmentTime} has been cancelled due to an Emergency appointment.'
                             email_from = settings.EMAIL_HOST_USER
-                            recipient_list = [patient.user.email, ]
+                            recipient_list = [patient.email, ]
                             send_mail(subject, message, email_from, recipient_list, fail_silently=False)
                         appointments_to_delete.delete()
-                        # models.Appointment.objects.filter(
-                        #     doctorId=doctor_id, appointmentTime=appointment_time).delete()
-                        # print('High')
                     
                     # Check if the selected doctor already has an appointment at the same time
                     elif request.POST.get('priority') == '1':
@@ -1371,7 +1323,7 @@ def frontdesk_update_appointment_view(request, pk):
                             subject = 'Appointment Cancellation'
                             message = f'Your appointment with Dr. {a.doctorId.user.first_name} {a.doctorId.user.last_name} on {a.appointmentTime} has been cancelled due to an Emergency appointment.'
                             email_from = settings.EMAIL_HOST_USER
-                            recipient_list = [patient.user.email, ]
+                            recipient_list = [patient.email, ]
                             send_mail(subject, message, email_from, recipient_list, fail_silently=False)
                         appointments_to_delete.delete()
                       

@@ -24,10 +24,7 @@
 
 <div class="container">
 
-    <form  action="/search" method="get" style="margin-left:70%;" class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" name="query" id="query" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
+
  
 
   {% if patients %}
@@ -54,7 +51,7 @@
         <td>{{p.symptoms}}</td>
         <td>{{p.mobile}}</td>
         <td>{{p.address}}</td>
-        <td><a class="btn btn-primary btn-xs" href="{% url 'admit-patient-option' p.id  %}"><span
+        <td><a class="btn btn-primary btn-xs" href="{% url 'admit-patient' p.id  %}"><span
           class="glyphicon glyphicon-ok"></span></a></td>
       </tr>
       {% endfor %}

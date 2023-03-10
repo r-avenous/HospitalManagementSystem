@@ -24,11 +24,7 @@
 
 <div class="container">
 
-    <form  action="/search" method="get" style="margin-left:70%;" class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" name="query" id="query" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
- 
+
 
   {% if patients %}
   <div class="panel panel-primary">
@@ -62,7 +58,7 @@
   </div>
   {%else%}
   <br><br><br>
-  <h4 style="text-align: center;color: red;">No admitted patients found.</h4>
+  <h4 style="text-align: center;color: rgb(255, 255, 255);">No admitted patients found.</h4>
   {% endif %}
 
   
