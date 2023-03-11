@@ -35,40 +35,34 @@ facebook : fb.com/sumit.luv
   </form>
 
 
-  {% if patients %}
   <div class="panel panel-primary">
     <div class="panel-heading">
-      <h6 class="panel-title">Your Total Patient List</h6>
+      <h6 class="panel-title">{{test.procedurename}} Report</h6>
     </div>
-    <table class="table table-hover" id="dev-table">
+    <p> Patient Name : {{test.patientname}}</p>
+    <p> Doctor Name : {{test.doctername}}</p>
+    <p> Description : {{test.description}}</p>
+    <p> Image : <a href={% static test.image.url %}><img src="{% static test.image.url %}" alt="Test Image" width="200px" height="200px"></p></a>
+    {% comment %} <img src="" alt="Profile Pic" height="40px" width="40px" /> {% endcomment %}
+    {% comment %} <table class="table table-hover" id="dev-table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Profile Picture</th>
-          <th>Symptoms</th>
-          <th>Mobile</th>
-          <th>Address</th>
-          <th>Medical History</th>
+          <th>Procedure Name</th>
+          <th>Doctor Name</th>
+          <th>Details</th>
 
         </tr>
       </thead>
-      {% for p in patients %}
+      {% for t in tests %}
       <tr>
-        <td> {{p.get_name}}</td>
-        <td> <img src="{% static p.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
-        <td>{{p.symptoms}}</td>
-        <td>{{p.mobile}}</td>
-        <td>{{p.address}}</td>
-        <td><a class="btn btn-primary btn-xs" href="{% url 'doctor-view-test' p.id  %}">view</a></td>
+        <td> {{t.procedurename}}</td>
+        <td>{{t.doctername}}</td>
+        <td><a class="btn btn-primary btn-xs" href="{% url 'doctor-view-test-details' t.id  %}">view</a></td>
       </tr>
       {% endfor %}
-    </table>
+    </table> {% endcomment %}
   </div>
-  {%else%}
-  <br><br><br>
-  <h3 style="text-align: center;color: black;">No Patient Found !!!</h3>
-  {% endif %}
-
+  
 
 </div>
 

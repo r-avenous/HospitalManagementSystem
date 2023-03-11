@@ -229,8 +229,11 @@ def admin_add_doctor_view(request):
 
             my_doctor_group = Group.objects.get_or_create(name='DOCTOR')
             my_doctor_group[0].user_set.add(user)
+            return HttpResponseRedirect('admin-view-doctor')
+        messages.error(
+        request, 'Mobile number is not 10 digit long.')
+        redirect('admin-add-doctor')
 
-        return HttpResponseRedirect('admin-view-doctor')
     return render(request,'hospital/admin_add_doctor.html',context=mydict)
 
 
@@ -333,7 +336,9 @@ def admin_add_frontdesk_view(request):
             my_frontdesk_group = Group.objects.get_or_create(name='FRONTDESK')
             my_frontdesk_group[0].user_set.add(user)
 
-        return HttpResponseRedirect('admin-view-frontdesk')
+            return HttpResponseRedirect('admin-view-frontdesk')
+        messages.error(
+        request, 'Mobile number is not 10 digit long.')
     return render(request,'hospital/admin_add_frontdesk.html',context=mydict)
 
 #-----Admin user related to Data Entry Operator
@@ -402,6 +407,8 @@ def admin_add_dataentry_view(request):
             my_dataentry_group[0].user_set.add(user)
 
         return HttpResponseRedirect('admin-view-dataentry')
+        messages.error(
+        request, 'Mobile number is not 10 digit long.')
     return render(request,'hospital/admin_add_dataentry.html',context=mydict)
 
 # --- Admin user related to patient below
@@ -471,6 +478,8 @@ def admin_add_patient_view(request):
             my_patient_group = Group.objects.get_or_create(name='PATIENT')
 
         return HttpResponseRedirect('admin-view-patient')
+    messages.error(
+        request, 'Mobile number is not 10 digit long.')
     return render(request,'hospital/admin_add_patient.html',context=mydict)
 
 
@@ -800,6 +809,22 @@ def doctor_view_patient_view(request):
     doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
     return render(request,'hospital/doctor_view_patient.html',{'patients':patients,'doctor':doctor})
 
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_view_test_view(request,pk):
+    patient=models.Patient.objects.get(id=pk)
+    patient_name = patient.first_name + ' ' + patient.last_name
+    doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
+    tests = models.Test.objects.all().filter(patientId=pk)
+    return render(request,'hospital/doctor_view_test.html',{'patient_name':patient_name,'tests':tests,'doctor':doctor})
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_view_test_details_view(request,pk):
+    test=models.Test.objects.get(id=pk)
+    doctor=models.Doctor.objects.get(user_id=request.user.id)
+    return render(request,'hospital/doctor_view_test_details.html',{'test':test,'doctor':doctor})
+
 
 @login_required(login_url='doctorlogin')
 @user_passes_test(is_doctor)
@@ -1000,7 +1025,8 @@ def frontdesk_admit_patient_view(request):
 @user_passes_test(is_frontdeskoperator)
 def admit_patient_option_view(request, pk):
     # patient = models.Patient.objects.get(id = pk)
-    return render(request,'hospital/frontdesk_admit_patient_option.html',{'patientId':pk})
+    frontdeskoperator = models.FrontDeskOperator.objects.get(user_id=request.user.id)
+    return render(request,'hospital/frontdesk_admit_patient_option.html',{'patientId':pk, 'frontdesk':frontdeskoperator})
 
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
@@ -1013,7 +1039,7 @@ def admit_patient_private_view(request, pk):
         room = rooms[0]
         room.occupied_capacity = 1
         room.save()
-        patient.room_id = room.id
+        patient.room_id = room.number
         patient.status = 1
         patient.save()
         return redirect('frontdesk-admit-patient')
@@ -1032,7 +1058,7 @@ def admit_patient_general_view(request, pk):
             if room.occupied_capacity < room.max_capacity:
                 room.occupied_capacity += 1
                 room.save()
-                patient.room_id = room.id
+                patient.room_id = room.number
                 patient.status = 1
                 patient.save()
                 return redirect('frontdesk-admit-patient')
@@ -1091,8 +1117,9 @@ def frontdesk_discharge_patient_view(request):
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_add_appointment(request):
+    frontdeskoperator = models.FrontDeskOperator.objects.get(user_id=request.user.id)
     appointmentForm = forms.AdminAppointmentForm()
-    mydict = {'appointmentForm': appointmentForm, }
+    mydict = {'appointmentForm': appointmentForm, 'frontdesk': frontdeskoperator}
 
     if request.method == 'POST':
         if 'action' in request.POST and request.POST['action'] == 'check':
@@ -1233,9 +1260,10 @@ def frontdesk_add_appointment(request):
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_update_appointment_view(request, pk):
+    frontdeskoperator = models.FrontDeskOperator.objects.get(user_id=request.user.id)
     appointment=models.Appointment.objects.get(id=pk)
     appointmentForm = forms.AdminAppointmentForm(instance=appointment)
-    mydict = {'appointmentForm': appointmentForm, }
+    mydict = {'appointmentForm': appointmentForm, 'frontdesk': frontdeskoperator}
     all_but_self_appointments = models.Appointment.objects.exclude(id=pk)
 
     if request.method == 'POST':
@@ -1466,8 +1494,9 @@ def frontdesk_delete_appointment(request,pk):
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_appointment_view(request):
+    frontdeskoperator = models.FrontDeskOperator.objects.get(user_id=request.user.id)
     appointments=models.Appointment.objects.all().filter(status=True)
-    return render(request,'hospital/frontdesk_view_appointment.html',{'appointments':appointments})
+    return render(request,'hospital/frontdesk_view_appointment.html',{'appointments':appointments, 'frontdesk': frontdeskoperator})
 
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
@@ -1479,14 +1508,16 @@ def frontdesk_delete_undergoes(request,pk):
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_undergoes_view(request):
+    frontdeskoperator = models.FrontDeskOperator.objects.get(user_id=request.user.id)
     undergoes=models.Undergoes.objects.all().filter()
-    return render(request,'hospital/frontdesk_view_undergoes.html',{'undergoes':undergoes})
+    return render(request,'hospital/frontdesk_view_undergoes.html',{'undergoes':undergoes, 'frontdesk': frontdeskoperator})
 
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_add_undergoes(request):
+    frontdeskoperator = models.FrontDeskOperator.objects.get(user_id=request.user.id)
     undergoesForm = forms.UndergoesForm()
-    mydict = {'undergoesForm': undergoesForm, }
+    mydict = {'undergoesForm': undergoesForm, 'frontdesk': frontdeskoperator}
 
     if request.method == 'POST':
         if 'action' in request.POST and request.POST['action'] == 'check':
@@ -1541,8 +1572,8 @@ def frontdesk_add_undergoes(request):
                             request, 'The selected doctor already has an test/treatment scheduled at the same time.')
                         return redirect('frontdesk-add-undergoes')
                     undergoes = undergoesForm.save(commit=False)
-                    undergoes.doctorId = doctor_id
-                    undergoes.patientId = request.POST.get('patientId')
+                    undergoes.doctorId = models.Doctor.objects.get(id=doctor_id) 
+                    undergoes.patientId = models.Patient.objects.get(id= request.POST.get('patientId'))
                     undergoes.procedureID = request.POST.get('procedureID')
 
                     undergoes.status = True
@@ -1558,9 +1589,10 @@ def frontdesk_add_undergoes(request):
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_update_undergoes_view(request, pk):
+    frontdeskoperator = models.FrontDeskOperator.objects.get(user_id=request.user.id)
     undergoes=models.Undergoes.objects.get(id=pk)
     undergoesForm = forms.UndergoesForm(instance=undergoes)
-    mydict = {'undergoesForm': undergoesForm, }
+    mydict = {'undergoesForm': undergoesForm, 'frontdesk': frontdeskoperator}
     all_but_self_undergoes = models.Undergoes.objects.exclude(id=pk)
 
     if request.method == 'POST':

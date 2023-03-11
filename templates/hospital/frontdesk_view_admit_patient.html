@@ -1,6 +1,6 @@
 {% extends 'hospital/frontdesk_base.html' %}
 {% block content %}
-{%load static%}
+{% load static %}
 
 <head>
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -51,7 +51,7 @@
         <td>{{p.symptoms}}</td>
         <td>{{p.mobile}}</td>
         <td>{{p.address}}</td>
-        <td><a class="btn btn-primary btn-xs" href="{% url 'admit-patient' p.id  %}"><span
+        <td><a class="btn btn-primary btn-xs" href="{% url 'admit-patient-option' p.id  %}"><span
           class="glyphicon glyphicon-ok"></span></a></td>
       </tr>
       {% endfor %}
@@ -59,7 +59,7 @@
   </div>
   {%else%}
   <br><br><br>
-  <h4 style="text-align: center;color: red;">No visiting patients found.</h4>
+  <h3 style="text-align: center;color: black;">No visiting patients found.</h3>
   {% endif %}
 
   

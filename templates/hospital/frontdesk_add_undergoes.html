@@ -1,4 +1,4 @@
-{% extends 'hospital/admin_base.html' %}
+{% extends 'hospital/frontdesk_base.html' %}
 {% load widget_tweaks %}
 {% block content %}
 
@@ -11,45 +11,32 @@
     .note {
       text-align: center;
       height: 80px;
-      background: #F5EFF6;
-      color: #000000;
+      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+      color: #fff;
       font-weight: bold;
       line-height: 80px;
-            max-width: 700px;
-                  opacity: 85%;
-
-
     }
 
     .form-content {
       padding: 5%;
       border: 1px solid #ced4da;
       margin-bottom: 2%;
-      background-color:#F5EFF6;
-      max-width: 700px;
-      opacity: 85%;
     }
 
     .form-control {
       border-radius: 1.5rem;
     }
-.btnSubmit {
-  background-color: #e50914;
-  border: none;
-  border-radius: 5px;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 10px 30px;
-  transition: background-color 0.3s ease;
-  margin-bottom: 20px;
-  width: 100%;
-  box-sizing: border-box;
-}
 
-.btnSubmit:hover {
-  background-color: #b2070c;
-}
+    .btnSubmit {
+      border: none;
+      border-radius: 1.5rem;
+      padding: 1%;
+      width: 20%;
+      cursor: pointer;
+      background: #0062cc;
+      color: #fff;
+    }
+
     .menu {
       top: 50px;
     }
@@ -63,20 +50,14 @@
 
 </head>
 
-<br>
-<!------ add appointment page by admin (sumit) ---------->
+<br><br>
+
 {% if messages %}
 <ul class="messages">
   {% for message in messages %}
-  <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <h6{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</h6>
-    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  {% endfor %}
+  <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
 </ul>
-
 {% endif %}
 <script>
   console.log('Your log message here');
@@ -95,17 +76,30 @@
       localStorage.setItem('id_description', descriptionValue);
     });
 
-    // Check if appointmentTime exists in local storage
-    var appointmentTime = localStorage.getItem('id_appointmentTime');
-    if (appointmentTime) {
+    // Check if start_time exists in local storage
+    var start_time = localStorage.getItem('id_start_time');
+    if (start_time) {
       // If it exists, set the value of the appointmentTime field to the stored value
-      $('input[name="appointmentTime"]').val(appointmentTime);
+      $('input[name="start_time"]').val(start_time);
     }
 
-    // Store the appointmentTime value in local storage when the field changes
-    $('input[name="appointmentTime"]').on('change', function () {
-      var appointmentTimeValue = $(this).val();
-      localStorage.setItem('id_appointmentTime', appointmentTimeValue);
+    // Store the start_time value in local storage when the field changes
+    $('input[name="start_time"]').on('change', function () {
+      var start_timeValue = $(this).val();
+      localStorage.setItem('id_start_time', start_timeValue);
+    });
+
+  // Check if end_time exists in local storage
+  var end_time = localStorage.getItem('id_end_time');
+    if (end_time) {
+      // If it exists, set the value of the appointmentTime field to the stored value
+      $('input[name="end_time"]').val(end_time);
+    }
+
+    // Store the end_ime value in local storage when the field changes
+    $('input[name="end_time"]').on('change', function () {
+      var end_timeValue = $(this).val();
+      localStorage.setItem('id_end_time', end_timeValue);
     });
   });
 </script>
@@ -113,28 +107,28 @@
 
 <form method="post">
   {% csrf_token %}
-  <div class="container register-form"      style=" padding-left: 200px;">
+  <div class="container register-form">
     <div class="form">
       <div class="note">
-        <p>Book Appointment Details</p>
+        <p>Book Test/Treatment Details</p>
       </div>
       <div class="form-content">
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
-              {% render_field appointmentForm.description class="form-control" placeholder="Description" %}
+              {% render_field undergoesForm.doctorId class="form-control" placeholder="doctor" %}
             </div>
             <div class="form-group">
-              {% render_field appointmentForm.priority class="form-control" placeholder="priority" %}
+              {% render_field undergoesForm.patientId class="form-control" placeholder="patient" %}
             </div>
             <div class="form-group">
-              {% render_field appointmentForm.appointmentTime class="form-control" placeholder="appointment_time" %}
+                {% render_field undergoesForm.procedureId class="form-control" placeholder="procedure" %}
+              </div>
+            <div class="form-group">
+              {% render_field undergoesForm.start_time class="form-control" placeholder="start_time" %}
             </div>
             <div class="form-group">
-              {% render_field appointmentForm.doctorId class="form-control" placeholder="doctor" %}
-            </div>
-            <div class="form-group">
-              {% render_field appointmentForm.patientId class="form-control" placeholder="patient" %}
+              {% render_field undergoesForm.end_time class="form-control" placeholder="end_time" %}
             </div>
           </div>
         </div>

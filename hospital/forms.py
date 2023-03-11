@@ -8,14 +8,20 @@ from django import forms
 from django.contrib.auth.models import User
 from . import models
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-import datetime
 from django.db.models import Q
-from django.forms import ModelChoiceField
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
 import datetime
+import re
+
+def validate_mobile_number(value):
+    """
+    Validate that the input value is a 10-digit mobile number.
+    """
+    regex = r'^\d{10}$'
+    if not re.match(regex, value):
+        raise ValidationError(_('Mobile number must be 10 digits long.'))
+
+
 #for admin signup
 class AdminSigupForm(forms.ModelForm):
     class Meta:
@@ -35,7 +41,7 @@ class DoctorUserForm(forms.ModelForm):
         'password': forms.PasswordInput()
         }
 class DoctorForm(forms.ModelForm):
-    #mobile = forms.IntegerField(validators=[MinValueValidator(1000000000),MaxValueValidator(9999999999)])
+    mobile = forms.CharField(validators=[validate_mobile_number])
     class Meta:
         model=models.Doctor
         fields=['address','mobile','department','status','profile_pic']
@@ -45,10 +51,10 @@ class PatientForm(forms.ModelForm):
     #this will show dropdown __str__ method doctor model is shown on html so override it
     #to_field_name this will fetch corresponding value  user_id present in Doctor model and return it
     assignedDoctorId=forms.ModelChoiceField(queryset=models.Doctor.objects.all().filter(status=True),empty_label="Name and Department", to_field_name="user_id")
-    #mobile = forms.IntegerField(validators=[MinValueValidator(1_000_000_000),MaxValueValidator(9_999_999_999)],)
+    mobile = forms.CharField(validators=[validate_mobile_number])
     class Meta:
         model=models.Patient
-        fields=['first_name', 'last_name', 'address', 'mobile', 'symptoms', 'profile_pic']
+        fields=['first_name', 'last_name', 'address', 'mobile', 'symptoms', 'email', 'profile_pic']
 
 #adding shashwat
 class FrontDeskUserForm(forms.ModelForm):
@@ -59,7 +65,7 @@ class FrontDeskUserForm(forms.ModelForm):
         'password': forms.PasswordInput()
         }
 class FrontDeskForm(forms.ModelForm):
-    #mobile = forms.IntegerField(validators=[MinValueValidator(1_000_000_000),MaxValueValidator(9_999_999_999)],)
+    mobile = forms.CharField(validators=[validate_mobile_number])
     class Meta:
         model=models.FrontDeskOperator
         fields=['address','mobile','profile_pic']
@@ -72,7 +78,7 @@ class DataEntryUserForm(forms.ModelForm):
         'password': forms.PasswordInput()
         }
 class DataEntryForm(forms.ModelForm):
-    #mobile = forms.IntegerField(validators=[MinValueValidator(1_000_000_000),MaxValueValidator(9_999_999_999)],)
+    mobile = forms.CharField(validators=[validate_mobile_number])
     class Meta:
         model=models.DataEntryOperator
         fields=['address','mobile','profile_pic']
@@ -146,7 +152,7 @@ class TestUpdateForm(forms.ModelForm):
 
 class UndergoesForm(forms.ModelForm):
     patientId=forms.ModelChoiceField(queryset=models.Patient.objects.all().filter(Q(status=0) | Q(status=1)),empty_label="Patient Name and Symptoms", to_field_name="id")
-    doctorId=forms.ModelChoiceField(queryset=models.Doctor.objects.all().filter(),empty_label="Doctor Name and Department", to_field_name="user_id")
+    doctorId=forms.ModelChoiceField(queryset=models.Doctor.objects.all().filter(),empty_label="Doctor Name and Department", to_field_name="id")
     procedureId=forms.ModelChoiceField(queryset=models.Procedure.objects.all().filter(),empty_label="Procedure Name", to_field_name="id")
     start_time = forms.DateTimeField(input_formats=[
                                           '%Y-%m-%dT%H:%M'], widget=forms.DateTimeInput(format='%Y-%m-%dT%H:%M', attrs={'type': 'datetime-local'}))
