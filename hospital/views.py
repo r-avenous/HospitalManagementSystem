@@ -477,7 +477,7 @@ def admin_add_patient_view(request):
 
             my_patient_group = Group.objects.get_or_create(name='PATIENT')
 
-        return HttpResponseRedirect('admin-view-patient')
+            return HttpResponseRedirect('admin-view-patient')
     messages.error(
         request, 'Mobile number is not 10 digit long.')
     return render(request,'hospital/admin_add_patient.html',context=mydict)
@@ -525,6 +525,9 @@ def admin_discharge_patient_view(request):
 @user_passes_test(is_frontdeskoperator)
 def discharge_patient_view(request,pk):
     patient=models.Patient.objects.get(id=pk)
+    room = models.Room.objects.get(number = patient.room)
+    room.occupied_capacity -= 1
+    room.save()
     days=(date.today()-patient.admitDate) #2 days, 0:00:00
     assignedDoctor=models.User.objects.all().filter(id=patient.assignedDoctorId)
     d=days.days # only how many day that is 2
@@ -812,10 +815,13 @@ def doctor_view_patient_view(request):
 @login_required(login_url='doctorlogin')
 @user_passes_test(is_doctor)
 def doctor_view_test_view(request,pk):
+    print(pk)
     patient=models.Patient.objects.get(id=pk)
     patient_name = patient.first_name + ' ' + patient.last_name
     doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
-    tests = models.Test.objects.all().filter(patientId=pk)
+    tests = models.Test.objects.all().filter(patientId_id=pk)
+    print(tests.exists())
+    print(patient_name)
     return render(request,'hospital/doctor_view_test.html',{'patient_name':patient_name,'tests':tests,'doctor':doctor})
 
 @login_required(login_url='doctorlogin')
@@ -1039,7 +1045,7 @@ def admit_patient_private_view(request, pk):
         room = rooms[0]
         room.occupied_capacity = 1
         room.save()
-        patient.room_id = room.number
+        patient.room = room.number
         patient.status = 1
         patient.save()
         return redirect('frontdesk-admit-patient')
@@ -1058,7 +1064,7 @@ def admit_patient_general_view(request, pk):
             if room.occupied_capacity < room.max_capacity:
                 room.occupied_capacity += 1
                 room.save()
-                patient.room_id = room.number
+                patient.room = room.number
                 patient.status = 1
                 patient.save()
                 return redirect('frontdesk-admit-patient')
@@ -1323,15 +1329,14 @@ def frontdesk_update_appointment_view(request, pk):
 
             return render(request, 'hospital/frontdesk_update_appointment.html', context)
 
-        else:
             appointmentForm = forms.AppointmentForm(request.POST, instance=appointment)
+        else:
             mydict = {'appointmentForm': appointmentForm, }
             if request.method == 'POST':
                 appointmentForm = forms.AppointmentForm(request.POST, instance=appointment)
                 if appointmentForm.is_valid():
                     doctor_id = request.POST.get('doctorId')
-                    appointment_time = appointmentForm.cleaned_data.get(
-                        'appointmentTime')
+                    appointment_time = appointmentForm.cleaned_data.get('appointmentTime')
                     # appointment_time = timezone.make_aware(datetime.strptime(appointment_time_str, '%Y-%m-%dT%H:%M'))
                     if request.POST.get('priority') == '2':
                         start_time = appointment_time
@@ -1509,15 +1514,17 @@ def frontdesk_delete_undergoes(request,pk):
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_undergoes_view(request):
     frontdeskoperator = models.FrontDeskOperator.objects.get(user_id=request.user.id)
-    undergoes=models.Undergoes.objects.all().filter()
+    undergoes=models.Undergoes.objects.all()
     return render(request,'hospital/frontdesk_view_undergoes.html',{'undergoes':undergoes, 'frontdesk': frontdeskoperator})
 
 @login_required(login_url='frontdesklogin')
 @user_passes_test(is_frontdeskoperator)
 def frontdesk_add_undergoes(request):
+    #print("HI I am here")
     frontdeskoperator = models.FrontDeskOperator.objects.get(user_id=request.user.id)
     undergoesForm = forms.UndergoesForm()
     mydict = {'undergoesForm': undergoesForm, 'frontdesk': frontdeskoperator}
+    undergoes = models.Undergoes.objects.all()
 
     if request.method == 'POST':
         if 'action' in request.POST and request.POST['action'] == 'check':
@@ -1525,18 +1532,21 @@ def frontdesk_add_undergoes(request):
             start_time = timezone.make_aware(datetime.strptime(start_time_str, '%Y-%m-%dT%H:%M'))
             end_time_str = request.POST.get('end_time')
             end_time = timezone.make_aware(datetime.strptime(end_time_str, '%Y-%m-%dT%H:%M'))
+            if (start_time>end_time):
+                messages.error(
+                    request, 'End time cannot be greater than start time')
+                return redirect('frontdesk-add-undergoes')
 
             # Check which doctors are busy at the given appointmentTime
             undergoes = models.Undergoes.objects.all()
             busy_doctors = []
             for u in undergoes:
-                if((u.start_time >= start_time and u.start_time < end_time) or (u.end_time > start_time and u.end_time <= end_time)):
-                    busy_doctors.append(u.doctorId)
+                if(((u.start_time >= start_time) and (u.start_time < end_time)) or ((u.end_time > start_time) and (u.end_time <= end_time))):
+                    busy_doctors.append(u.doctorId.id)
                 
-            busy_doctors_objects = models.Doctor.objects.filter(user_id__in = busy_doctors)
+            #busy_doctors_objects = models.Doctor.objects.filter(user_id__in = busy_doctors)
             # Get a list of free doctors
-            free_doctors = models.Doctor.objects.filter(
-                status=True).exclude(user_id__in=busy_doctors_objects)
+            free_doctors = models.Doctor.objects.filter(status=True).exclude(id__in=busy_doctors)
 
             print(
                 f"The following doctors are busy at: {list(busy_doctors)}")
@@ -1558,25 +1568,43 @@ def frontdesk_add_undergoes(request):
             mydict = {'undergoesForm': undergoesForm, }
             if request.method == 'POST':
                 undergoesForm = forms.UndergoesForm(request.POST)
+                print(undergoesForm.errors)
                 if undergoesForm.is_valid():
                     doctor_id = request.POST.get('doctorId') 
+                    print("I am your doctor")
+                    print(doctor_id)
                     start_time = undergoesForm.cleaned_data.get('start_time') 
                     end_time = undergoesForm.cleaned_data.get('end_time')
+                    if (start_time>end_time):
+                        messages.error(
+                            request, 'End time cannot be greater than start time')
+                        return redirect('frontdesk-add-undergoes')
+                    print("I am printing types")
+                    print(start_time)
                     flag = 0
                     undergoes = models.Undergoes.objects.all()
-                    for u in undergoes:
-                        if((u.start_time >= start_time and u.start_time < end_time) or (u.end_time > start_time and u.end_time <= end_time)):
-                            flag = 1
+                    if undergoes.filter(doctorId = doctor_id).exists():
+                        print("HEYYY")
+                        for u in undergoes.filter(doctorId = doctor_id):
+                            print("HIIIIIIIIIIIII")
+                            print((u.end_time))
+                            print(u.end_time > start_time)
+                            if(((u.start_time >= start_time) and (u.start_time < end_time)) or ((u.end_time > start_time) and (u.end_time <= end_time))):
+                                print("HEYYYYYYYYYYYY")
+                                flag = 1
+                                break
                     if flag == 1:
                         messages.error(
                             request, 'The selected doctor already has an test/treatment scheduled at the same time.')
                         return redirect('frontdesk-add-undergoes')
                     undergoes = undergoesForm.save(commit=False)
-                    undergoes.doctorId = models.Doctor.objects.get(id=doctor_id) 
+                    undergoes.doctorId = models.Doctor.objects.get(id= request.POST.get('doctorId'))
                     undergoes.patientId = models.Patient.objects.get(id= request.POST.get('patientId'))
                     undergoes.procedureID = request.POST.get('procedureID')
-
-                    undergoes.status = True
+                    #print("HHHHHHHHHHHHHHHHHH")
+                    # undergoes.status = True
+                    undergoes.start_time = start_time
+                    undergoes.end_time = end_time
                     undergoes.save()
                     messages.success(
                         request, 'Test/Treatment added successfully!')
@@ -1593,7 +1621,7 @@ def frontdesk_update_undergoes_view(request, pk):
     undergoes=models.Undergoes.objects.get(id=pk)
     undergoesForm = forms.UndergoesForm(instance=undergoes)
     mydict = {'undergoesForm': undergoesForm, 'frontdesk': frontdeskoperator}
-    all_but_self_undergoes = models.Undergoes.objects.exclude(id=pk)
+    all_but_self_undergoes = models.Undergoes.objects.all().exclude(id=pk)
 
     if request.method == 'POST':
         if 'action' in request.POST and request.POST['action'] == 'check':
@@ -1601,25 +1629,27 @@ def frontdesk_update_undergoes_view(request, pk):
             start_time = timezone.make_aware(datetime.strptime(start_time_str, '%Y-%m-%dT%H:%M'))
             end_time_str = request.POST.get('end_time')
             end_time = timezone.make_aware(datetime.strptime(end_time_str, '%Y-%m-%dT%H:%M'))
-
+            if (start_time>end_time):
+                messages.error(
+                    request, 'End time cannot be greater than start time')
+                return redirect('frontdesk-update-undergoes',pk=pk)
             # Check which doctors are busy at the given appointmentTime
             undergoes = models.Undergoes.objects.all()
             busy_doctors = []
             for u in all_but_self_undergoes:
-                if((u.start_time >= start_time and u.start_time < end_time) or (u.end_time > start_time and u.end_time <= end_time)):
-                    busy_doctors.append(u.doctorId)
+                if(((u.start_time >= start_time) and (u.start_time < end_time)) or ((u.end_time > start_time) and (u.end_time <= end_time))):
+                    busy_doctors.append(u.doctorId.id)
                 
-            busy_doctors_objects = models.Doctor.objects.filter(user_id__in = busy_doctors)
+            # busy_doctors_objects = models.Doctor.objects.filter(user_id__in = busy_doctors)
             # Get a list of free doctors
-            free_doctors = models.Doctor.objects.filter(
-                status=True).exclude(user_id__in=busy_doctors_objects)
+            free_doctors = models.Doctor.objects.filter(status=True).exclude(id__in=busy_doctors)
 
             print(
                 f"The following doctors are busy at: {list(busy_doctors)}")
             print(
                 f"The following doctors are free at: {list(free_doctors)}")
             
-            # Update the appointment form with free doctors queryset
+            # Update the undergoes form with free doctors queryset
             undergoesForm.fields['doctorId'].queryset = free_doctors
 
             context = {
@@ -1627,31 +1657,44 @@ def frontdesk_update_undergoes_view(request, pk):
                 'free_doctors': free_doctors,
             }
 
-            return render(request, 'hospital/frontdesk_update_appointment.html', context)
+            return render(request, 'hospital/frontdesk_update_undergoes.html', context)
+
+
 
         else:
             undergoesForm = forms.UndergoesForm(request.POST, instance=undergoes)
-            mydict = {'undergoesForm': undergoesForm, }
+            mydict = {'undergoesForm': undergoesForm, 'frontdeskoperator': frontdeskoperator}
             if request.method == 'POST':
+                undergoesForm.patientId = undergoes.patientId
                 undergoesForm = forms.UndergoesForm(request.POST, instance=undergoes)
+                #print("HERE 1")
+                print(undergoesForm.errors)
                 if undergoesForm.is_valid():
+                    print("HERE 2")
                     doctor_id = request.POST.get('doctorId') 
                     start_time = undergoesForm.cleaned_data.get('start_time') 
                     end_time = undergoesForm.cleaned_data.get('end_time')
-                    flag = 0
-                    for u in all_but_self_undergoes:
-                        if((u.start_time >= start_time and u.start_time < end_time) or (u.end_time > start_time and u.end_time <= end_time)):
-                            flag = 1
-                    if flag == 1:
+                    if (start_time>end_time):
                         messages.error(
-                            request, 'The selected doctor already has an test/treatment scheduled at the same time.')
-                        return redirect('frontdesk-add-undergoes')
+                            request, 'End time cannot be greater than start time')
+                        return redirect('frontdesk-update-undergoes',pk=pk)
+                    flag = 0
+                    if all_but_self_undergoes.filter(doctorId = doctor_id).exists():
+                        for u in all_but_self_undergoes.filter(doctorId = doctor_id):
+                            if(((u.start_time >= start_time) and (u.start_time < end_time)) or ((u.end_time > start_time) and (u.end_time <= end_time))):
+                                flag = 1
+                                break
+                        if flag == 1:
+                            messages.error(
+                                request, 'The selected doctor already has an test/treatment scheduled at the same time.')
+                            return redirect('frontdesk-update-undergoes',pk=pk)
                     undergoes = undergoesForm.save(commit=False)
-                    undergoes.doctorId = doctor_id
-                    undergoes.patientId = request.POST.get('patientId')
+                    undergoes.doctorId = models.Doctor.objects.get(id= request.POST.get('doctorId'))
+                    undergoes.patientId = models.Patient.objects.get(id= request.POST.get('patientId'))
                     undergoes.procedureID = request.POST.get('procedureID')
-
-                    undergoes.status = True
+                    undergoes.start_time = start_time
+                    undergoes.end_time = end_time
+                    # undergoes.status = True
                     undergoes.save()
                     messages.success(
                         request, 'Test/Treatment added successfully!')
@@ -1659,7 +1702,8 @@ def frontdesk_update_undergoes_view(request, pk):
             else:
                 messages.error(
                     request, 'Invalid form submission. Please correct the errors below.')
-    return render(request, 'hospital/frontdesk_update_appointment.html', context=mydict)
+    return render(request, 'hospital/frontdesk_update_undergoes.html', context=mydict)
+
 
 
 #---------------------------------------------------------------------------------
@@ -1827,20 +1871,19 @@ def dataentry_dashboard_view(request):
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_test_view(request):
-    dataentry=models.DataEntryOperator.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
+    dataentry=models.DataEntryOperator.objects.get(user_id=request.user.id)
     test=models.Test.objects.all()
     for t in test:
         patient = models.Patient.objects.get(id=t.patientId_id)
         t.patientname = patient.get_name
-    return render(request,'hospital/dataentry_view_tests.html',{'tests':test,'dataentry':dataentry})
+    return render(request,'hospital/dataentry_view_tests.html',{'tests':test, 'dataentry':dataentry})
 
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_add_test_view(request):
     dataentry = models.DataEntryOperator.objects.get(
-        user_id=request.user.id)  # for profile picture of doctor in sidebar
-
-    return render(request,'hospital/dataentry_add_test.html',{'dataentry':dataentry})
+        user_id=request.user.id) 
+    return render(request,'hospital/dataentry_add_test.html', {'dataentry':dataentry})
     # return render(request, 'hospital/admin_add_appointment.html', context=mydict)
     
         
@@ -1848,12 +1891,10 @@ def dataentry_add_test_view(request):
 @user_passes_test(is_dataentryoperator)
 def dataentry_add_test_hospital_view(request):
     dataentry = models.DataEntryOperator.objects.get(
-        user_id=request.user.id)  # for profile picture of doctor in sidebar
-
+        user_id=request.user.id)
     Testform=forms.TestForm2()
     # doctorForm=forms.DoctorForm()
-    mydict={'testform':Testform,
-            'dataentry':dataentry}
+    mydict={'testform':Testform, 'dataentry':dataentry}
     if request.method=='POST':
         Testform=forms.TestForm2(request.POST)
         # doctorForm=forms.DoctorForm(request.POST, request.FILES)
@@ -1867,13 +1908,11 @@ def dataentry_add_test_hospital_view(request):
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_add_test_others_view(request):
-    Testform=forms.TestForm1()
     dataentry = models.DataEntryOperator.objects.get(
-        user_id=request.user.id)  # for profile picture of doctor in sidebar
-
+        user_id=request.user.id)
+    Testform=forms.TestForm1()
     # doctorForm=forms.DoctorForm()
-    mydict={'testform':Testform,
-            'dataentry':dataentry}
+    mydict={'testform':Testform, 'dataentry':dataentry}
     if request.method=='POST':
         Testform=forms.TestForm1(request.POST, request.FILES)
         # doctorForm=forms.DoctorForm(request.POST, request.FILES)
@@ -1888,18 +1927,15 @@ def dataentry_add_test_others_view(request):
 @user_passes_test(is_dataentryoperator)
 def dataentry_update_test_view(request,pk):
     dataentry = models.DataEntryOperator.objects.get(
-        user_id=request.user.id)  # for profile picture of doctor in sidebar
-
+        user_id=request.user.id)
     test=models.Test.objects.get(id=pk)
     form=forms.TestUpdateForm(instance=test)
-    mydict={'form':form,
-            'dataentry':dataentry}
     if request.method=='POST':
         form=forms.TestUpdateForm(request.POST, request.FILES, instance=test)
         if form.is_valid():
             form.save()
-            return redirect('dataentry-view-test',context=mydict)
-    return render(request,'hospital/dataentry_update_test.html',{'form':form,'dataentry':dataentry})
+            return redirect('dataentry-view-test')
+    return render(request,'hospital/dataentry_update_test.html',{'form':form, 'dataentry':dataentry})
 
 
 
@@ -1908,11 +1944,8 @@ def dataentry_update_test_view(request,pk):
 @user_passes_test(is_dataentryoperator)
 def dataentry_delete_test_view(request,pk):
     test=models.Test.objects.get(id=pk)
-    dataentry = models.DataEntryOperator.objects.get(
-        user_id=request.user.id)  # for profile picture of doctor in sidebar
-
     test.delete()
-    return redirect('dataentry-view-test',{'dataentry':dataentry})
+    return redirect('dataentry-view-test')
 
 
 
