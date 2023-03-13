@@ -162,8 +162,3 @@ class UndergoesForm(forms.ModelForm):
         model=models.Undergoes
         fields = ['patientId', 'doctorId', 'procedureId', 'start_time', 'end_time']
 
-
-
-#Developed By : sumit kumar
-#facebook : fb.com/sumit.luv
-#Youtube :youtube.com/lazycoders

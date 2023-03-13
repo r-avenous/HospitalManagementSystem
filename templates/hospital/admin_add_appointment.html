@@ -15,8 +15,8 @@
       color: #000000;
       font-weight: bold;
       line-height: 80px;
-            max-width: 700px;
-                  opacity: 85%;
+      max-width: 700px;
+      opacity: 85%;
 
 
     }
@@ -25,7 +25,7 @@
       padding: 5%;
       border: 1px solid #ced4da;
       margin-bottom: 2%;
-      background-color:#F5EFF6;
+      background-color: #F5EFF6;
       max-width: 700px;
       opacity: 85%;
     }
@@ -33,23 +33,25 @@
     .form-control {
       border-radius: 1.5rem;
     }
-.btnSubmit {
-  background-color: #e50914;
-  border: none;
-  border-radius: 5px;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 10px 30px;
-  transition: background-color 0.3s ease;
-  margin-bottom: 20px;
-  width: 100%;
-  box-sizing: border-box;
-}
 
-.btnSubmit:hover {
-  background-color: #b2070c;
-}
+    .btnSubmit {
+      background-color: #e50914;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 10px 30px;
+      transition: background-color 0.3s ease;
+      margin-bottom: 20px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .btnSubmit:hover {
+      background-color: #b2070c;
+    }
+
     .menu {
       top: 50px;
     }
@@ -64,15 +66,15 @@
 </head>
 
 <br>
-<!------ add appointment page by admin (sumit) ---------->
+<!------ add appointment page by admin    ---------->
 {% if messages %}
 <ul class="messages">
   {% for message in messages %}
   <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <h6{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</h6>
-    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
+      <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
   </div>
   {% endfor %}
 </ul>
@@ -113,7 +115,7 @@
 
 <form method="post">
   {% csrf_token %}
-  <div class="container register-form"      style=" padding-left: 200px;">
+  <div class="container register-form" style=" padding-left: 200px;">
     <div class="form">
       <div class="note">
         <p>Book Appointment Details</p>
