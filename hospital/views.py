@@ -450,6 +450,7 @@ def admin_update_patient_view(request,pk):
     if request.method=='POST':
         #userForm=forms.PatientUserForm(request.POST,instance=user)
         patientForm=forms.PatientForm(request.POST,request.FILES,instance=patient)
+        print(patientForm.errors)
         if patientForm.is_valid():
             patient=patientForm.save(commit=False)
             patient.status=patient_status
