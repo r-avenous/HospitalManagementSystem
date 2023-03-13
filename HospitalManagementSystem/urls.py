@@ -29,7 +29,7 @@ urlpatterns = [
     path('dataentrylogin', LoginView.as_view(template_name='hospital/dataentrylogin.html')),
 
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
-    path('logout', LogoutView.as_view(template_name='hospital/index.html'),name='logout'),
+    path('logout/', LogoutView.as_view(template_name='hospital/index.html'),name='logout'),
 
 
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
