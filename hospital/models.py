@@ -169,10 +169,13 @@ class Room(models.Model):
 
 class Undergoes(models.Model): 
     #need help 
-    patientId=models.ForeignKey(Patient, null=False, default=0, verbose_name="id", on_delete=models.SET_DEFAULT)  
+    patientId=models.ForeignKey(Patient, null=True, verbose_name="id", on_delete=models.SET_NULL)  
+    #patientId= models.PositiveIntegerField(null=False)
     #need help 
-    doctorId=models.ForeignKey(Doctor, null=False, default=0, verbose_name="id", on_delete=models.SET_DEFAULT)    
-    procedureId= models.ForeignKey(Procedure, null=False, default=0, verbose_name="id", on_delete=models.SET_DEFAULT) 
+    doctorId=models.ForeignKey(Doctor, null=True, verbose_name="id", on_delete=models.SET_NULL)    
+    #doctorId= models.PositiveIntegerField(null=False)
+    #procedureId= models.PositiveIntegerField(null=False)
+    procedureId= models.ForeignKey(Procedure, null=True, verbose_name="id", on_delete=models.SET_NULL) 
     start_time=models.DateTimeField(null=False) 
     end_time=models.DateTimeField(null=False) 
     @property 
@@ -184,7 +187,8 @@ class Undergoes(models.Model):
         return self.id     
     
 class Test(models.Model):
-    patientId=models.ForeignKey(Patient, null=False, default=0, verbose_name="id", on_delete=models.SET_DEFAULT)
+    patientId=models.ForeignKey(Patient, null=True, verbose_name="id", on_delete=models.SET_NULL)
+    #patientId= models.PositiveIntegerField(null=True)
     doctername = models.CharField(max_length=40)
     procedurename = models.CharField(max_length=40)
     description = models.TextField(max_length = 500, null=True)

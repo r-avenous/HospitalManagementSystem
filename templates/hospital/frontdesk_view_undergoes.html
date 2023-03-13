@@ -39,10 +39,10 @@
       </thead>
       {% for u in undergoes %}
       <tr>
-        <td> {{u.doctorID}}</td>
-        <td>{{a.patientID}}</td>
-        <td>{{a.star_time}}</td>
-        <td>{{a.end_time}}</td>
+        <td> {{u.doctorId}}</td>
+        <td>{{u.patientId}}</td>
+        <td>{{u.start_time}}</td>
+        <td>{{u.end_time}}</td>
         <td><a class="btn btn-primary btn-xs" href="{% url 'frontdesk-update-undergoes' u.id  %}"><span
           class="glyphicon glyphicon-edit"></span></a></td>
         <td><a class="btn btn-danger btn-xs" href="{% url 'frontdesk-delete-undergoes' u.id  %}"><span

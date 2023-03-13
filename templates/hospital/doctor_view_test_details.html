@@ -1,0 +1,65 @@
+{% extends 'hospital/doctor_base.html' %}
+{% block content %}
+{%load static%}
+
+<head>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    h6 {
+      text-align: center;
+    }
+
+    .row {
+      margin: 100px;
+    }
+  </style>
+</head>
+
+
+<div class="container">
+
+  <!-- <form action="/search" method="get" style="margin-left:70%;" class="form-inline my-2 my-lg-0">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" name="query" id="query" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+  </form> -->
+
+
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h6 class="panel-title">{{test.procedurename}} Report</h6>
+    </div>
+    <p> Patient Name : {{test.patientId}}</p>
+    <p> Doctor Name : {{test.doctername}}</p>
+    <p> Description : {{test.description}}</p>
+    <p> Image : <a href={% static test.image.url %}><img src="{% static test.image.url %}" alt="Test Image" width="200px" height="200px"></p></a>
+    {% comment %} <img src="" alt="Profile Pic" height="40px" width="40px" /> {% endcomment %}
+    {% comment %} <table class="table table-hover" id="dev-table">
+      <thead>
+        <tr>
+          <th>Procedure Name</th>
+          <th>Doctor Name</th>
+          <th>Details</th>
+
+        </tr>
+      </thead>
+      {% for t in tests %}
+      <tr>
+        <td> {{t.procedurename}}</td>
+        <td>{{t.doctername}}</td>
+        <td><a class="btn btn-primary btn-xs" href="{% url 'doctor-view-test-details' t.id  %}">view</a></td>
+      </tr>
+      {% endfor %}
+    </table> {% endcomment %}
+  </div>
+  
+
+</div>
+
+{% endblock content %}
