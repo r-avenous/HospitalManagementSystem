@@ -1827,25 +1827,33 @@ def dataentry_dashboard_view(request):
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_test_view(request):
+    dataentry=models.DataEntryOperator.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
     test=models.Test.objects.all()
     for t in test:
         patient = models.Patient.objects.get(id=t.patientId_id)
         t.patientname = patient.get_name
-    return render(request,'hospital/dataentry_view_tests.html',{'tests':test})
+    return render(request,'hospital/dataentry_view_tests.html',{'tests':test,'dataentry':dataentry})
 
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_add_test_view(request):
-    return render(request,'hospital/dataentry_add_test.html')
+    dataentry = models.DataEntryOperator.objects.get(
+        user_id=request.user.id)  # for profile picture of doctor in sidebar
+
+    return render(request,'hospital/dataentry_add_test.html',{'dataentry':dataentry})
     # return render(request, 'hospital/admin_add_appointment.html', context=mydict)
     
         
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_add_test_hospital_view(request):
+    dataentry = models.DataEntryOperator.objects.get(
+        user_id=request.user.id)  # for profile picture of doctor in sidebar
+
     Testform=forms.TestForm2()
     # doctorForm=forms.DoctorForm()
-    mydict={'testform':Testform}
+    mydict={'testform':Testform,
+            'dataentry':dataentry}
     if request.method=='POST':
         Testform=forms.TestForm2(request.POST)
         # doctorForm=forms.DoctorForm(request.POST, request.FILES)
@@ -1860,8 +1868,12 @@ def dataentry_add_test_hospital_view(request):
 @user_passes_test(is_dataentryoperator)
 def dataentry_add_test_others_view(request):
     Testform=forms.TestForm1()
+    dataentry = models.DataEntryOperator.objects.get(
+        user_id=request.user.id)  # for profile picture of doctor in sidebar
+
     # doctorForm=forms.DoctorForm()
-    mydict={'testform':Testform}
+    mydict={'testform':Testform,
+            'dataentry':dataentry}
     if request.method=='POST':
         Testform=forms.TestForm1(request.POST, request.FILES)
         # doctorForm=forms.DoctorForm(request.POST, request.FILES)
@@ -1875,14 +1887,19 @@ def dataentry_add_test_others_view(request):
 @login_required(login_url='dataentrylogin')
 @user_passes_test(is_dataentryoperator)
 def dataentry_update_test_view(request,pk):
+    dataentry = models.DataEntryOperator.objects.get(
+        user_id=request.user.id)  # for profile picture of doctor in sidebar
+
     test=models.Test.objects.get(id=pk)
     form=forms.TestUpdateForm(instance=test)
+    mydict={'form':form,
+            'dataentry':dataentry}
     if request.method=='POST':
         form=forms.TestUpdateForm(request.POST, request.FILES, instance=test)
         if form.is_valid():
             form.save()
-            return redirect('dataentry-view-test')
-    return render(request,'hospital/dataentry_update_test.html',{'form':form})
+            return redirect('dataentry-view-test',context=mydict)
+    return render(request,'hospital/dataentry_update_test.html',{'form':form,'dataentry':dataentry})
 
 
 
@@ -1891,8 +1908,11 @@ def dataentry_update_test_view(request,pk):
 @user_passes_test(is_dataentryoperator)
 def dataentry_delete_test_view(request,pk):
     test=models.Test.objects.get(id=pk)
+    dataentry = models.DataEntryOperator.objects.get(
+        user_id=request.user.id)  # for profile picture of doctor in sidebar
+
     test.delete()
-    return redirect('dataentry-view-test')
+    return redirect('dataentry-view-test',{'dataentry':dataentry})
 
 
 
