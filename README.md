@@ -9,4 +9,4 @@
     * Frontend : HTML/CSS
     * Database : MySQL
 
-* For a more detailed description of the web app's functionalities and interfaces, check out our project report [here]() .
+* For a more detailed description of the web app's functionalities and interfaces, check out our project report [here](https://github.com/r-avenous/HospitalManagementSystem/blob/master/DBMS_Lab_Assgn4_Report.pdf) .
